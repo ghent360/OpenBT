@@ -70,6 +70,7 @@ if [ "$(type -t pre_unpack)" = "function" ]; then
   pre_unpack
 fi
 
+<<<<<<< HEAD
 if [ "$(type -t unpack)" = "function" ]; then
   unpack
 else
@@ -82,6 +83,7 @@ else
     $SCRIPTS/extract $1 "$1*.tgz"     $BUILD
     $SCRIPTS/extract $1 "$1*.7z"      $BUILD
     $SCRIPTS/extract $1 "$1*.zip"     $BUILD
+    $SCRIPTS/extract $1 `basename $PKG_URL` $BUILD
   fi
 fi
 
