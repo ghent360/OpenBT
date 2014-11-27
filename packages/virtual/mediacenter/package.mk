@@ -55,5 +55,5 @@ if [ "$MEDIACENTER" = "kodi" ]; then
 
 # other packages
   PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET OpenELEC-settings"
-  PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET gflags glog"
+  PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET bt-a2dp"
 fi
