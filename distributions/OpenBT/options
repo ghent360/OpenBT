@@ -7,8 +7,8 @@
 # Welcome Message for e.g. SSH Server (up to 5 Lines)
   GREETING0="#############################################"
   GREETING1="# OpenBT - The bluetooth audio for everyone #"
-  GREETING3="#############################################"
-  GREETING4=""
+  GREETING2="#############################################"
+  GREETING3=""
 
 # Root password to integrate in the target system
   ROOT_PASSWORD="openbt"
@@ -75,10 +75,11 @@
 # for a list of additinoal drivers see packages/linux-drivers
 # Space separated list is supported,
 # e.g. ADDITIONAL_DRIVERS="DRIVER1 DRIVER2"
-  ADDITIONAL_DRIVERS="RTL8192CU RTL8192DU RTL8188EU RTL8812AU dvbhdhomerun"
+  ADDITIONAL_DRIVERS=""
 
 # build and install bluetooth support (yes / no)
   BLUETOOTH_SUPPORT="yes"
+  BLUETOOTH_VERSION=4
 
 # build and install with KODI webfrontend (yes / no)
   KODI_WEBSERVER_SUPPORT="no"
@@ -101,7 +102,7 @@
 # KODI Audio encoders for usage with optical drive support
 # Space separated list is supported,
 # e.g. KODI_AUDIOENCODER_ADDONS="ENCODER1 ENCODER2"
-  KODI_AUDIOENCODER_ADDONS="flac lame vorbis wav"
+  KODI_AUDIOENCODER_ADDONS=""
 
 # build with AirPlay support (stream videos from iDevices to KODI) (yes / no)
   KODI_AIRPLAY_SUPPORT="no"
@@ -202,7 +203,7 @@
 # additional Firmware to use (dvb-firmware, misc-firmware, wlan-firmware)
 # Space separated list is supported,
 # e.g. FIRMWARE="dvb-firmware misc-firmware wlan-firmware"
-  FIRMWARE="misc-firmware wlan-firmware dvb-firmware"
+  FIRMWARE="misc-firmware"
 
 # build with swap support (yes / no)
   SWAP_SUPPORT="no"
