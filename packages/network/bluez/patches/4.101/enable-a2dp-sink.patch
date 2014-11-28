@@ -1,0 +1,10 @@
+--- bluez-4.101/audio/audio.conf	2012-06-13 08:04:20.000000000 -0700
++++ /home/vne-marti/raspi/OpenELEC.tv/build.OpenBT-RPi.arm-devel/bluez-4.101/audio/audio.conf	2014-11-28 00:16:24.017229078 -0800
+@@ -10,6 +10,7 @@
+ # If we want to disable support for specific services
+ # Defaults to supporting all implemented services
+ #Disable=Gateway,Source,Socket
++Enable=Source,Control,Media
+ 
+ # SCO routing. Either PCM or HCI (in which case audio is routed to/from ALSA)
+ # Defaults to HCI
