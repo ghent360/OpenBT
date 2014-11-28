@@ -73,11 +73,13 @@ pre_configure_target() {
 }
 
 post_makeinstall_target() {
-  rm -rf $INSTALL/usr/lib/systemd
-  rm -rf $INSTALL/usr/bin/bccmd
-  rm -rf $INSTALL/usr/bin/bluemoon
-  rm -rf $INSTALL/usr/bin/ciptool
-  rm -rf $INSTALL/usr/share/dbus-1
+  if [ "$BLUETOOTH_VERSION" = "5" ]; then
+    rm -rf $INSTALL/usr/lib/systemd
+    rm -rf $INSTALL/usr/bin/bccmd
+    rm -rf $INSTALL/usr/bin/bluemoon
+    rm -rf $INSTALL/usr/bin/ciptool
+    rm -rf $INSTALL/usr/share/dbus-1
+  fi
 }
 
 post_install() {
