@@ -35,10 +35,17 @@ PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
 if [ "$BLUETOOTH_SUPPORT" = "yes" ]; then
-  PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET sbc"
-  PULSEAUDIO_BLUETOOTH="--enable-bluez5"
+  PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET sbc bluez"
+  if [ "$BLUETOOTH_VERSION" = "4" ]; then
+    PULSEAUDIO_BLUETOOTH="--enable-bluez4 \
+                          --disable-bluez5"
+  else
+    PULSEAUDIO_BLUETOOTH="--enable-bluez5 \
+                          --disable-bluez4"
+  fi
 else
-  PULSEAUDIO_BLUETOOTH="--disable-bluez5"
+  PULSEAUDIO_BLUETOOTH="--disable-bluez5 \
+                        --disable-bluez4"
 fi
 
 if [ "$AVAHI_DAEMON" = "yes" ]; then
@@ -79,7 +86,6 @@ PKG_CONFIGURE_OPTS_TARGET="--disable-silent-rules \
                            --disable-tcpwrap \
                            --disable-lirc \
                            --enable-dbus \
-                           --disable-bluez4 \
                            $PULSEAUDIO_BLUETOOTH \
                            --disable-bluez5-ofono-headset \
                            --disable-bluez5-native-headset \

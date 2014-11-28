@@ -17,7 +17,11 @@
 ################################################################################
 
 PKG_NAME="bluez"
-PKG_VERSION="5.41"
+if [ "$BLUETOOTH_VERSION" = "5" ]; then
+  PKG_VERSION="5.41"
+else
+  PKG_VERSION="4.101"
+fi
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
