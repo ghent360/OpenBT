@@ -16,33 +16,35 @@
 #  along with OpenELEC.  If not, see <http://www.gnu.org/licenses/>.
 ################################################################################
 
-PKG_NAME="bcm2835-bootloader"
-PKG_VERSION="5f1b910"
+PKG_NAME="libamcodec"
+PKG_VERSION="75f23da"
 PKG_REV="1"
 PKG_ARCH="arm"
-PKG_LICENSE="nonfree"
-PKG_SITE="http://www.broadcom.com"
+PKG_LICENSE="other"
+PKG_SITE="http://openlinux.amlogic.com"
 PKG_URL="$DISTRO_SRC/$PKG_NAME-$PKG_VERSION.tar.xz"
-PKG_DEPENDS_TARGET="toolchain linux"
+PKG_DEPENDS_TARGET="toolchain"
 PKG_PRIORITY="optional"
-PKG_SECTION="tools"
-PKG_SHORTDESC="bcm2835-bootloader: Tool to create a bootable kernel for RaspberryPi"
-PKG_LONGDESC="bcm2835-bootloader: Tool to create a bootable kernel for RaspberryPi"
+PKG_SECTION="multimedia"
+PKG_SHORTDESC="libamcodec: Interface library for Amlogic media codecs"
+PKG_LONGDESC="libamplayer: Interface library for Amlogic media codecs"
 
 PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
 make_target() {
-  : # nothing to make
+  make -C amavutils CC="$CC" PREFIX="$SYSROOT_PREFIX/usr"
+  mkdir -p $SYSROOT_PREFIX/usr/lib
+  cp -PR amavutils/*.so $SYSROOT_PREFIX/usr/lib
+
+  make -C amadec CC="$CC" PREFIX="$SYSROOT_PREFIX/usr" CROSS_PREFIX="$TARGET_PREFIX" install
+  make -C amcodec CC="$CC" HEADERS_DIR="$SYSROOT_PREFIX/usr/include/amcodec" PREFIX="$SYSROOT_PREFIX/usr" CROSS_PREFIX="$TARGET_PREFIX" install
 }
 
 makeinstall_target() {
-  mkdir -p $INSTALL/usr/share/bootloader
-    cp -PRv LICENCE* $INSTALL/usr/share/bootloader
-    cp -PRv bootcode.bin $INSTALL/usr/share/bootloader
-    cp -PRv fixup_x.dat $INSTALL/usr/share/bootloader/fixup.dat
-    cp -PRv start_x.elf $INSTALL/usr/share/bootloader/start.elf
+  mkdir -p $INSTALL/usr/lib
+  cp -PR amavutils/*.so $INSTALL/usr/lib
 
-    cp -PRv $PKG_DIR/scripts/update.sh $INSTALL/usr/share/bootloader
-    cp -PRv $PKG_DIR/files/3rdparty/bootloader/config.txt $INSTALL/usr/share/bootloader
+  make -C amadec PREFIX="$INSTALL/usr" install
+  make -C amcodec HEADERS_DIR="$INSTALL/usr/include/amcodec" PREFIX="$INSTALL/usr" install
 }
