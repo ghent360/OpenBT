@@ -18,7 +18,7 @@
 
 PKG_NAME="bluez"
 if [ "$BLUETOOTH_VERSION" = "5" ]; then
-  PKG_VERSION="5.25"
+  PKG_VERSION="5.27"
 else
   PKG_VERSION="4.101"
 fi
