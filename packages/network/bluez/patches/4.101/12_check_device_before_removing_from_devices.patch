@@ -1,0 +1,22 @@
+## Description: Check the device before removing from devices list.
+## Origin/Author: Shih-Yuan Lee (FourDollars) <sylee@canonical.com>
+## Bug: https://bugs.launchpad.net/ubuntu/+source/bluez/+bug/1300623
+Index: bluez-4.98/audio/unix.c
+===================================================================
+--- bluez-4.98.orig/audio/unix.c	2011-12-22 06:53:54.000000000 +0800
++++ bluez-4.98/audio/unix.c	2014-04-01 12:44:58.396129509 +0800
+@@ -1762,9 +1762,11 @@
+ 	return TRUE;
+ 
+ failed:
+-	clients = g_slist_remove(clients, client);
+-	start_close(client->dev, client, FALSE);
+-	client_free(client);
++	if (g_slist_index(clients, client) != -1) {
++		clients = g_slist_remove(clients, client);
++		start_close(client->dev, client, FALSE);
++		client_free(client);
++	}
+ 	return FALSE;
+ }
+ 

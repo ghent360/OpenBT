@@ -1,0 +1,52 @@
+From: Mathieu Trudel-Lapierre <mathieu.trudel-lapierre@canonical.com>
+Subject: Move add_watch so it's available to the code calling it.
+
+It should not have been conditioned out, add_watch is not hal code
+and is used elsewhere in the telephony ofono plugin.
+
+---
+ audio/telephony-ofono.c |   24 ++++++++++++------------
+ 2 files changed, 14 insertions(+), 12 deletions(-)
+
+Index: b/audio/telephony-ofono.c
+===================================================================
+--- a/audio/telephony-ofono.c
++++ b/audio/telephony-ofono.c
+@@ -1465,18 +1465,6 @@ static gboolean handle_hal_property_modi
+ 	return TRUE;
+ }
+ 
+-static void add_watch(const char *sender, const char *path,
+-				const char *interface, const char *member,
+-				GDBusSignalFunction function)
+-{
+-	guint watch;
+-
+-	watch = g_dbus_add_signal_watch(connection, sender, path, interface,
+-					member, function, NULL, NULL);
+-
+-	watches = g_slist_prepend(watches, GUINT_TO_POINTER(watch));
+-}
+-
+ static void hal_find_device_reply(DBusPendingCall *call, void *user_data)
+ {
+ 	DBusMessage *reply;
+@@ -1529,6 +1517,18 @@ done:
+ }
+ #endif /* Disable hal */
+ 
++static void add_watch(const char *sender, const char *path,
++				const char *interface, const char *member,
++				GDBusSignalFunction function)
++{
++	guint watch;
++
++	watch = g_dbus_add_signal_watch(connection, sender, path, interface,
++					member, function, NULL, NULL);
++
++	watches = g_slist_prepend(watches, GUINT_TO_POINTER(watch));
++}
++
+ static void handle_service_connect(DBusConnection *conn, void *user_data)
+ {
+ 	DBG("telephony-ofono: %s found", OFONO_BUS_NAME);
