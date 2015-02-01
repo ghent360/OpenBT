@@ -16,25 +16,37 @@
 #  along with OpenELEC.  If not, see <http://www.gnu.org/licenses/>.
 ################################################################################
 
-PKG_NAME="flashrom"
-PKG_VERSION="0.9.6"
+PKG_NAME="Pillow"
+PKG_VERSION="2.7.0"
 PKG_REV="1"
-PKG_ARCH="i386 x86_64"
-PKG_LICENSE="GPL"
-PKG_SITE="http://www.flashrom.org"
-PKG_URL="http://download.flashrom.org/releases/$PKG_NAME-$PKG_VERSION.tar.bz2"
-PKG_DEPENDS_TARGET="toolchain zlib pciutils libftdi1"
+PKG_ARCH="any"
+PKG_LICENSE="BSD"
+PKG_SITE="http://www.pythonware.com/products/pil/"
+PKG_URL="https://pypi.python.org/packages/source/P/Pillow/$PKG_NAME-$PKG_VERSION.tar.gz"
+PKG_DEPENDS_TARGET="toolchain Python distutilscross:host zlib freetype libjpeg-turbo"
 PKG_PRIORITY="optional"
-PKG_SECTION="tools"
-PKG_SHORTDESC="flashrom: linux BIOS programmer"
-PKG_LONGDESC="flashrom is a utility for identifying, reading, writing, verifying and erasing flash chips. It is designed to flash BIOS/EFI/coreboot/firmware/optionROM images on mainboards, network/graphics/storage controller cards, and various programmer devices."
+PKG_SECTION="python"
+PKG_SHORTDESC="pil: Imaging handling/processing for Python"
+PKG_LONGDESC="The Python Imaging Library (PIL) adds image processing capabilities to your Python interpreter. This library supports many file formats, and provides powerful image processing and graphics capabilities."
 
 PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
-PKG_MAKE_OPTS_TARGET="CC=$TARGET_CC STRIP=$STRIP PREFIX=/usr WARNERROR=no"
-PKG_MAKEINSTALL_OPTS_TARGET="CC=$TARGET_CC STRIP=$STRIP PREFIX=/usr WARNERROR=no"
-
 pre_make_target() {
-  export LDFLAGS="$LDFLAGS -ludev -lkmod"
+  export PYTHONXCPREFIX="$SYSROOT_PREFIX/usr"
+  export LDSHARED="$CC -shared"
+}
+
+make_target() {
+  python setup.py build --cross-compile
+}
+
+makeinstall_target() {
+  python setup.py install --root=$INSTALL --prefix=/usr
+}
+
+post_makeinstall_target() {
+  find $INSTALL/usr/lib -name "*.py" -exec rm -rf "{}" ";"
+
+  rm -rf $INSTALL/usr/bin
 }

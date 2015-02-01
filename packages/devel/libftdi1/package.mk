@@ -16,35 +16,44 @@
 #  along with OpenELEC.  If not, see <http://www.gnu.org/licenses/>.
 ################################################################################
 
-PKG_NAME="vdr-plugin-vnsiserver"
-PKG_VERSION="b887bc8"
-PKG_REV="1"
+PKG_NAME="libftdi1"
+PKG_VERSION="1.2"
+PKG_REV=1""
 PKG_ARCH="any"
-PKG_LICENSE="GPL"
-PKG_SITE="https://github.com/FernetMenta/vdr-plugin-vnsiserver"
-PKG_URL="$DISTRO_SRC/$PKG_NAME-$PKG_VERSION.tar.xz"
-PKG_DEPENDS_TARGET="toolchain vdr"
+PKG_LICENSE="LGPL"
+PKG_SITE="http://www.intra2net.com/en/developer/libftdi/"
+PKG_URL="http://www.intra2net.com/en/developer/libftdi/download/${PKG_NAME}-${PKG_VERSION}.tar.bz2"
+PKG_DEPENDS_TARGET="toolchain libusb"
 PKG_PRIORITY="optional"
-PKG_SECTION="multimedia"
-PKG_SHORTDESC="TV"
-PKG_LONGDESC="TV"
+PKG_SECTION="devel"
+PKG_SHORTDESC="libFTDI is an open source library to talk to FTDI chips"
+PKG_LONGDESC="libFTDI is an open source library to talk to FTDI chips"
 
 PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
-pre_configure_target() {
-  export CFLAGS="$CFLAGS -fPIC"
-  export CXXFLAGS="$CXXFLAGS -fPIC"
-  export LDFLAGS="$LDFLAGS -fPIC"
+configure_target() {
+  cmake -DCMAKE_TOOLCHAIN_FILE=$CMAKE_CONF \
+        -DCMAKE_INSTALL_PREFIX=/usr \
+        -DSTATICLIBS=ON \
+        -DDOCUMENTATION=FALSE \
+        -DEXAMPLES=FALSE \
+        -DFTDIPP=FALSE \
+        -DPYTHON_BINDINGS=FALSE \
+        ..
 }
 
-make_target() {
-  VDR_DIR=$(get_build_dir vdr)
-  make VDRDIR=$VDR_DIR \
-    LIBDIR="." \
-    LOCALEDIR="./locale"
+pre_configure_target() {
+  CFLAGS="$CFLAGS -fPIC -DPIC"
 }
 
 makeinstall_target() {
-  : # installation not needed, done by create-addon script
+  mkdir -p $SYSROOT_PREFIX/usr/include/libftdi1
+    cp ../src/ftdi.h $SYSROOT_PREFIX/usr/include/libftdi1
+
+  mkdir -p $SYSROOT_PREFIX/usr/lib
+    cp src/libftdi1.a $SYSROOT_PREFIX/usr/lib
+
+  mkdir -p $SYSROOT_PREFIX/usr/lib/pkgconfig
+    cp libftdi1.pc $SYSROOT_PREFIX/usr/lib/pkgconfig
 }
