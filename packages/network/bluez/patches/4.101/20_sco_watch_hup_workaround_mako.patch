@@ -1,0 +1,23 @@
+From: Ricardo Salveti <ricardo.salveti@canonical.com>
+Subject: Workaround issues in Nexus devices; watch for G_IO_HUP as well for SCO.
+
+Watch for the HUP so that we can be properly notified when the SCO connection
+is terminated; on some devices (specifically, Google Nexus devices), the kernel
+does not return NVAL or ERR after the socket gets closed.
+
+Index: bluez-4.101/audio/headset.c
+===================================================================
+--- bluez-4.101.orig/audio/headset.c
++++ bluez-4.101/audio/headset.c
+@@ -2597,8 +2597,10 @@ void headset_set_state(struct audio_devi
+ 
+ 		/* Do not watch HUP since we need to know when the link is
+ 		   really disconnected */
++		/* Ubuntu Touch: Adding back G_IO_HUP as a workaround for
++		 * nexus devices */
+ 		hs->sco_id = g_io_add_watch(hs->sco,
+-					G_IO_ERR | G_IO_NVAL,
++					G_IO_HUP | G_IO_ERR | G_IO_NVAL,
+ 					(GIOFunc) sco_cb, dev);
+ 
+ 		g_dbus_emit_signal(dev->conn, dev->path,
