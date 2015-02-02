@@ -1,0 +1,181 @@
+From: Mathieu Trudel-Lapierre <mathieu.trudel-lapierre@canonical.com>
+Subject: Allow more space for struct hci_conn_info
+
+HACK ALERT: This is very brittle. It will likely blow up in flames if the
+hci_conn_info / hci_conn_info_req structures change.
+
+Deal with the alignment requirements for ARM by requesting more memory from
+malloc, double the size of 'struct hci_conn_info'.
+
+This is required because as you malloc the memory space required to hold the
+request and response for the HCIGETCONNINFO ioctl, it doesn't take into
+consideration that on some architectures, the kernel may be padding data for
+you as required by the architecture. Doing so means we get more data for the
+pointer than we allocated, and freeing that data will therefore fail:
+
+ *** Error in `./toto': free(): invalid next size (fast): 0x0009f008 ***
+
+With this patch we're simply requesting more space (twice the size of
+struct hci_conn_info; so 32 bytes); which means we have 16 more bytes
+allocated for us in hope to catch the extra padding from the kernel.
+
+I've calculated the extra to about 12 bytes if all variables are aligned
+to a word boundary in that struct.
+
+---
+ plugins/hciops.c |    2 +-
+ tools/hcitool.c  |   30 +++++++++++++++---------------
+ 2 files changed, 16 insertions(+), 16 deletions(-)
+
+Index: b/plugins/hciops.c
+===================================================================
+--- a/plugins/hciops.c
++++ b/plugins/hciops.c
+@@ -826,7 +826,7 @@ static int hciops_encrypt_link(int index
+ 	if (dd < 0)
+ 		return -errno;
+ 
+-	cr = g_malloc0(sizeof(*cr) + sizeof(struct hci_conn_info));
++	cr = g_malloc0(sizeof(*cr) + 2*sizeof(struct hci_conn_info));
+ 	cr->type = ACL_LINK;
+ 	bacpy(&cr->bdaddr, dst);
+ 
+Index: b/tools/hcitool.c
+===================================================================
+--- a/tools/hcitool.c
++++ b/tools/hcitool.c
+@@ -716,7 +716,7 @@ static void cmd_scan(int dev_id, int arg
+ 		cc = 0;
+ 
+ 		if (extinf) {
+-			cr = malloc(sizeof(*cr) + sizeof(struct hci_conn_info));
++			cr = malloc(sizeof(*cr) + 2*sizeof(struct hci_conn_info));
+ 			if (cr) {
+ 				bacpy(&cr->bdaddr, &(info+i)->bdaddr);
+ 				cr->type = ACL_LINK;
+@@ -918,7 +918,7 @@ static void cmd_info(int dev_id, int arg
+ 		exit(1);
+ 	}
+ 
+-	cr = malloc(sizeof(*cr) + sizeof(struct hci_conn_info));
++	cr = malloc(sizeof(*cr) + 2*sizeof(struct hci_conn_info));
+ 	if (!cr) {
+ 		perror("Can't get connection info");
+ 		close(dd);
+@@ -1324,7 +1324,7 @@ static void cmd_dc(int dev_id, int argc,
+ 		exit(1);
+ 	}
+ 
+-	cr = malloc(sizeof(*cr) + sizeof(struct hci_conn_info));
++	cr = malloc(sizeof(*cr) + 2*sizeof(struct hci_conn_info));
+ 	if (!cr) {
+ 		perror("Can't allocate memory");
+ 		exit(1);
+@@ -1450,7 +1450,7 @@ static void cmd_rssi(int dev_id, int arg
+ 		exit(1);
+ 	}
+ 
+-	cr = malloc(sizeof(*cr) + sizeof(struct hci_conn_info));
++	cr = malloc(sizeof(*cr) + 2*sizeof(struct hci_conn_info));
+ 	if (!cr) {
+ 		perror("Can't allocate memory");
+ 		exit(1);
+@@ -1518,7 +1518,7 @@ static void cmd_lq(int dev_id, int argc,
+ 		exit(1);
+ 	}
+ 
+-	cr = malloc(sizeof(*cr) + sizeof(struct hci_conn_info));
++	cr = malloc(sizeof(*cr) + 2*sizeof(struct hci_conn_info));
+ 	if (!cr) {
+ 		perror("Can't allocate memory");
+ 		exit(1);
+@@ -1588,7 +1588,7 @@ static void cmd_tpl(int dev_id, int argc
+ 		exit(1);
+ 	}
+ 
+-	cr = malloc(sizeof(*cr) + sizeof(struct hci_conn_info));
++	cr = malloc(sizeof(*cr) + 2*sizeof(struct hci_conn_info));
+ 	if (!cr) {
+ 		perror("Can't allocate memory");
+ 		exit(1);
+@@ -1658,7 +1658,7 @@ static void cmd_afh(int dev_id, int argc
+ 		exit(1);
+ 	}
+ 
+-	cr = malloc(sizeof(*cr) + sizeof(struct hci_conn_info));
++	cr = malloc(sizeof(*cr) + 2*sizeof(struct hci_conn_info));
+ 	if (!cr) {
+ 		perror("Can't allocate memory");
+ 		exit(1);
+@@ -1739,7 +1739,7 @@ static void cmd_cpt(int dev_id, int argc
+ 		exit(1);
+ 	}
+ 
+-	cr = malloc(sizeof(*cr) + sizeof(struct hci_conn_info));
++	cr = malloc(sizeof(*cr) + 2*sizeof(struct hci_conn_info));
+ 	if (!cr) {
+ 		perror("Can't allocate memory");
+ 		exit(1);
+@@ -1817,7 +1817,7 @@ static void cmd_lp(int dev_id, int argc,
+ 		exit(1);
+ 	}
+ 
+-	cr = malloc(sizeof(*cr) + sizeof(struct hci_conn_info));
++	cr = malloc(sizeof(*cr) + 2*sizeof(struct hci_conn_info));
+ 	if (!cr) {
+ 		perror("Can't allocate memory");
+ 		exit(1);
+@@ -1910,7 +1910,7 @@ static void cmd_lst(int dev_id, int argc
+ 		exit(1);
+ 	}
+ 
+-	cr = malloc(sizeof(*cr) + sizeof(struct hci_conn_info));
++	cr = malloc(sizeof(*cr) + 2*sizeof(struct hci_conn_info));
+ 	if (!cr) {
+ 		perror("Can't allocate memory");
+ 		exit(1);
+@@ -1994,7 +1994,7 @@ static void cmd_auth(int dev_id, int arg
+ 		exit(1);
+ 	}
+ 
+-	cr = malloc(sizeof(*cr) + sizeof(struct hci_conn_info));
++	cr = malloc(sizeof(*cr) + 2*sizeof(struct hci_conn_info));
+ 	if (!cr) {
+ 		perror("Can't allocate memory");
+ 		exit(1);
+@@ -2060,7 +2060,7 @@ static void cmd_enc(int dev_id, int argc
+ 		exit(1);
+ 	}
+ 
+-	cr = malloc(sizeof(*cr) + sizeof(struct hci_conn_info));
++	cr = malloc(sizeof(*cr) + 2*sizeof(struct hci_conn_info));
+ 	if (!cr) {
+ 		perror("Can't allocate memory");
+ 		exit(1);
+@@ -2127,7 +2127,7 @@ static void cmd_key(int dev_id, int argc
+ 		exit(1);
+ 	}
+ 
+-	cr = malloc(sizeof(*cr) + sizeof(struct hci_conn_info));
++	cr = malloc(sizeof(*cr) + 2*sizeof(struct hci_conn_info));
+ 	if (!cr) {
+ 		perror("Can't allocate memory");
+ 		exit(1);
+@@ -2193,7 +2193,7 @@ static void cmd_clkoff(int dev_id, int a
+ 		exit(1);
+ 	}
+ 
+-	cr = malloc(sizeof(*cr) + sizeof(struct hci_conn_info));
++	cr = malloc(sizeof(*cr) + 2*sizeof(struct hci_conn_info));
+ 	if (!cr) {
+ 		perror("Can't allocate memory");
+ 		exit(1);
+@@ -2270,7 +2270,7 @@ static void cmd_clock(int dev_id, int ar
+ 	}
+ 
+ 	if (bacmp(&bdaddr, BDADDR_ANY)) {
+-		cr = malloc(sizeof(*cr) + sizeof(struct hci_conn_info));
++		cr = malloc(sizeof(*cr) + 2*sizeof(struct hci_conn_info));
+ 		if (!cr) {
+ 			perror("Can't allocate memory");
+ 			exit(1);
