@@ -1,6 +1,6 @@
 ################################################################################
 #      This file is part of OpenELEC - http://www.openelec.tv
-#      Copyright (C) 2009-2014 Stephan Raue (stephan@openelec.tv)
+#      Copyright (C) 2014 Stefan Saraev (stefan@sarae.va)
 #
 #  OpenELEC is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -16,37 +16,21 @@
 #  along with OpenELEC.  If not, see <http://www.gnu.org/licenses/>.
 ################################################################################
 
-PKG_NAME="vdr-wirbelscan"
-PKG_VERSION="0.0.9"
+PKG_NAME="libsquish"
+PKG_VERSION="1.10-openelec"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
-PKG_SITE="http://wirbel.htpc-forum.de/wirbelscan/index2.html"
-PKG_URL="http://wirbel.htpc-forum.de/wirbelscan/$PKG_NAME-$PKG_VERSION.tgz"
-PKG_SOURCE_DIR="wirbelscan-${PKG_VERSION}"
-PKG_DEPENDS_TARGET="toolchain vdr"
+PKG_SITE=""
+PKG_URL="$DISTRO_SRC/$PKG_NAME-$PKG_VERSION.tar.gz"
+PKG_DEPENDS_HOST="toolchain"
 PKG_PRIORITY="optional"
-PKG_SECTION="multimedia"
-PKG_SHORTDESC="TV"
-PKG_LONGDESC="TV"
+PKG_SECTION=""
+PKG_SHORTDESC="libsquish"
+PKG_LONGDESC="libsquish"
 
 PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
-pre_configure_target() {
-  export CFLAGS="$CFLAGS -fPIC"
-  export CXXFLAGS="$CXXFLAGS -fPIC"
-  export LDFLAGS="$LDFLAGS -fPIC"
-}
-
-make_target() {
-  VDR_DIR=$(get_build_dir vdr)
-  make VDRDIR=$VDR_DIR \
-    LIBDIR="." \
-    LOCALEDIR="./locale"
-}
-
-makeinstall_target() {
-  : # installation not needed, done by create-addon script
-}
-
+PKG_MAKE_OPTS_TARGET="PREFIX=/usr INSTALL_DIR=$SYSROOT_PREFIX/usr"
+PKG_MAKEINSTALL_OPTS_TARGET="$PKG_MAKE_OPTS_TARGET"
