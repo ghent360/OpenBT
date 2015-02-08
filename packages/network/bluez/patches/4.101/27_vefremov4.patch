@@ -1,0 +1,1090 @@
+Index: avrcp/audio/control.c
+===================================================================
+--- avrcp.orig/audio/control.c	2015-02-05 23:38:38.309930883 -0800
++++ avrcp/audio/control.c	2015-02-08 04:00:48.287983392 -0800
+@@ -60,21 +60,21 @@
+ 
+ #if __BYTE_ORDER == __LITTLE_ENDIAN
+ struct avrcp_header {
+-	uint8_t company_id[3];
+-	uint8_t pdu_id;
+-	uint8_t packet_type:2;
+-	uint8_t rsvd:6;
+-	uint8_t params_len[2];
++    uint8_t company_id[3];
++    uint8_t pdu_id;
++    uint8_t packet_type:2;
++    uint8_t rsvd:6;
++    uint8_t params_len[2];
+ } __attribute__ ((packed));
+ #define AVRCP_HEADER_LENGTH 7
+ 
+ #elif __BYTE_ORDER == __BIG_ENDIAN
+ struct avrcp_header {
+-	uint8_t company_id[3];
+-	uint8_t pdu_id;
+-	uint8_t rsvd:6;
+-	uint8_t packet_type:2;
+-	uint8_t params_len[2];
++    uint8_t company_id[3];
++    uint8_t pdu_id;
++    uint8_t rsvd:6;
++    uint8_t packet_type:2;
++    uint8_t params_len[2];
+ } __attribute__ ((packed));
+ #define AVRCP_HEADER_LENGTH 7
+ 
+@@ -82,53 +82,53 @@
+ #error "Unknown byte order"
+ #endif
+ 
+-#define AVCTP_COMMAND		0
+-#define AVCTP_RESPONSE		1
++#define AVCTP_COMMAND        0
++#define AVCTP_RESPONSE        1
+ 
+-#define METADATA_COMAPNY_ID 	 0x001958
++#define METADATA_COMAPNY_ID      0x001958
+ #define PANNEL_SUBUNIT_ID        0x09
+ 
+-#define GET_CAPABILITIES_PUD     							0x10	/* AV/C STATUS */
+-#define LIST_PLAYER_APPLICATION_SETTING_ATTRIBUTES_PUD 		0x11	/* AV/C STATUS */
+-#define LIST_PLAYER_APPLICATION_SETTING_VALUES_PUD  		0x12	/* AV/C STATUS */
+-#define GET_CURRENT_PLAYER_APPLICATION_SETTING_VALUE_PUD  	0x13	/* AV/C STATUS */
+-#define SET_PLAYER_APPLICATION_SETTING_VALUE_PUD  			0x14	/* AV/C CONTROL */
+-#define GET_PLAYER_APPLICATION_SETTING_ATTRIBUTE_TEXT_PUD 	0x15	/* AV/C STATUS */
+-#define GET_PLAYER_APPLICATION_SETTING_VALUE_TEXT_PUD  		0x16	/* AV/C STATUS */
+-#define INFORM_DISPLAYABLE_CHARACTER_SET_PUD  				0x17	/* AV/C CONTROL */
+-#define INFORM_BATTERY_STATUS_OF_CT_PUD  					0x18	/* AV/C CONTROL */
+-#define GET_ELEMENT_ATTRIBUTES_PUD  						0x20	/* AV/C STATUS */
+-#define GET_PLAYSTATUS_PUD  								0x30	/* AV/C STATUS */
+-#define REGISTER_NOTIFICATION_PUD  							0x31	/* AV/C NOTIFY */
+-#define REQUEST_CONTINUING_RESPONSE_PUD  					0x40	/* AV/C CONTROL */
+-#define ABORT_CONTINUING_RESPONSE_PUD  						0x41	/* AV/C CONTROL */
+-#define SET_ABSOLUTE_VOLUME_PUD  							0x50	/* AV/C CONTROL */
+-#define SET_ADDRESSED_PLAYER_PUD  							0x60	/* AV/C CONTROL */
+-#define GET_FOLDER_ITEMS_PUD  								0x71	/* Browsing */
+-#define SET_BROWSED_PLAYER_PUD  							0x70	/* Browsing */
+-#define CHANGE_PATH_PUD  									0x72	/* Browsing */
+-#define GET_ITEM_ATTRIBUTES_PUD  							0x73	/* Browsing */
+-#define PLAY_ITEM_PUD  										0x74	/* AV/C CONTROL */
+-#define SEARCH_PUD  										0x80	/* Browsing */
+-#define ADD_TO_NOW_PLAYING_PUD  							0x90	/* AV/C CONTROL */
+-#define GENERAL_REJECT_PUD  								0xA0	/* Browsing */
++#define GET_CAPABILITIES_PUD                                 0x10    /* AV/C STATUS */
++#define LIST_PLAYER_APPLICATION_SETTING_ATTRIBUTES_PUD         0x11    /* AV/C STATUS */
++#define LIST_PLAYER_APPLICATION_SETTING_VALUES_PUD          0x12    /* AV/C STATUS */
++#define GET_CURRENT_PLAYER_APPLICATION_SETTING_VALUE_PUD      0x13    /* AV/C STATUS */
++#define SET_PLAYER_APPLICATION_SETTING_VALUE_PUD              0x14    /* AV/C CONTROL */
++#define GET_PLAYER_APPLICATION_SETTING_ATTRIBUTE_TEXT_PUD     0x15    /* AV/C STATUS */
++#define GET_PLAYER_APPLICATION_SETTING_VALUE_TEXT_PUD          0x16    /* AV/C STATUS */
++#define INFORM_DISPLAYABLE_CHARACTER_SET_PUD                  0x17    /* AV/C CONTROL */
++#define INFORM_BATTERY_STATUS_OF_CT_PUD                      0x18    /* AV/C CONTROL */
++#define GET_ELEMENT_ATTRIBUTES_PUD                          0x20    /* AV/C STATUS */
++#define GET_PLAYSTATUS_PUD                                  0x30    /* AV/C STATUS */
++#define REGISTER_NOTIFICATION_PUD                              0x31    /* AV/C NOTIFY */
++#define REQUEST_CONTINUING_RESPONSE_PUD                      0x40    /* AV/C CONTROL */
++#define ABORT_CONTINUING_RESPONSE_PUD                          0x41    /* AV/C CONTROL */
++#define SET_ABSOLUTE_VOLUME_PUD                              0x50    /* AV/C CONTROL */
++#define SET_ADDRESSED_PLAYER_PUD                              0x60    /* AV/C CONTROL */
++#define GET_FOLDER_ITEMS_PUD                                  0x71    /* Browsing */
++#define SET_BROWSED_PLAYER_PUD                              0x70    /* Browsing */
++#define CHANGE_PATH_PUD                                      0x72    /* Browsing */
++#define GET_ITEM_ATTRIBUTES_PUD                              0x73    /* Browsing */
++#define PLAY_ITEM_PUD                                          0x74    /* AV/C CONTROL */
++#define SEARCH_PUD                                          0x80    /* Browsing */
++#define ADD_TO_NOW_PLAYING_PUD                              0x90    /* AV/C CONTROL */
++#define GENERAL_REJECT_PUD                                  0xA0    /* Browsing */
+ 
+ #define COMPANIES_CAPABILITY_ID  0x02
+-#define EVENTS_CAPABILITY_ID  	 0x03
++#define EVENTS_CAPABILITY_ID       0x03
+ 
+-#define EVENT_STATUS_CHANGED						0x01
+-#define EVENT_TRACK_CHANGED							0x02
+-#define EVENT_TRACK_REACHED_END						0x03
+-#define EVENT_TRACK_REACHED_START					0x04
+-#define EVENT_PLAYBACK_POS_CHANGED					0x05
+-#define EVENT_BATT_STATUS_CHANGED					0x06
+-#define EVENT_SYSTEM_STATUS_CHANGED					0x07
+-#define EVENT_PLAYER_APPLICATION_SETTING_CHANGED	0x08
+-#define EVENT_NOW_PLAYING_CONTENT_CHANGED			0x09
+-#define EVENT_AVAILABLE_PLAYERS_CHANGED				0x0a
+-#define EVENT_ADDRESSED_PLAYER_CHANGED				0x0b
+-#define EVENT_UIDS_CHANGED							0x0c
+-#define EVENT_VOLUME_CHANGED						0x0d
++#define EVENT_STATUS_CHANGED                        0x01
++#define EVENT_TRACK_CHANGED                            0x02
++#define EVENT_TRACK_REACHED_END                        0x03
++#define EVENT_TRACK_REACHED_START                    0x04
++#define EVENT_PLAYBACK_POS_CHANGED                    0x05
++#define EVENT_BATT_STATUS_CHANGED                    0x06
++#define EVENT_SYSTEM_STATUS_CHANGED                    0x07
++#define EVENT_PLAYER_APPLICATION_SETTING_CHANGED    0x08
++#define EVENT_NOW_PLAYING_CONTENT_CHANGED            0x09
++#define EVENT_AVAILABLE_PLAYERS_CHANGED                0x0a
++#define EVENT_ADDRESSED_PLAYER_CHANGED                0x0b
++#define EVENT_UIDS_CHANGED                            0x0c
++#define EVENT_VOLUME_CHANGED                        0x0d
+ 
+ #define BUTTON_ID_SELECT      0x00    /* select */
+ #define BUTTON_ID_UP          0x01    /* up */
+@@ -199,567 +199,560 @@
+  */
+ 
+ struct GetCapabilitiesReq {
+-	struct avrcp_header hdr;
+-	uint8_t capability_id;
++    struct avrcp_header hdr;
++    uint8_t capability_id;
+ } __attribute__ ((packed));
+ 
+ struct GetCapabilitiesResponse {
+-	struct avrcp_header hdr;
+-	uint8_t capability_id;
+-	uint8_t capability_cnt;
+-	uint8_t data[0];
++    struct avrcp_header hdr;
++    uint8_t capability_id;
++    uint8_t capability_cnt;
++    uint8_t data[0];
+ } __attribute__ ((packed));
+ 
+ struct RegisterNotificationReq {
+-	struct avrcp_header hdr;
+-	uint8_t event_id;
+-	uint32_t report_interval;
++    struct avrcp_header hdr;
++    uint8_t event_id;
++    uint32_t report_interval;
+ } __attribute__ ((packed));
+ 
+ struct RegisterNotificationResponse {
+-	struct avrcp_header hdr;
+-	uint8_t event_id;
+-	uint8_t data[0];
++    struct avrcp_header hdr;
++    uint8_t event_id;
++    uint8_t data[0];
+ } __attribute__ ((packed));
+ 
+ struct GetElementAttributesReq {
+-	struct avrcp_header hdr;
+-	uint8_t element_id[8];
+-	uint8_t num_attr_ids;
+-	uint8_t data[0];
++    struct avrcp_header hdr;
++    uint8_t element_id[8];
++    uint8_t num_attr_ids;
++    uint8_t data[0];
+ } __attribute__ ((packed));
+ 
+ struct GetPlayStatusReq {
+-	struct avrcp_header hdr;
++    struct avrcp_header hdr;
+ };
+ 
+ struct GetPlayStatusResponse {
+-	struct avrcp_header hdr;
+-	uint8_t song_length[4];
+-	uint8_t song_pos[4];
+-	uint8_t status;
++    struct avrcp_header hdr;
++    uint8_t song_length[4];
++    uint8_t song_pos[4];
++    uint8_t status;
+ } __attribute__ ((packed));
+ 
+ 
+ struct control {
+-	struct audio_device *dev;
+-	struct avctp *session;
++    struct audio_device *dev;
++    struct avctp *session;
+ 
+-	gboolean in_call;
+-	gboolean target;
++    gboolean in_call;
++    gboolean target;
+ };
+ 
+ struct msg_reply_ctx {
+-	struct audio_device *dev;
+-	DBusMessage *msg;
++    struct audio_device *dev;
++    DBusMessage *msg;
+ };
+ 
+ static void set_uid(uint8_t* data, uint64_t value) {
+-	data[0] = value >> 56;
+-	data[1] = value >> 48;
+-	data[2] = value >> 40;
+-	data[3] = value >> 32;
+-	data[4] = value >> 24;
+-	data[5] = value >> 16;
+-	data[6] = value >> 8;
+-	data[7] = value;
++    data[0] = value >> 56;
++    data[1] = value >> 48;
++    data[2] = value >> 40;
++    data[3] = value >> 32;
++    data[4] = value >> 24;
++    data[5] = value >> 16;
++    data[6] = value >> 8;
++    data[7] = value;
+ }
+ 
+ static void set_24_bit_be(uint8_t* data, uint32_t value) {
+-	data[0] = value >> 16;
+-	data[1] = value >> 8;
+-	data[2] = value;
++    data[0] = value >> 16;
++    data[1] = value >> 8;
++    data[2] = value;
+ }
+ 
+ static void set_16_bit_be(uint8_t* data, uint16_t value) {
+-	data[0] = value >> 8;
+-	data[1] = value;
++    data[0] = value >> 8;
++    data[1] = value;
+ }
+ 
+ static uint32_t get_32_bit_be(uint8_t* data) {
+-	return (data[0] << 24) | (data[1] << 16) | (data[2] << 8) | data[3];
++    return (data[0] << 24) | (data[1] << 16) | (data[2] << 8) | data[3];
+ }
+ 
+ static uint32_t get_24_bit_be(uint8_t* data) {
+-	return (data[0] << 16) | (data[1] << 8) | data[2];
++    return (data[0] << 16) | (data[1] << 8) | data[2];
+ }
+ 
+ static uint16_t get_16_bit_be(uint8_t* data) {
+-	return (data[0] << 8) | data[1];
++    return (data[0] << 8) | data[1];
+ }
+ 
+ static void set_company_id(struct avrcp_header* hdr, uint32_t company_id) {
+-	set_24_bit_be(hdr->company_id, company_id);
++    set_24_bit_be(hdr->company_id, company_id);
+ }
+ 
+ static void set_param_len(struct avrcp_header* hdr, uint16_t param_len) {
+-	set_16_bit_be(hdr->params_len, param_len);
++    set_16_bit_be(hdr->params_len, param_len);
+ }
+ 
+ static uint32_t get_company_id(struct avrcp_header* hdr) {
+-	return get_24_bit_be(hdr->company_id);
++    return get_24_bit_be(hdr->company_id);
+ }
+ 
+ static uint16_t get_param_len(struct avrcp_header* hdr) {
+-	return get_16_bit_be(hdr->params_len);
++    return get_16_bit_be(hdr->params_len);
+ }
+ 
+ static struct msg_reply_ctx* create_reply_ctx(struct audio_device *dev, DBusMessage *msg) {
+-	struct msg_reply_ctx* reply = g_new0(struct msg_reply_ctx, 1);
+-	if (reply) {
+-		reply->dev = dev;
+-		reply->msg = msg;
+-		if (msg)
+-			dbus_message_ref(msg);
+-	}
+-	return reply;
++    struct msg_reply_ctx* reply = g_new0(struct msg_reply_ctx, 1);
++    if (reply) {
++        reply->dev = dev;
++        reply->msg = msg;
++        if (msg)
++            dbus_message_ref(msg);
++    }
++    return reply;
+ }
+ 
+ static void free_reply_ctx(struct msg_reply_ctx* ctx) {
+-	if (NULL != ctx) {
+-		if (NULL != ctx->msg)
+-			dbus_message_unref(ctx->msg);
+-		g_free(ctx);
+-	}
++    if (NULL != ctx) {
++        if (NULL != ctx->msg)
++            dbus_message_unref(ctx->msg);
++        g_free(ctx);
++    }
+ }
+ 
+ static void state_changed(struct audio_device *dev, avctp_state_t old_state,
+-				avctp_state_t new_state, void *user_data)
++                avctp_state_t new_state, void *user_data)
+ {
+-	struct control *control = dev->control;
+-	gboolean value;
++    struct control *control = dev->control;
++    gboolean value;
+ 
+-	switch (new_state) {
+-	case AVCTP_STATE_DISCONNECTED:
+-		if (0 != notify_cb_id && control->session) {
+-			avctp_remove_session_cb(control->session, notify_cb_id);
+-			notify_cb_id = 0;
+-		}
+-		control->session = NULL;
+-		control->in_call = 0;
+-
+-		if (old_state != AVCTP_STATE_CONNECTED)
+-			break;
+-
+-		value = FALSE;
+-		g_dbus_emit_signal(dev->conn, dev->path,
+-					AUDIO_CONTROL_INTERFACE,
+-					"Disconnected", DBUS_TYPE_INVALID);
+-		emit_property_changed(dev->conn, dev->path,
+-					AUDIO_CONTROL_INTERFACE, "Connected",
+-					DBUS_TYPE_BOOLEAN, &value);
+-
+-		break;
+-	case AVCTP_STATE_CONNECTING:
+-		if (control->session)
+-			break;
+-
+-		control->session = avctp_get(&dev->src, &dev->dst);
+-
+-		break;
+-	case AVCTP_STATE_CONNECTED:
+-		value = TRUE;
+-		g_dbus_emit_signal(dev->conn, dev->path,
+-				AUDIO_CONTROL_INTERFACE, "Connected",
+-				DBUS_TYPE_INVALID);
+-		emit_property_changed(dev->conn, dev->path,
+-				AUDIO_CONTROL_INTERFACE, "Connected",
+-				DBUS_TYPE_BOOLEAN, &value);
+-		break;
+-	default:
+-		return;
+-	}
++    switch (new_state) {
++    case AVCTP_STATE_DISCONNECTED:
++        if (0 != notify_cb_id && control->session) {
++            avctp_remove_session_cb(control->session, notify_cb_id);
++            notify_cb_id = 0;
++        }
++        control->session = NULL;
++        control->in_call = 0;
++
++        if (old_state != AVCTP_STATE_CONNECTED)
++            break;
++
++        value = FALSE;
++        g_dbus_emit_signal(dev->conn, dev->path,
++                    AUDIO_CONTROL_INTERFACE,
++                    "Disconnected", DBUS_TYPE_INVALID);
++        emit_property_changed(dev->conn, dev->path,
++                    AUDIO_CONTROL_INTERFACE, "Connected",
++                    DBUS_TYPE_BOOLEAN, &value);
++
++        break;
++    case AVCTP_STATE_CONNECTING:
++        if (control->session)
++            break;
++
++        control->session = avctp_get(&dev->src, &dev->dst);
++
++        break;
++    case AVCTP_STATE_CONNECTED:
++        value = TRUE;
++        g_dbus_emit_signal(dev->conn, dev->path,
++                AUDIO_CONTROL_INTERFACE, "Connected",
++                DBUS_TYPE_INVALID);
++        emit_property_changed(dev->conn, dev->path,
++                AUDIO_CONTROL_INTERFACE, "Connected",
++                DBUS_TYPE_BOOLEAN, &value);
++        break;
++    default:
++        return;
++    }
+ }
+ 
+ static DBusMessage *control_is_connected(DBusConnection *conn,
+-						DBusMessage *msg,
+-						void *data)
++                        DBusMessage *msg,
++                        void *data)
+ {
+-	struct audio_device *device = data;
+-	struct control *control = device->control;
+-	DBusMessage *reply;
+-	dbus_bool_t connected;
++    struct audio_device *device = data;
++    struct control *control = device->control;
++    DBusMessage *reply;
++    dbus_bool_t connected;
+ 
+-	reply = dbus_message_new_method_return(msg);
+-	if (!reply)
+-		return NULL;
++    reply = dbus_message_new_method_return(msg);
++    if (!reply)
++        return NULL;
+ 
+-	connected = (control->session != NULL);
++    connected = (control->session != NULL);
+ 
+-	dbus_message_append_args(reply, DBUS_TYPE_BOOLEAN, &connected,
+-					DBUS_TYPE_INVALID);
++    dbus_message_append_args(reply, DBUS_TYPE_BOOLEAN, &connected,
++                    DBUS_TYPE_INVALID);
+ 
+-	return reply;
++    return reply;
+ }
+ 
+ static DBusMessage *volume_up(DBusConnection *conn, DBusMessage *msg,
+-								void *data)
++                                void *data)
+ {
+-	struct audio_device *device = data;
+-	struct control *control = device->control;
+-	int err;
++    struct audio_device *device = data;
++    struct control *control = device->control;
++    int err;
+ 
+-	if (!control->session)
+-		return btd_error_not_connected(msg);
++    if (!control->session)
++        return btd_error_not_connected(msg);
+ 
+-	if (!control->target)
+-		return btd_error_not_supported(msg);
++    if (!control->target)
++        return btd_error_not_supported(msg);
+ 
+-	err = avctp_send_passthrough(control->session, VOL_UP_OP);
+-	if (err < 0)
+-		return btd_error_failed(msg, strerror(-err));
++    err = avctp_send_passthrough(control->session, VOL_UP_OP);
++    if (err < 0)
++        return btd_error_failed(msg, strerror(-err));
+ 
+-	return dbus_message_new_method_return(msg);
++    return dbus_message_new_method_return(msg);
+ }
+ 
+ static DBusMessage *send_button(DBusConnection *conn, DBusMessage *msg,
+-								void *data)
++                                void *data)
+ {
+-	struct audio_device *device = data;
+-	struct control *control = device->control;
+-	int err;
++    struct audio_device *device = data;
++    struct control *control = device->control;
++    int err;
+ 
+-	if (!control->session)
+-		return btd_error_not_connected(msg);
++    if (!control->session) {
++        DBG("send_button: control->session is NULL");
++        return btd_error_not_connected(msg);
++    }
+ 
+-	if (!control->target)
+-		return btd_error_not_supported(msg);
++    uint32_t button_code;
+ 
+-	uint32_t button_code;
++    if (!dbus_message_get_args(msg, NULL, DBUS_TYPE_BYTE, &button_code,
++                            DBUS_TYPE_INVALID))
++        return btd_error_invalid_args(msg);
+ 
+-	if (!dbus_message_get_args(msg, NULL, DBUS_TYPE_BYTE, &button_code,
+-							DBUS_TYPE_INVALID))
+-		return btd_error_invalid_args(msg);
++    err = avctp_send_passthrough(control->session, button_code);
++    if (err < 0)
++        return btd_error_failed(msg, strerror(-err));
+ 
+-	err = avctp_send_passthrough(control->session, button_code);
+-	if (err < 0)
+-		return btd_error_failed(msg, strerror(-err));
+-
+-	return dbus_message_new_method_return(msg);
++    return dbus_message_new_method_return(msg);
+ }
+ 
+ static DBusMessage *volume_down(DBusConnection *conn, DBusMessage *msg,
+-								void *data)
++                                void *data)
+ {
+-	struct audio_device *device = data;
+-	struct control *control = device->control;
+-	int err;
++    struct audio_device *device = data;
++    struct control *control = device->control;
++    int err;
+ 
+-	if (!control->session)
+-		return btd_error_not_connected(msg);
++    if (!control->session)
++        return btd_error_not_connected(msg);
+ 
+-	if (!control->target)
+-		return btd_error_not_supported(msg);
++    if (!control->target)
++        return btd_error_not_supported(msg);
+ 
+-	err = avctp_send_passthrough(control->session, VOL_DOWN_OP);
+-	if (err < 0)
+-		return btd_error_failed(msg, strerror(-err));
++    err = avctp_send_passthrough(control->session, VOL_DOWN_OP);
++    if (err < 0)
++        return btd_error_failed(msg, strerror(-err));
+ 
+-	return dbus_message_new_method_return(msg);
++    return dbus_message_new_method_return(msg);
+ }
+ 
+ static gboolean get_capabilities_cb (struct avctp *session, uint8_t code,
+-					uint8_t subunit, uint8_t *operands,
+-					size_t operand_count, void *user_data) {
+-	int idx;
+-	struct msg_reply_ctx* ctx = (struct msg_reply_ctx*)user_data;
+-	struct GetCapabilitiesResponse* response;
+-	DBusMessage *reply;
+-
+-	ctx->dev->control->in_call = 0;
+-
+-	if (code != AVC_CTYPE_STABLE) {
+-		reply = btd_error_not_supported(ctx->msg);
+-		g_dbus_send_message(ctx->dev->conn, reply);
+-		goto exit;
+-	}
+-
+-	if (operand_count < sizeof(struct GetCapabilitiesResponse)) {
+-		reply = btd_error_failed(ctx->msg, "Invalid response.");
+-		g_dbus_send_message(ctx->dev->conn, reply);
+-		goto exit;
+-	}
+-	response = (struct GetCapabilitiesResponse*)operands;
+-	if (response->hdr.pdu_id != GET_CAPABILITIES_PUD ||
+-		(response->capability_id != COMPANIES_CAPABILITY_ID &&
+-		 response->capability_id != EVENTS_CAPABILITY_ID)) {
+-		reply = btd_error_failed(ctx->msg, "Invalid response.");
+-		g_dbus_send_message(ctx->dev->conn, reply);
+-		goto exit;
+-	}
+-	int operand_size = (response->capability_id == COMPANIES_CAPABILITY_ID) ? 3 : 1;
+-
+-	if (operand_count < sizeof(struct GetCapabilitiesResponse) +
+-			operand_size * response->capability_cnt) {
+-		reply = btd_error_failed(ctx->msg, "Invalid response.");
+-		g_dbus_send_message(ctx->dev->conn, reply);
+-		goto exit;
+-	}
+-
+-	reply = dbus_message_new_method_return(ctx->msg);
+-	if (reply) {
+-		DBusMessageIter args;
+-		DBusMessageIter array;
+-		dbus_message_iter_init_append(reply, &args);
+-
+-		dbus_message_iter_open_container(&args, DBUS_TYPE_ARRAY,
+-				(operand_size == 3) ? DBUS_TYPE_UINT32_AS_STRING : DBUS_TYPE_BYTE_AS_STRING,
+-				&array);
+-
+-		for (idx = 0; idx < response->capability_cnt; ++idx) {
+-			if (operand_size == 3) {
+-				uint32_t value = get_24_bit_be(&response->data[idx * 3]);
+-				dbus_message_iter_append_basic(&array, DBUS_TYPE_UINT32, &value);
+-			} else {
+-				dbus_message_iter_append_basic(&array, DBUS_TYPE_BYTE, &response->data[idx]);
+-			}
+-		}
+-		dbus_message_iter_close_container(&args, &array);
+-		g_dbus_send_message(ctx->dev->conn, reply);
+-	}
++                    uint8_t subunit, uint8_t *operands,
++                    size_t operand_count, void *user_data) {
++    int idx;
++    struct msg_reply_ctx* ctx = (struct msg_reply_ctx*)user_data;
++    struct GetCapabilitiesResponse* response;
++    DBusMessage *reply;
++
++    ctx->dev->control->in_call = 0;
++
++    if (code != AVC_CTYPE_STABLE) {
++        reply = btd_error_not_supported(ctx->msg);
++        g_dbus_send_message(ctx->dev->conn, reply);
++        goto exit;
++    }
++
++    if (operand_count < sizeof(struct GetCapabilitiesResponse)) {
++        reply = btd_error_failed(ctx->msg, "Invalid response.");
++        g_dbus_send_message(ctx->dev->conn, reply);
++        goto exit;
++    }
++    response = (struct GetCapabilitiesResponse*)operands;
++    if (response->hdr.pdu_id != GET_CAPABILITIES_PUD ||
++        (response->capability_id != COMPANIES_CAPABILITY_ID &&
++         response->capability_id != EVENTS_CAPABILITY_ID)) {
++        reply = btd_error_failed(ctx->msg, "Invalid response.");
++        g_dbus_send_message(ctx->dev->conn, reply);
++        goto exit;
++    }
++    int operand_size = (response->capability_id == COMPANIES_CAPABILITY_ID) ? 3 : 1;
++
++    if (operand_count < sizeof(struct GetCapabilitiesResponse) +
++            operand_size * response->capability_cnt) {
++        reply = btd_error_failed(ctx->msg, "Invalid response.");
++        g_dbus_send_message(ctx->dev->conn, reply);
++        goto exit;
++    }
++
++    reply = dbus_message_new_method_return(ctx->msg);
++    if (reply) {
++        DBusMessageIter args;
++        DBusMessageIter array;
++        dbus_message_iter_init_append(reply, &args);
++
++        dbus_message_iter_open_container(&args, DBUS_TYPE_ARRAY,
++                (operand_size == 3) ? DBUS_TYPE_UINT32_AS_STRING : DBUS_TYPE_BYTE_AS_STRING,
++                &array);
++
++        for (idx = 0; idx < response->capability_cnt; ++idx) {
++            if (operand_size == 3) {
++                uint32_t value = get_24_bit_be(&response->data[idx * 3]);
++                dbus_message_iter_append_basic(&array, DBUS_TYPE_UINT32, &value);
++            } else {
++                dbus_message_iter_append_basic(&array, DBUS_TYPE_BYTE, &response->data[idx]);
++            }
++        }
++        dbus_message_iter_close_container(&args, &array);
++        g_dbus_send_message(ctx->dev->conn, reply);
++    }
+ exit:
+-	free_reply_ctx(ctx);
+-	return 0;  // remove the handler from the list
++    free_reply_ctx(ctx);
++    return 0;  // remove the handler from the list
+ }
+ 
+ static DBusMessage *get_notification_capabilities(DBusConnection *conn, DBusMessage *msg,
+-								void *data)
++                                void *data)
+ {
+-	struct audio_device *device = data;
+-	struct control *control = device->control;
+-	static struct GetCapabilitiesReq request= {0};
+-	struct msg_reply_ctx* ctx;
+-	int err;
+-
+-	if (!control->session)
+-		return btd_error_not_connected(msg);
+-
+-	if (!control->target)
+-		return btd_error_not_supported(msg);
+-
+-	if (control->in_call) {
+-		return btd_error_busy(msg);
+-	}
+-
+-	ctx = create_reply_ctx(device, msg);
+-	if (NULL == ctx)
+-		return btd_error_failed(msg, "Out of memory.");
+-
+-	control->in_call = 1;
+-	set_company_id(&request.hdr, METADATA_COMAPNY_ID);
+-	request.hdr.packet_type = 0;
+-	request.hdr.pdu_id = GET_CAPABILITIES_PUD;
+-	set_param_len(&request.hdr, sizeof(request) - sizeof(request.hdr));
+-	request.capability_id = EVENTS_CAPABILITY_ID;
+-	avctp_send_vendordep_req(control->session, AVC_CTYPE_STATUS,
+-			PANNEL_SUBUNIT_ID, (uint8_t*)&request, sizeof(request),
+-			get_capabilities_cb, ctx);
++    struct audio_device *device = data;
++    struct control *control = device->control;
++    static struct GetCapabilitiesReq request= {0};
++    struct msg_reply_ctx* ctx;
++    int err;
++
++    if (!control->session)
++        return btd_error_not_connected(msg);
++
++    if (control->in_call) {
++        return btd_error_busy(msg);
++    }
++
++    ctx = create_reply_ctx(device, msg);
++    if (NULL == ctx)
++        return btd_error_failed(msg, "Out of memory.");
++
++    control->in_call = 1;
++    set_company_id(&request.hdr, METADATA_COMAPNY_ID);
++    request.hdr.packet_type = 0;
++    request.hdr.pdu_id = GET_CAPABILITIES_PUD;
++    set_param_len(&request.hdr, sizeof(request) - sizeof(request.hdr));
++    request.capability_id = EVENTS_CAPABILITY_ID;
++    avctp_send_vendordep_req(control->session, AVC_CTYPE_STATUS,
++            PANNEL_SUBUNIT_ID, (uint8_t*)&request, sizeof(request),
++            get_capabilities_cb, ctx);
+ 
+-	return NULL;
++    return NULL;
+ }
+ 
+ static gboolean get_play_status_cb (struct avctp *session, uint8_t code,
+-					uint8_t subunit, uint8_t *operands,
+-					size_t operand_count, void *user_data) {
+-	int idx;
+-	struct msg_reply_ctx* ctx = (struct msg_reply_ctx*)user_data;
+-	struct GetPlayStatusResponse* response;
+-	DBusMessage *reply;
+-
+-	ctx->dev->control->in_call = 0;
+-
+-	if (code != AVC_CTYPE_STABLE) {
+-		reply = btd_error_not_supported(ctx->msg);
+-		g_dbus_send_message(ctx->dev->conn, reply);
+-		goto exit;
+-	}
+-	if (operand_count < sizeof(struct GetPlayStatusResponse)) {
+-		reply = btd_error_failed(ctx->msg, "Invalid response - too short");
+-		g_dbus_send_message(ctx->dev->conn, reply);
+-		goto exit;
+-	}
+-	response = (struct GetPlayStatusResponse*)operands;
+-	if (response->hdr.pdu_id != GET_PLAYSTATUS_PUD) {
+-		reply = btd_error_failed(ctx->msg, "Invalid response - invalid PUD");
+-		g_dbus_send_message(ctx->dev->conn, reply);
+-		goto exit;
+-	}
+-
+-	reply = dbus_message_new_method_return(ctx->msg);
+-	if (reply) {
+-		DBusMessageIter args;
+-		DBusMessageIter dict;
+-		uint32_t value;
+-		dbus_message_iter_init_append(reply, &args);
+-		dbus_message_iter_open_container(&args, DBUS_TYPE_ARRAY,
+-				DBUS_DICT_ENTRY_BEGIN_CHAR_AS_STRING
+-				DBUS_TYPE_STRING_AS_STRING DBUS_TYPE_VARIANT_AS_STRING
+-				DBUS_DICT_ENTRY_END_CHAR_AS_STRING, &dict);
+-
+-		value = get_32_bit_be(response->song_length);
+-		dict_append_entry(&dict, "SongLength", DBUS_TYPE_UINT32, &value);
+-		value = get_32_bit_be(response->song_pos);
+-		dict_append_entry(&dict, "SongPos", DBUS_TYPE_UINT32, &value);
+-		dict_append_entry(&dict, "Status", DBUS_TYPE_BYTE, &response->status);
+-
+-		dbus_message_iter_close_container(&args, &dict);
+-		g_dbus_send_message(ctx->dev->conn, reply);
+-	}
++                    uint8_t subunit, uint8_t *operands,
++                    size_t operand_count, void *user_data) {
++    int idx;
++    struct msg_reply_ctx* ctx = (struct msg_reply_ctx*)user_data;
++    struct GetPlayStatusResponse* response;
++    DBusMessage *reply;
++
++    ctx->dev->control->in_call = 0;
++
++    if (code != AVC_CTYPE_STABLE) {
++        reply = btd_error_not_supported(ctx->msg);
++        g_dbus_send_message(ctx->dev->conn, reply);
++        goto exit;
++    }
++    if (operand_count < sizeof(struct GetPlayStatusResponse)) {
++        reply = btd_error_failed(ctx->msg, "Invalid response - too short");
++        g_dbus_send_message(ctx->dev->conn, reply);
++        goto exit;
++    }
++    response = (struct GetPlayStatusResponse*)operands;
++    if (response->hdr.pdu_id != GET_PLAYSTATUS_PUD) {
++        reply = btd_error_failed(ctx->msg, "Invalid response - invalid PUD");
++        g_dbus_send_message(ctx->dev->conn, reply);
++        goto exit;
++    }
++
++    reply = dbus_message_new_method_return(ctx->msg);
++    if (reply) {
++        DBusMessageIter args;
++        DBusMessageIter dict;
++        uint32_t value;
++        dbus_message_iter_init_append(reply, &args);
++        dbus_message_iter_open_container(&args, DBUS_TYPE_ARRAY,
++                DBUS_DICT_ENTRY_BEGIN_CHAR_AS_STRING
++                DBUS_TYPE_STRING_AS_STRING DBUS_TYPE_VARIANT_AS_STRING
++                DBUS_DICT_ENTRY_END_CHAR_AS_STRING, &dict);
++
++        value = get_32_bit_be(response->song_length);
++        dict_append_entry(&dict, "SongLength", DBUS_TYPE_UINT32, &value);
++        value = get_32_bit_be(response->song_pos);
++        dict_append_entry(&dict, "SongPos", DBUS_TYPE_UINT32, &value);
++        dict_append_entry(&dict, "Status", DBUS_TYPE_BYTE, &response->status);
++
++        dbus_message_iter_close_container(&args, &dict);
++        g_dbus_send_message(ctx->dev->conn, reply);
++    }
+ exit:
+-	free_reply_ctx(ctx);
+-	return 0;  // remove the handler from the list
++    free_reply_ctx(ctx);
++    return 0;  // remove the handler from the list
+ }
+ 
+ static DBusMessage *get_play_status(DBusConnection *conn, DBusMessage *msg,
+-								void *data)
++                                void *data)
+ {
+-	struct audio_device *device = data;
+-	struct control *control = device->control;
+-	static struct GetPlayStatusReq request= {0};
+-	struct msg_reply_ctx* ctx;
+-	int err;
+-
+-	if (!control->session)
+-		return btd_error_not_connected(msg);
+-
+-	if (!control->target)
+-		return btd_error_not_supported(msg);
+-
+-	if (control->in_call) {
+-		return btd_error_busy(msg);
+-	}
+-
+-	ctx = create_reply_ctx(device, msg);
+-	if (NULL == ctx)
+-		return btd_error_failed(msg, "Out of memory.");
+-
+-	control->in_call = 1;
+-	set_company_id(&request.hdr, METADATA_COMAPNY_ID);
+-	request.hdr.packet_type = 0;
+-	request.hdr.pdu_id = GET_PLAYSTATUS_PUD;
+-	set_param_len(&request.hdr, sizeof(request) - sizeof(request.hdr));
+-	avctp_send_vendordep_req(control->session, AVC_CTYPE_STATUS,
+-			PANNEL_SUBUNIT_ID, (uint8_t*)&request, sizeof(request),
+-			get_play_status_cb, ctx);
++    struct audio_device *device = data;
++    struct control *control = device->control;
++    static struct GetPlayStatusReq request= {0};
++    struct msg_reply_ctx* ctx;
++    int err;
++
++    if (!control->session)
++        return btd_error_not_connected(msg);
++
++    if (control->in_call) {
++        return btd_error_busy(msg);
++    }
++
++    ctx = create_reply_ctx(device, msg);
++    if (NULL == ctx)
++        return btd_error_failed(msg, "Out of memory.");
++
++    control->in_call = 1;
++    set_company_id(&request.hdr, METADATA_COMAPNY_ID);
++    request.hdr.packet_type = 0;
++    request.hdr.pdu_id = GET_PLAYSTATUS_PUD;
++    set_param_len(&request.hdr, sizeof(request) - sizeof(request.hdr));
++    avctp_send_vendordep_req(control->session, AVC_CTYPE_STATUS,
++            PANNEL_SUBUNIT_ID, (uint8_t*)&request, sizeof(request),
++            get_play_status_cb, ctx);
+ 
+-	return NULL;
++    return NULL;
+ }
+ 
+ static DBusMessage *control_get_properties(DBusConnection *conn,
+-					DBusMessage *msg, void *data)
++                    DBusMessage *msg, void *data)
+ {
+-	struct audio_device *device = data;
+-	DBusMessage *reply;
+-	DBusMessageIter iter;
+-	DBusMessageIter dict;
+-	gboolean value;
++    struct audio_device *device = data;
++    DBusMessage *reply;
++    DBusMessageIter iter;
++    DBusMessageIter dict;
++    gboolean value;
+ 
+-	reply = dbus_message_new_method_return(msg);
+-	if (!reply)
+-		return NULL;
++    reply = dbus_message_new_method_return(msg);
++    if (!reply)
++        return NULL;
+ 
+-	dbus_message_iter_init_append(reply, &iter);
++    dbus_message_iter_init_append(reply, &iter);
+ 
+-	dbus_message_iter_open_container(&iter, DBUS_TYPE_ARRAY,
+-			DBUS_DICT_ENTRY_BEGIN_CHAR_AS_STRING
+-			DBUS_TYPE_STRING_AS_STRING DBUS_TYPE_VARIANT_AS_STRING
+-			DBUS_DICT_ENTRY_END_CHAR_AS_STRING, &dict);
++    dbus_message_iter_open_container(&iter, DBUS_TYPE_ARRAY,
++            DBUS_DICT_ENTRY_BEGIN_CHAR_AS_STRING
++            DBUS_TYPE_STRING_AS_STRING DBUS_TYPE_VARIANT_AS_STRING
++            DBUS_DICT_ENTRY_END_CHAR_AS_STRING, &dict);
+ 
+-	/* Connected */
+-	value = (device->control->session != NULL);
+-	dict_append_entry(&dict, "Connected", DBUS_TYPE_BOOLEAN, &value);
++    /* Connected */
++    value = (device->control->session != NULL);
++    dict_append_entry(&dict, "Connected", DBUS_TYPE_BOOLEAN, &value);
+ 
+-	dbus_message_iter_close_container(&iter, &dict);
++    dbus_message_iter_close_container(&iter, &dict);
+ 
+-	return reply;
++    return reply;
+ }
+ 
+ static const GDBusMethodTable control_methods[] = {
+-	{ GDBUS_DEPRECATED_METHOD("IsConnected",
+-				NULL, GDBUS_ARGS({ "connected", "b" }),
+-				control_is_connected) },
+-	{ GDBUS_METHOD("GetProperties",
+-				NULL, GDBUS_ARGS({ "properties", "a{sv}" }),
+-				control_get_properties) },
+-	{ GDBUS_METHOD("VolumeUp", NULL, NULL, volume_up) },
+-	{ GDBUS_METHOD("VolumeDown", NULL, NULL, volume_down) },
+-	{ GDBUS_METHOD("SendButton",
+-			GDBUS_ARGS({ "button", "y" }), NULL, send_button) },
+-	{ GDBUS_ASYNC_METHOD("GetEventCapabilities", NULL,
+-			GDBUS_ARGS({ "capabilities", "au" }), get_notification_capabilities) },
+-	{ GDBUS_ASYNC_METHOD("GetPlayStatus", NULL,
+-			GDBUS_ARGS({ "status", "a{sv}" }), get_play_status) },
+-	{ }
++    { GDBUS_DEPRECATED_METHOD("IsConnected",
++                NULL, GDBUS_ARGS({ "connected", "b" }),
++                control_is_connected) },
++    { GDBUS_METHOD("GetProperties",
++                NULL, GDBUS_ARGS({ "properties", "a{sv}" }),
++                control_get_properties) },
++    { GDBUS_METHOD("VolumeUp", NULL, NULL, volume_up) },
++    { GDBUS_METHOD("VolumeDown", NULL, NULL, volume_down) },
++    { GDBUS_METHOD("SendButton",
++            GDBUS_ARGS({ "button", "y" }), NULL, send_button) },
++    { GDBUS_ASYNC_METHOD("GetEventCapabilities", NULL,
++            GDBUS_ARGS({ "capabilities", "au" }), get_notification_capabilities) },
++    { GDBUS_ASYNC_METHOD("GetPlayStatus", NULL,
++            GDBUS_ARGS({ "status", "a{sv}" }), get_play_status) },
++    { }
+ };
+ 
+ static const GDBusSignalTable control_signals[] = {
+-	{ GDBUS_DEPRECATED_SIGNAL("Connected", NULL) },
+-	{ GDBUS_DEPRECATED_SIGNAL("Disconnected", NULL) },
+-	{ GDBUS_SIGNAL("PropertyChanged",
+-			GDBUS_ARGS({ "name", "s" }, { "value", "v" })) },
+-	{ GDBUS_SIGNAL("EventNotification",
+-					GDBUS_ARGS({ "id", "u" }, { "data", "au" })) },
+-	{ }
++    { GDBUS_DEPRECATED_SIGNAL("Connected", NULL) },
++    { GDBUS_DEPRECATED_SIGNAL("Disconnected", NULL) },
++    { GDBUS_SIGNAL("PropertyChanged",
++            GDBUS_ARGS({ "name", "s" }, { "value", "v" })) },
++    { GDBUS_SIGNAL("EventNotification",
++                    GDBUS_ARGS({ "id", "u" }, { "data", "au" })) },
++    { }
+ };
+ 
+ static void path_unregister(void *data)
+ {
+-	struct audio_device *dev = data;
+-	struct control *control = dev->control;
++    struct audio_device *dev = data;
++    struct control *control = dev->control;
+ 
+-	DBG("Unregistered interface %s on path %s",
+-		AUDIO_CONTROL_INTERFACE, dev->path);
++    DBG("Unregistered interface %s on path %s",
++        AUDIO_CONTROL_INTERFACE, dev->path);
+ 
+-	if (control->session)
+-		avctp_disconnect(control->session);
++    if (control->session)
++        avctp_disconnect(control->session);
+ 
+-	g_free(control);
+-	dev->control = NULL;
++    g_free(control);
++    dev->control = NULL;
+ }
+ 
+ void control_unregister(struct audio_device *dev)
+ {
+-	g_dbus_unregister_interface(dev->conn, dev->path,
+-						AUDIO_CONTROL_INTERFACE);
++    g_dbus_unregister_interface(dev->conn, dev->path,
++                        AUDIO_CONTROL_INTERFACE);
+ }
+ 
+ void control_update(struct control *control, uint16_t uuid16)
+ {
+-	if (uuid16 == AV_REMOTE_TARGET_SVCLASS_ID)
+-		control->target = TRUE;
++    if (uuid16 == AV_REMOTE_TARGET_SVCLASS_ID)
++        control->target = TRUE;
+ }
+ 
+ struct control *control_init(struct audio_device *dev, uint16_t uuid16)
+ {
+-	struct control *control;
++    struct control *control;
+ 
+-	if (!g_dbus_register_interface(dev->conn, dev->path,
+-					AUDIO_CONTROL_INTERFACE,
+-					control_methods, control_signals, NULL,
+-					dev, path_unregister))
+-		return NULL;
++    if (!g_dbus_register_interface(dev->conn, dev->path,
++                    AUDIO_CONTROL_INTERFACE,
++                    control_methods, control_signals, NULL,
++                    dev, path_unregister))
++        return NULL;
+ 
+-	DBG("Registered interface %s on path %s",
+-		AUDIO_CONTROL_INTERFACE, dev->path);
++    DBG("Registered interface %s on path %s",
++        AUDIO_CONTROL_INTERFACE, dev->path);
+ 
+-	control = g_new0(struct control, 1);
+-	control->dev = dev;
+-	control->in_call = 0;
++    control = g_new0(struct control, 1);
++    control->dev = dev;
++    control->in_call = 0;
+ 
+-	control_update(control, uuid16);
++    control_update(control, uuid16);
+ 
+-	if (!avctp_id)
+-		avctp_id = avctp_add_state_cb(state_changed, NULL);
++    if (!avctp_id)
++        avctp_id = avctp_add_state_cb(state_changed, NULL);
+ 
+-	return control;
++    return control;
+ }
+ 
+ gboolean control_is_active(struct audio_device *dev)
+ {
+-	struct control *control = dev->control;
++    struct control *control = dev->control;
+ 
+-	if (control && control->session)
+-		return TRUE;
++    if (control && control->session)
++        return TRUE;
+ 
+-	return FALSE;
++    return FALSE;
+ }
