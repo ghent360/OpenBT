@@ -71,3 +71,5 @@ hdmi_ignore_cec_init=1
 ################################################################################
 [all]
 include distroconfig.txt
+
+device_tree_overlay=overlays/rpi-dac-overlay.dtb

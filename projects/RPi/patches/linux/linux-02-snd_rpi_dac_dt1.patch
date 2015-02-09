@@ -1,0 +1,96 @@
+unchanged:
+--- linux-3.18.6/arch/arm/boot/dts/Makefile	2015-02-08 19:09:35.506696847 -0800
++++ ../linux-3.18.6/arch/arm/boot/dts/Makefile	2015-02-08 16:57:22.959361468 -0800
+@@ -68,6 +68,7 @@ dtb-$(RPI_DT_OVERLAYS) += ds1307-rtc-ove
+ dtb-$(RPI_DT_OVERLAYS) += hifiberry-dac-overlay.dtb
+ dtb-$(RPI_DT_OVERLAYS) += hifiberry-dacplus-overlay.dtb
+ dtb-$(RPI_DT_OVERLAYS) += hifiberry-digi-overlay.dtb
++dtb-$(RPI_DT_OVERLAYS) += rpi-dac-overlay.dtb
+ dtb-$(RPI_DT_OVERLAYS) += hifiberry-amp-overlay.dtb
+ dtb-$(RPI_DT_OVERLAYS) += iqaudio-dac-overlay.dtb
+ dtb-$(RPI_DT_OVERLAYS) += iqaudio-dacplus-overlay.dtb
+unchanged:
+--- linux-3.18.6/arch/arm/boot/dts/rpi-dac-overlay.dts	1969-12-31 16:00:00.000000000 -0800
++++ ../linux-3.18.6/arch/arm/boot/dts/rpi-dac-overlay.dts	2015-02-08 16:57:35.623424266 -0800
+@@ -0,0 +1,34 @@
++/dts-v1/;
++/plugin/;
++
++/ {
++	compatible = "brcm,bcm2708";
++
++	fragment@0 {
++		target = <&sound>;
++		__overlay__ {
++			compatible = "rpidac,rpi-dac";
++			i2s-controller = <&i2s>;
++			status = "okay";
++		};
++	};
++
++	fragment@1 {
++		target = <&i2s>;
++		__overlay__ {
++			status = "okay";
++		};
++	};
++
++	fragment@2 {
++		target-path = "/";
++		__overlay__ {
++			pcm1794a-codec {
++				#sound-dai-cells = <0x0>;
++				compatible = "ti,pcm1794a";
++				status = "okay";
++			};
++		};
++	};
++};
++
+only in patch2:
+unchanged:
+--- linux-3.18.6/sound/soc/bcm/rpi-dac.c	2015-02-08 19:09:35.434696489 -0800
++++ ../linux-3.18.6/sound/soc/bcm/rpi-dac.c	2015-02-08 19:13:18.571802967 -0800
+@@ -69,8 +69,23 @@ static int snd_rpi_rpi_dac_probe(struct
+ 	int ret = 0;
+ 
+ 	snd_rpi_rpi_dac.dev = &pdev->dev;
++
++        if (pdev->dev.of_node) {
++            struct device_node *i2s_node;
++            struct snd_soc_dai_link *dai = &snd_rpi_rpi_dac_dai[0];
++            i2s_node = of_parse_phandle(pdev->dev.of_node,
++                                        "i2s-controller", 0);
++
++            if (i2s_node) {
++                dai->cpu_dai_name = NULL;
++                dai->cpu_of_node = i2s_node;
++                dai->platform_name = NULL;
++                dai->platform_of_node = i2s_node;
++            }
++        }
++
+ 	ret = snd_soc_register_card(&snd_rpi_rpi_dac);
+-	if (ret)
++	if (ret) 
+ 		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n", ret);
+ 
+ 	return ret;
+@@ -81,10 +96,17 @@ static int snd_rpi_rpi_dac_remove(struct
+ 	return snd_soc_unregister_card(&snd_rpi_rpi_dac);
+ }
+ 
++static const struct of_device_id snd_rpi_dac_of_match[] = {
++        { .compatible = "rpidac,rpi-dac", },
++        {},
++};
++MODULE_DEVICE_TABLE(of, snd_rpi_dac_of_match);
++
+ static struct platform_driver snd_rpi_rpi_dac_driver = {
+         .driver = {
+                 .name   = "snd-rpi-dac",
+                 .owner  = THIS_MODULE,
++                .of_match_table = snd_rpi_dac_of_match,
+         },
+         .probe          = snd_rpi_rpi_dac_probe,
+         .remove         = snd_rpi_rpi_dac_remove,
