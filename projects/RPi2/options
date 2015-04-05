@@ -57,7 +57,7 @@
 
   # Kernel to use. values can be:
   # default:  default mainline kernel
-    LINUX="default"
+    LINUX="3.19"
 
   # NOOBS supported hex versions
     NOOBS_HEX="1040,1041"
@@ -137,18 +137,6 @@
 
   # build with installer (yes / no)
     INSTALLER_SUPPORT="no"
-
-  # build and install 'RSXS' Screensaver (yes / no)
-    KODI_SCR_RSXS="no"
-
-  # build and install 'ProjectM' Visualization (yes / no)
-    KODI_VIS_PROJECTM="no"
-
-  # build and install 'GOOM' Visualization (yes / no)
-    KODI_VIS_GOOM="no"
-
-  # build and install 'FishBMC' Visualization (yes / no)
-    KODI_VIS_FISHBMC="no"
 
   # kernel image name
     KERNEL_NAME="kernel.img"
