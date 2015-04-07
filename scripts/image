@@ -150,8 +150,10 @@ $SCRIPTS/install linux-firmware
 $SCRIPTS/install $BOOTLOADER
 $SCRIPTS/install busybox
 $SCRIPTS/install util-linux
-$SCRIPTS/install corefonts
 $SCRIPTS/install network
+
+# Fonts
+  [ ! "$FONTS_SUPPORT" = "no" ] && $SCRIPTS/install corefonts
 
 # Graphic support
 [ ! "$DISPLAYSERVER" = "no" ] && $SCRIPTS/install $DISPLAYSERVER

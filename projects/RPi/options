@@ -121,7 +121,7 @@
   # additional Firmware to use (dvb-firmware, misc-firmware, wlan-firmware)
   # Space separated list is supported,
   # e.g. FIRMWARE="dvb-firmware misc-firmware wlan-firmware"
-    FIRMWARE="misc-firmware wlan-firmware dvb-firmware"
+  #  FIRMWARE="misc-firmware wlan-firmware dvb-firmware"
 
   # build and install ATV IR remote support (yes / no)
     ATVCLIENT_SUPPORT="no"
@@ -130,7 +130,7 @@
     IRSERVER_SUPPORT="no"
 
   # build with swap support (yes / no)
-    SWAP_SUPPORT="yes"
+    SWAP_SUPPORT="no"
 
   # swap support enabled per default (yes / no)
     SWAP_ENABLED_DEFAULT="no"

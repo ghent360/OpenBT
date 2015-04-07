@@ -98,7 +98,7 @@
 # 'all' compiles all drivers;
 # 'all,!xxx,!yyy' de-selects previously selected drivers
 # "none" for disable LCD support
-  LCD_DRIVER=""
+  LCD_DRIVER="none"
 
 # Support for partitioning and formating disks in initramfs (yes / no)
 # This adds support for parted and mkfs.ext3/4 to initramfs for OEM usage
@@ -138,3 +138,6 @@
 # set the addon dirs
   ADDON_PATH="$ADDON_VERSION/$PROJECT/$TARGET_ARCH"
   ADDON_URL="$ADDON_SERVER_URL/$ADDON_PATH"
+
+#Do not install fonts
+  FONTS_SUPPORT="no"
