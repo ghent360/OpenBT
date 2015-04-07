@@ -16,11 +16,9 @@
 # Mediacenter to use (kodi / no)
   MEDIACENTER="bt-a2dp"
 
-# build and install PulseAudio support (yes / no)
-  PULSEAUDIO_SUPPORT="no"
 
 # build and install espeak support (yes / no)
-  ESPEAK_SUPPORT="no"
+  ESPEAK_SUPPORT="yes"
 
 # additional drivers to install:
 # for a list of additinoal drivers see packages/linux-drivers
@@ -47,12 +45,6 @@
 # build and install SFTP Server (yes / no)
   SFTP_SERVER="no"
 
-# build and install PPP support (yes / no)
-  PPTP_SUPPORT="no"
-
-# build and install OpenVPN support (yes / no)
-  OPENVPN_SUPPORT="no"
-
 # build and install diskmounter support (udevil)
 # this service provide auto mounting support for external drives in the
 # mediacenter also automount internally drives at boottime via udev (yes / no)
@@ -65,10 +57,35 @@
   NTFS3G="yes"
 
 # build and install hfs filesystem utilities (yes / no)
-  HFSTOOLS="yes"
+  HFSTOOLS="no"
 
 # Windowmanager to use (ratpoison / fluxbox / none)
-  WINDOWMANAGER="fluxbox"
+  WINDOWMANAGER="none"
+
+# Xorg Graphic drivers to use (all / i915,i965,r200,r300,r600,nvidia)
+# Space separated list is supported,
+# e.g. GRAPHIC_DRIVERS="i915 i965 r300 r600 radeonsi nvidia"
+  if [ "$TARGET_ARCH" = "x86_64" ]; then
+    GRAPHIC_DRIVERS="r300 r600 radeonsi i915 i965 nvidia"
+  fi
+
+# build and install remote support (yes / no)
+  REMOTE_SUPPORT="no"
+
+# build and install ATV IR remote support (yes / no)
+  ATVCLIENT_SUPPORT="no"
+
+# build and install IRServer IR/LCD support (yes / no)
+  IRSERVER_SUPPORT="no"
+
+# build and install Joystick support (yes / no)
+  JOYSTICK_SUPPORT="no"
+
+# build and install CEC adapter support (yes / no)
+  CEC_SUPPORT="no"
+
+# build and install iSCSI support - iscsistart (yes / no)
+  ISCSI_SUPPORT="no"
 
 # LCD driver to Use - Possible drivers are ( Comma seperated:
 # bayrad,CFontz,CFontz633,CFontzPacket,curses,CwLnx,dm140,
@@ -86,11 +103,6 @@
 # Support for partitioning and formating disks in initramfs (yes / no)
 # This adds support for parted and mkfs.ext3/4 to initramfs for OEM usage
   INITRAMFS_PARTED_SUPPORT="no"
-
-# additional Firmware to use (dvb-firmware, misc-firmware, wlan-firmware)
-# Space separated list is supported,
-# e.g. FIRMWARE="dvb-firmware misc-firmware wlan-firmware"
-  FIRMWARE="misc-firmware"
 
 # build with swap support (yes / no)
   SWAP_SUPPORT="no"
@@ -111,13 +123,10 @@
   OEM_SUPPORT="no"
 
 # build and install nano text editor (yes / no)
-  NANO_EDITOR="yes"
+  NANO_EDITOR="no"
 
 # cron support (yes / no)
-  CRON_SUPPORT="yes"
-
-# Perf support in development builds (yes / no)
-  PERF_SUPPORT="yes"
+  CRON_SUPPORT="no"
 
 # Distribution Specific source location
   DISTRO_MIRROR="http://sources.openelec.tv/mirror"
