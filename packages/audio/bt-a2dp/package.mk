@@ -23,7 +23,7 @@ PKG_ARCH="any"
 PKG_LICENSE="APACHE-2"
 PKG_SITE="http://iquri.us/a2dp"
 PKG_URL="http://localhost/$PKG_NAME-$PKG_VERSION.tar.gz"
-PKG_DEPENDS_TARGET="toolchain glibc alsa-lib glog gflags espeak libgcrypt"
+PKG_DEPENDS_TARGET="toolchain glibc alsa-lib glog gflags espeak libgcrypt lzo"
 PKG_PRIORITY="optional"
 PKG_SECTION="audio"
 PKG_SHORTDESC="bt-a2dp: Bluetoothe A2DB sink daemon"
@@ -38,3 +38,9 @@ PKG_CONFIGURE_OPTS_TARGET="ac_cv_func_malloc_0_nonnull=yes"
 post_makeinstall_target() {
   echo rm -rf $INSTALL/lib $INSTALL/var
 }
+
+post_install() {
+  ln -sf a2dp.target $INSTALL/usr/lib/systemd/system/default.target
+  enable_service a2dp.service
+}
+
