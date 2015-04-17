@@ -1,0 +1,16 @@
+# Description: restart the service on error
+# Upstream: sent for review on 
+# http://comments.gmane.org/gmane.linux.bluez.kernel/58723
+#
+diff --git a/src/bluetooth.service.in b/src/bluetooth.service.in
+index 35e9457..36a8883 100644
+--- a/src/bluetooth.service.in
++++ b/src/bluetooth.service.in
+@@ -5,6 +5,7 @@
+ Type=dbus
+ BusName=org.bluez
+ ExecStart=@prefix@/sbin/bluetoothd -n
++Restart=on-failure
+ 
+ [Install]
+ WantedBy=bluetooth.target
