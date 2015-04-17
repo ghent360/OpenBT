@@ -1,3 +1,5 @@
+This project is a slightly modifier version of the OpenELEC embedded linux distribution. The main change is added support for the old Bluez V4 stack. The original readme from OpenELEC is bellow:
+
 [OpenELEC](http://www.openelec.tv)
 
 # OpenELEC - Open Embedded Linux Entertainment Center
