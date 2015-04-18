@@ -411,9 +411,9 @@
   force_fsck() {
     echo "Filesystem corruption has been detected"
     echo "To prevent an automatic repair attempt continuing"
-    echo "press any key or power off your system within the next 120 seconds"
+    echo "press any key or power off your system within the next 2 seconds"
     echo ""
-    read -t120 -n1
+    read -t2 -n1
     # The exit status is 0 if input is available
     # The exit status is greater than 128 if the timeout is exceeded
     if [ "$?" -ne "0" -o "$?" -gt "128" ] ; then
