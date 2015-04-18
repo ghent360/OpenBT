@@ -16,29 +16,29 @@
 #  along with OpenELEC.  If not, see <http://www.gnu.org/licenses/>.
 ################################################################################
 
-PKG_NAME="nano"
-PKG_VERSION="2.4.1"
+PKG_NAME="mt7601u"
+PKG_VERSION="ba391b3"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
-PKG_SITE="http://www.nano-editor.org/"
-PKG_URL="http://ftp.gnu.org/gnu/nano/$PKG_NAME-$PKG_VERSION.tar.gz"
-PKG_DEPENDS_TARGET="toolchain ncurses"
+# mediatek: PKG_SITE="http://www.mediatek.com/en/downloads/mt7601u-usb/"
+PKG_SITE="https://github.com/kuba-moo/mt7601u"
+PKG_URL="$DISTRO_SRC/$PKG_NAME-$PKG_VERSION.tar.xz"
+PKG_DEPENDS_TARGET="toolchain linux"
+PKG_NEED_UNPACK="$LINUX_DEPENDS"
 PKG_PRIORITY="optional"
-PKG_SECTION="shell/texteditor"
-PKG_SHORTDESC="nano: Pico editor clone with enhancements"
-PKG_LONGDESC="GNU nano (Nano's ANOther editor, or Not ANOther editor) is an enhanced clone of the Pico text editor."
+PKG_SECTION="driver"
+PKG_SHORTDESC="mt7601u linux 3.19+ driver"
+PKG_LONGDESC="mt7601u linux 3.19+ driver"
 
 PKG_IS_ADDON="no"
-PKG_AUTORECONF="yes"
+PKG_AUTORECONF="no"
 
-PKG_CONFIGURE_OPTS_TARGET="--disable-utf8 \
-                           --disable-nls"
+make_target() {
+  KDIR=$(kernel_path) make
+}
 
-export CFLAGS="$CFLAGS -I$SYSROOT_PREFIX/usr/include/ncurses"
-export LDFLAGS=`echo $LDFLAGS | sed -e "s|-Wl,--as-needed||"`
-export LIBS="$LIBS -lz"
-
-post_makeinstall_target() {
-  rm -rf $INSTALL/usr/share/nano
+makeinstall_target() {
+  mkdir -p $INSTALL/lib/modules/$(get_module_dir)/$PKG_NAME
+    cp $ROOT/$PKG_BUILD/mt7601u.ko $INSTALL/lib/modules/$(get_module_dir)/$PKG_NAME
 }
