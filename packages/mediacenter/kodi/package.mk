@@ -17,7 +17,7 @@
 ################################################################################
 
 PKG_NAME="kodi"
-PKG_VERSION="15.0-beta1-fea3e6c"
+PKG_VERSION="15.0-beta1-7dacc6e"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
@@ -85,13 +85,6 @@ if [ "$CEC_SUPPORT" = yes ]; then
 else
   KODI_CEC="--disable-libcec"
 fi
-
-KODI_RSXS="--disable-rsxs"
-KODI_PROJECTM="--disable-projectm"
-KODI_GOOM="--disable-goom"
-KODI_WAVEFORM="--disable-waveform"
-KODI_SPECTRUM="--disable-spectrum"
-KODI_FISHBMC="--disable-fishbmc"
 
 if [ "$JOYSTICK_SUPPORT" = yes ]; then
 # for Joystick support
@@ -252,12 +245,12 @@ PKG_CONFIGURE_OPTS_TARGET="gl_cv_func_gettimeofday_clobber=no \
                            $KODI_CEC \
                            --enable-udev \
                            --disable-libusb \
-                           $KODI_GOOM \
-                           $KODI_RSXS \
-                           $KODI_PROJECTM \
-                           $KODI_WAVEFORM \
-                           $KODI_SPECTRUM \
-                           $KODI_FISHBMC \
+                           --disable-goom \
+                           --disable-rsxs \
+                           --disable-projectm \
+                           --disable-waveform \
+                           --disable-spectrum \
+                           --disable-fishbmc \
                            $KODI_XORG \
                            --disable-ccache \
                            $KODI_ALSA \
