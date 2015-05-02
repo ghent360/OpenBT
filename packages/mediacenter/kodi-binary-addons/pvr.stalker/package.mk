@@ -16,28 +16,33 @@
 #  along with OpenELEC.  If not, see <http://www.gnu.org/licenses/>.
 ################################################################################
 
-PKG_NAME="libevdev"
-PKG_VERSION="1.4.2"
+PKG_NAME="pvr.stalker"
+PKG_VERSION="118b2ef"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
-PKG_SITE="http://www.freedesktop.org/wiki/Software/libevdev/"
-PKG_URL="http://www.freedesktop.org/software/libevdev/$PKG_NAME-$PKG_VERSION.tar.xz"
-PKG_DEPENDS_TARGET="toolchain"
+PKG_SITE="http://www.kodi.tv"
+PKG_URL="$DISTRO_SRC/$PKG_NAME-$PKG_VERSION.tar.xz"
+PKG_DEPENDS_TARGET="toolchain kodi-platform jsoncpp tinyxml"
 PKG_PRIORITY="optional"
-PKG_SECTION="system"
-PKG_SHORTDESC="libevdev: a wrapper library for evdev devices."
-PKG_LONGDESC="libevdev is a wrapper library for evdev devices. it moves the common tasks when dealing with evdev devices into a library and provides a library interface to the callers, thus avoiding erroneous ioctls, etc."
+PKG_SECTION=""
+PKG_SHORTDESC="pvr.stalker"
+PKG_LONGDESC="pvr.stalker"
+PKG_AUTORECONF="no"
 
-PKG_IS_ADDON="no"
-PKG_AUTORECONF="yes"
+PKG_IS_ADDON="yes"
+PKG_ADDON_TYPE="xbmc.pvrclient"
 
-PKG_CONFIGURE_OPTS_TARGET="--enable-shared --disable-static"
-
-pre_configure_target() {
-  export CFLAGS="$CFLAGS -fPIC -DPIC"
+configure_target() {
+  cmake -DCMAKE_TOOLCHAIN_FILE=$CMAKE_CONF \
+        -DCMAKE_INSTALL_PREFIX=/usr \
+        -DCMAKE_MODULE_PATH=$SYSROOT_PREFIX/usr/lib/kodi \
+        -DCMAKE_PREFIX_PATH=$SYSROOT_PREFIX/usr \
+        ..
 }
 
-post_makeinstall_target() {
-  rm -rf $INSTALL/usr/bin
+addon() {
+  mkdir -p $ADDON_BUILD/$PKG_ADDON_ID/
+  cp -PR $PKG_BUILD/.install_pkg/usr/share/kodi/addons/$PKG_NAME/* $ADDON_BUILD/$PKG_ADDON_ID/
+  cp -PL $PKG_BUILD/.install_pkg/usr/lib/kodi/addons/$PKG_NAME/*.so $ADDON_BUILD/$PKG_ADDON_ID/
 }

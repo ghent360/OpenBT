@@ -16,38 +16,28 @@
 #  along with OpenELEC.  If not, see <http://www.gnu.org/licenses/>.
 ################################################################################
 
-PKG_NAME="pcre"
-PKG_VERSION="8.37"
+PKG_NAME="dcadec"
+PKG_VERSION="7b3b44c"
 PKG_REV="1"
 PKG_ARCH="any"
-PKG_LICENSE="OSS"
-PKG_SITE="http://www.pcre.org/"
-PKG_URL="ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/$PKG_NAME-$PKG_VERSION.tar.bz2"
-PKG_DEPENDS_HOST=""
+PKG_LICENSE="GPL"
+PKG_SITE="https://github.com/foo86/dcadec"
+PKG_URL="$DISTRO_SRC/$PKG_NAME-$PKG_VERSION.tar.xz"
 PKG_DEPENDS_TARGET="toolchain"
 PKG_PRIORITY="optional"
-PKG_SECTION="devel"
-PKG_SHORTDESC="pcre: Perl Compatible Regulat Expressions"
-PKG_LONGDESC="The PCRE library is a set of functions that implement regular expression pattern matching using the same syntax and semantics as Perl 5. PCRE has its own native API, as well as a set of wrapper functions that correspond to the POSIX regular expression API. The PCRE library is free, even for building commercial software."
+PKG_SECTION="audio"
+PKG_SHORTDESC="DTS Coherent Acoustics decoder with support for HD extensions"
+PKG_LONGDESC="DTS Coherent Acoustics decoder with support for HD extensions"
 
 PKG_IS_ADDON="no"
-PKG_AUTORECONF="yes"
+PKG_AUTORECONF="no"
 
-PKG_CONFIGURE_OPTS_HOST="--prefix=$ROOT/$TOOLCHAIN \
-             --enable-utf8 \
-             --enable-unicode-properties \
-             --with-gnu-ld"
-
-PKG_CONFIGURE_OPTS_TARGET="--disable-shared \
-             --enable-static \
-             --enable-utf8 \
-             --enable-unicode-properties \
-             --with-gnu-ld"
+PKG_MAKE_OPTS_TARGET="PREFIX=/usr BINDIR=/usr/bin LIBDIR=/usr/lib INCLUDEDIR=/usr/include PKG_CONFIG_PATH=/usr/lib/pkgconfig"
+PKG_MAKEINSTALL_OPTS_TARGET="$PKG_MAKE_OPTS_TARGET"
 
 pre_configure_target() {
-  CFLAGS="$CFLAGS -fPIC"
-  CXXFLAGS="$CXXFLAGS -fPIC"
-  LDFLAGS="$LDFLAGS -fPIC"
+  export CFLAGS="$CFLAGS -fPIC -DPIC"
+  export LDFLAGS="$LDFLAGS -fPIC -DPIC"
 }
 
 post_makeinstall_target() {
