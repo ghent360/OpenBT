@@ -79,8 +79,8 @@
   fi
 
   # clear screen and hide cursor
-  clear
-  hidecursor
+  #clear
+  #hidecursor
 
   # parse command line arguments
   for arg in $(cat /proc/cmdline); do
@@ -214,7 +214,7 @@
       mount $MOUNT_OPTIONS $1 $2 >&$SILENT_OUT 2>&1
       [ "$?" -eq "0" ] && ERR_ENV=0 && break
 
-      usleep 1000000
+      # usleep 1000000
     done
     [ "$ERR_ENV" -ne "0" ] && error "mount_common" "Could not mount $1"
   }
@@ -557,7 +557,7 @@
       /bin/busybox umount /storage
     fi
 
-    usleep 2000000
+    usleep 200000
     /bin/busybox reboot
   }
 
@@ -992,7 +992,6 @@
       mount_flash \
       load_splash \
       mount_storage \
-      check_update \
       prepare_sysroot; do
     $BOOT_STEP
     [ -n "$DEBUG" ] && break_after $BOOT_STEP
