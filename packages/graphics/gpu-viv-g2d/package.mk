@@ -16,26 +16,30 @@
 #  along with OpenELEC.  If not, see <http://www.gnu.org/licenses/>.
 ################################################################################
 
-PKG_NAME="libc"
-PKG_VERSION=""
+PKG_NAME="gpu-viv-g2d"
+PKG_VERSION="3.10.17-1.0.2"
 PKG_REV="1"
-PKG_ARCH="any"
-PKG_LICENSE="GPL"
-PKG_SITE="http://www.openelec.tv"
-PKG_URL=""
-PKG_DEPENDS_TARGET="toolchain glibc timezone-data"
-PKG_DEPENDS_INIT="toolchain glibc:init"
+PKG_ARCH="arm"
+PKG_LICENSE="nonfree"
+PKG_SITE="http://www.freescale.com"
+PKG_URL="$DISTRO_SRC/$PKG_NAME-$PKG_VERSION.tar.xz"
+PKG_DEPENDS_TARGET="toolchain"
 PKG_PRIORITY="optional"
-PKG_SECTION="virtual"
-PKG_SHORTDESC="libc: Metapackage"
-PKG_LONGDESC=""
-PKG_SHORTDESC="libc: Meta package for installing various tools and libs needed for libc"
-PKG_LONGDESC="Meta package for installing various tools and libs needed for libc"
+PKG_SECTION="graphics"
+PKG_SHORTDESC="gpu-viv-g2d: Another vivante Binary for performant resizing"
+PKG_LONGDESC="gpu-viv-g2d: Another vivante Binary for performant resizing"
 
 PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
-if [ "$BOOTLOADER" = "bcm2835-bootloader" ]; then
-  PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET arm-mem"
-  PKG_DEPENDS_INIT="$PKG_DEPENDS_INIT arm-mem:init"
-fi
+make_target() {
+ : # nothing to make all binary
+}
+
+makeinstall_target() {
+  mkdir -p $SYSROOT_PREFIX/usr
+  cp -PRv usr/* $SYSROOT_PREFIX/usr
+
+  mkdir -p $INSTALL/usr/lib
+  cp -PRv usr/lib/* $INSTALL/usr/lib
+}
