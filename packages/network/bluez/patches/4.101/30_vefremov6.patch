@@ -1,0 +1,199 @@
+Index: avrcp/audio/control.c
+===================================================================
+--- avrcp.orig/audio/control.c	2015-03-14 18:46:27.803150627 -0700
++++ avrcp/audio/control.c	2015-07-05 15:51:09.258553489 -0700
+@@ -229,6 +229,12 @@
+     uint8_t data[0];
+ } __attribute__ ((packed));
+ 
++struct GetElementAttributesResponse {
++	struct avrcp_header hdr;
++	uint8_t num_attributes;
++	uint8_t attribute_data[];
++} __attribute__ ((packed));
++
+ struct GetPlayStatusReq {
+     struct avrcp_header hdr;
+ };
+@@ -423,6 +429,8 @@
+         DBG("send_button: control->session is NULL");
+         return btd_error_not_connected(msg);
+     }
++	if (!control->target)
++		return btd_error_not_supported(msg);
+ 
+     uint32_t button_code;
+ 
+@@ -533,6 +541,9 @@
+     if (!control->session)
+         return btd_error_not_connected(msg);
+ 
++	if (!control->target)
++		return btd_error_not_supported(msg);
++
+     if (control->in_call) {
+         return btd_error_busy(msg);
+     }
+@@ -618,6 +629,9 @@
+     if (!control->session)
+         return btd_error_not_connected(msg);
+ 
++	if (!control->target)
++		return btd_error_not_supported(msg);
++
+     if (control->in_call) {
+         return btd_error_busy(msg);
+     }
+@@ -626,14 +640,135 @@
+     if (NULL == ctx)
+         return btd_error_failed(msg, "Out of memory.");
+ 
+-    control->in_call = 1;
+-    set_company_id(&request.hdr, METADATA_COMAPNY_ID);
+-    request.hdr.packet_type = 0;
+-    request.hdr.pdu_id = GET_PLAYSTATUS_PUD;
+-    set_param_len(&request.hdr, sizeof(request) - sizeof(request.hdr));
+-    avctp_send_vendordep_req(control->session, AVC_CTYPE_STATUS,
+-            PANNEL_SUBUNIT_ID, (uint8_t*)&request, sizeof(request),
+-            get_play_status_cb, ctx);
++	control->in_call = 1;
++	set_company_id(&request.hdr, METADATA_COMAPNY_ID);
++	request.hdr.packet_type = 0;
++	request.hdr.pdu_id = GET_PLAYSTATUS_PUD;
++	set_param_len(&request.hdr, sizeof(request) - sizeof(request.hdr));
++	avctp_send_vendordep_req(control->session, AVC_CTYPE_STATUS,
++			PANNEL_SUBUNIT_ID, (uint8_t*)&request, sizeof(request),
++			get_play_status_cb, ctx);
++
++	return NULL;
++}
++
++static gboolean get_element_attributes_cb (struct avctp *session, uint8_t code,
++					uint8_t subunit, uint8_t *operands,
++					size_t operand_count, void *user_data) {
++	int idx;
++	struct msg_reply_ctx* ctx = (struct msg_reply_ctx*)user_data;
++	struct GetElementAttributesResponse* response;
++	DBusMessage *reply;
++
++	ctx->dev->control->in_call = 0;
++
++	if (code != AVC_CTYPE_STABLE) {
++		reply = btd_error_not_supported(ctx->msg);
++		g_dbus_send_message(ctx->dev->conn, reply);
++		goto exit;
++	}
++	if (operand_count < sizeof(struct GetElementAttributesResponse)) {
++		reply = btd_error_failed(ctx->msg, "Invalid response - too short");
++		g_dbus_send_message(ctx->dev->conn, reply);
++		goto exit;
++	}
++	response = (struct GetElementAttributesResponse*)operands;
++	if (response->hdr.pdu_id != GET_ELEMENT_ATTRIBUTES_PUD) {
++		reply = btd_error_failed(ctx->msg, "Invalid response - invalid PUD");
++		g_dbus_send_message(ctx->dev->conn, reply);
++		goto exit;
++	}
++
++	reply = dbus_message_new_method_return(ctx->msg);
++	if (reply) {
++		DBusMessageIter args;
++		DBusMessageIter dict;
++		uint8_t num_attributes;
++		uint8_t* attribute_data;
++		dbus_message_iter_init_append(reply, &args);
++		dbus_message_iter_open_container(&args, DBUS_TYPE_ARRAY,
++				DBUS_DICT_ENTRY_BEGIN_CHAR_AS_STRING
++				DBUS_TYPE_STRING_AS_STRING DBUS_TYPE_VARIANT_AS_STRING
++				DBUS_DICT_ENTRY_END_CHAR_AS_STRING, &dict);
++
++		num_attributes = response->num_attributes;
++		attribute_data = response->attribute_data;
++		while (num_attributes) {
++            uint32_t attribute_id = get_32_bit_be(attribute_data);
++            attribute_data += 4;
++            uint16_t attribute_charset = get_16_bit_be(attribute_data);
++            attribute_data += 2;
++            uint16_t attribute_len = get_16_bit_be(attribute_data);
++            attribute_data += 2;
++            if (attribute_len > 0) {
++            	const char* attribute_name = NULL;
++            	switch (attribute_id) {
++            	case 1: attribute_name = "Title"; break;
++            	case 2: attribute_name = "Artist"; break;
++            	case 3: attribute_name = "Album"; break;
++            	case 4: attribute_name = "TrackNo"; break;
++            	case 5: attribute_name = "TrackCount"; break;
++            	case 6: attribute_name = "Genre"; break;
++            	case 7: attribute_name = "Playing Time"; break;
++            	}
++            	if (attribute_name) {
++        			char value_buffer[513];
++        			char* value;
++            		size_t value_size = attribute_len;
++            		if (value_size > sizeof(value_buffer) - 1) {
++            			value_size = sizeof(value_buffer) - 1;
++            		}
++            		memcpy(value_buffer, attribute_data, value_size);
++            		value_buffer[value_size] = 0;
++            		value = value_buffer;
++            		dict_append_entry(&dict, attribute_name, DBUS_TYPE_STRING, &value);
++            	}
++            }
++            attribute_data += attribute_len;
++            num_attributes--;
++		}
++
++		dbus_message_iter_close_container(&args, &dict);
++		g_dbus_send_message(ctx->dev->conn, reply);
++	}
++exit:
++	free_reply_ctx(ctx);
++	return 0;  // remove the handler from the list
++}
++
++static DBusMessage *get_element_attributes(DBusConnection *conn, DBusMessage *msg,
++								void *data)
++{
++	struct audio_device *device = data;
++	struct control *control = device->control;
++	static struct GetElementAttributesReq request= {0};
++	struct msg_reply_ctx* ctx;
++	int err;
++
++	if (!control->session)
++		return btd_error_not_connected(msg);
++
++	if (!control->target)
++		return btd_error_not_supported(msg);
++
++	if (control->in_call) {
++		return btd_error_busy(msg);
++	}
++
++	ctx = create_reply_ctx(device, msg);
++	if (NULL == ctx)
++		return btd_error_failed(msg, "Out of memory.");
++
++	control->in_call = 1;
++	set_company_id(&request.hdr, METADATA_COMAPNY_ID);
++	request.hdr.packet_type = 0;
++	request.hdr.pdu_id = GET_ELEMENT_ATTRIBUTES_PUD;
++	set_uid(request.element_id, 0);
++	request.num_attr_ids = 0;
++	set_param_len(&request.hdr, sizeof(request) - sizeof(request.hdr));
++	avctp_send_vendordep_req(control->session, AVC_CTYPE_STATUS,
++			PANNEL_SUBUNIT_ID, (uint8_t*)&request, sizeof(request),
++			get_element_attributes_cb, ctx);
+ 
+     return NULL;
+ }
+@@ -682,6 +817,8 @@
+             GDBUS_ARGS({ "capabilities", "au" }), get_notification_capabilities) },
+     { GDBUS_ASYNC_METHOD("GetPlayStatus", NULL,
+             GDBUS_ARGS({ "status", "a{sv}" }), get_play_status) },
++    { GDBUS_ASYNC_METHOD("GetMetadata", NULL,
++			GDBUS_ARGS({ "metadata", "a{sv}" }), get_element_attributes) },
+     { }
+ };
+ 
