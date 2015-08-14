@@ -16,27 +16,22 @@
 #  along with OpenELEC.  If not, see <http://www.gnu.org/licenses/>.
 ################################################################################
 
-PKG_NAME="bt-a2dp"
-PKG_VERSION="1.2"
+PKG_NAME="fdk-aac"
+PKG_VERSION="0.1.4"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="APACHE-2"
-PKG_SITE="http://iquri.us/a2dp"
-PKG_URL="http://localhost/$PKG_NAME-$PKG_VERSION.tar.gz"
-PKG_DEPENDS_TARGET="toolchain glibc alsa-lib glog gflags espeak libgcrypt lzo libvorbis libogg fdk-aac"
+PKG_SITE="http://sourceforge.net/projects/opencore-amr/"
+PKG_URL="http://skylineservers.dl.sourceforge.net/project/opencore-amr/fdk-aac/$PKG_NAME-$PKG_VERSION.tar.gz"
+PKG_DEPENDS_TARGET="toolchain glibc"
 PKG_PRIORITY="optional"
 PKG_SECTION="audio"
-PKG_SHORTDESC="bt-a2dp: Bluetoothe A2DB sink daemon"
-PKG_LONGDESC="This package lets unicorns out of the speakers."
+PKG_SHORTDESC="fdk-aac: The Fraunhofer FDK AAC Codec Library"
+PKG_LONGDESC="The Fraunhofer FDK AAC Codec Library for Android ('FDK AAC Codec') is software that implements the MPEG Advanced Audio Coding ('AAC') encoding and decoding scheme for digital audio. This FDK AAC Codec software is intended to be used on a wide variety of Android devices."
 
 PKG_IS_ADDON="no"
 PKG_AUTORECONF="yes"
 
 # package specific configure options
 PKG_CONFIGURE_OPTS_TARGET="ac_cv_func_malloc_0_nonnull=yes"
-
-post_install() {
-  ln -sf a2dp.target $INSTALL/usr/lib/systemd/system/default.target
-  enable_service a2dp.service
-}
 
