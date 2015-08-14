@@ -57,8 +57,13 @@ for i in $PKG_URL; do
         7z x -o$3/$1 $f
         ;;
       *.zip)
-        mkdir -p $3/$1
-        unzip -q $f -d $3/$1
+        if [ "$PKG_ZIP_NEW" != "yes" ]; then
+          mkdir -p $3/$1
+          unzip -q $f -d $3/$1
+        else
+          mkdir -p $3
+          unzip -q $f -d $3
+        fi
         ;;
       *.diff | *.patch)
         cat $f | patch -d $3 -p1

@@ -80,6 +80,7 @@ export BUILD_INDENT=$((${BUILD_INDENT:-1}+$BUILD_INDENT_SIZE))
   unset -f post_unpack
   unset -f pre_patch
   unset -f post_patch
+  unset -f PKG_ZIP_NEW
 
   . $PKG_DIR/package.mk
 
