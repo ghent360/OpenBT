@@ -17,12 +17,12 @@
 ################################################################################
 
 PKG_NAME="fdk-aac"
-PKG_VERSION="0.1.4"
+PKG_VERSION="0.1.4a"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="APACHE-2"
 PKG_SITE="http://sourceforge.net/projects/opencore-amr/"
-PKG_URL="http://skylineservers.dl.sourceforge.net/project/opencore-amr/fdk-aac/$PKG_NAME-$PKG_VERSION.tar.gz"
+PKG_URL="https://github.com/ghent360/fdk-aac/archive/v$PKG_VERSION.zip"
 PKG_DEPENDS_TARGET="toolchain glibc"
 PKG_PRIORITY="optional"
 PKG_SECTION="audio"
@@ -31,6 +31,7 @@ PKG_LONGDESC="The Fraunhofer FDK AAC Codec Library for Android ('FDK AAC Codec')
 
 PKG_IS_ADDON="no"
 PKG_AUTORECONF="yes"
+PKG_ZIP_NEW="yes"
 
 # package specific configure options
 PKG_CONFIGURE_OPTS_TARGET="ac_cv_func_malloc_0_nonnull=yes"
