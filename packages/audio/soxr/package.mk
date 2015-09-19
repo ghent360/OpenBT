@@ -30,6 +30,7 @@ PKG_SECTION="audio"
 PKG_SHORTDESC="soxr: a library which performs one-dimensional sample-rate conversion."
 PKG_LONGDESC="The SoX Resampler library performs one-dimensional sample-rate conversion. it may be used, for example, to resample PCM-encoded audio."
 
+#PKG_SOURCE_DIR="$PKG_NAME-$PKG_VERSION-Source"
 PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
@@ -37,10 +38,13 @@ PKG_AUTORECONF="no"
 configure_target() {
   cmake -DCMAKE_TOOLCHAIN_FILE=$CMAKE_CONF \
         -DCMAKE_INSTALL_PREFIX=/usr \
+        -DCMAKE_BUILD_TYPE=Release \
         -DHAVE_WORDS_BIGENDIAN_EXITCODE=1 \
         -DBUILD_TESTS=0 \
-        -DBUILD_EXAMPLES=1 \
-        -DBUILD_SHARED_LIBS=OFF ..
+        -DBUILD_EXAMPLES=0 \
+        -DWITH_LSR_BINDINGS=0 \
+        -Wno-dev \
+        ..
 }
 
 #post_makeinstall_target() {
@@ -52,3 +56,4 @@ configure_target() {
 #  $SED "s:\([':\" ]\)-I/usr:\\1-I$SYSROOT_PREFIX/usr:g" $SYSROOT_PREFIX/usr/lib/pkgconfig/taglib_c.pc
 #  $SED "s:\([':\" ]\)-L/usr:\\1-L$SYSROOT_PREFIX/usr:g" $SYSROOT_PREFIX/usr/lib/pkgconfig/taglib_c.pc
 #}
+
