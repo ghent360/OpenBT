@@ -38,7 +38,7 @@ configure_target() {
   cmake -DCMAKE_TOOLCHAIN_FILE=$CMAKE_CONF \
         -DCMAKE_INSTALL_PREFIX=/usr \
         -DCMAKE_BUILD_TYPE=Release \
-        -DHAVE_WORDS_BIGENDIAN_EXITCODE=0 \
+        -DHAVE_WORDS_BIGENDIAN_EXITCODE=1 \
         -DBUILD_TESTS=0 \
         -DBUILD_EXAMPLES=0 \
         -DWITH_LSR_BINDINGS=0 \
