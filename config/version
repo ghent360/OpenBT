@@ -1,5 +1,7 @@
 # VERSION: set full version, use "devel" for development version
-  OPENELEC_VERSION="6.0-dev"
+if [ -z "$OPENELEC_VERSION" ]; then
+  OPENELEC_VERSION="devel"
+fi
 
 # OS_VERSION: OS Version
   OS_VERSION="6.0"
