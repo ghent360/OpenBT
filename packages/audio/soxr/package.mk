@@ -21,16 +21,14 @@ PKG_VERSION="0.1.2"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="LGPL"
-PKG_SITE="http://sourceforge.net/projects/opencore-amr/"
-PKG_URL="http://iweb.dl.sourceforge.net/project/soxr/$PKG_NAME-$PKG_VERSION-Source.tar.xz"
-PKG_DEPENDS_TARGET="toolchain cmake:host glibc"
+PKG_SITE="http://sourceforge.net/p/soxr/wiki/Home/"
+PKG_URL="$SOURCEFORGE_SRC/soxr/$PKG_NAME-$PKG_VERSION-Source.tar.xz"
+PKG_SOURCE_DIR="$PKG_NAME-$PKG_VERSION-Source"
 PKG_PRIORITY="optional"
 PKG_SECTION="audio"
-PKG_SHORTDESC="libsoxr: High quality, one-dimensional sample-rate conversion library"
-PKG_LONGDESC="The SoX Resampler library libsoxr performs one-dimensional sample-rate conversion—it may be used, for example, to resample PCM-encoded audio.
+PKG_SHORTDESC="soxr: a library which performs one-dimensional sample-rate conversion."
+PKG_LONGDESC="The SoX Resampler library performs one-dimensional sample-rate conversion. it may be used, for example, to resample PCM-encoded audio."
 
-It aims to give fast and high quality results for any constant (rational or irrational) resampling ratio. Phase-response, preserved bandwidth, aliasing, and rejection level parameters are all configurable; alternatively, simple preset configurations may be selected. An experimental, variable-rate resampling mode of operation is also included."
-PKG_SOURCE_DIR="$PKG_NAME-$PKG_VERSION-Source"
 PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
@@ -44,13 +42,5 @@ configure_target() {
         -DWITH_LSR_BINDINGS=0 \
         -Wno-dev \
         ..
-}
-
-post_makeinstall_target() {
-  echo Post Install
-  #mv $SYSROOT_PREFIX/usr/lib/libyajl_s.a $SYSROOT_PREFIX/usr/lib/libyajl.a
-  #rm $SYSROOT_PREFIX/usr/lib/libyajl.so*
-  #rm -rf $INSTALL/usr/bin
-  #rm -rf $INSTALL/usr/lib
 }
 
