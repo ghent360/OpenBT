@@ -4,7 +4,7 @@ if [ -z "$OPENELEC_VERSION" ]; then
 fi
 
 # OS_VERSION: OS Version
-  OS_VERSION="6.0"
+  OS_VERSION="7.0"
 
 # ADDON_VERSION: Addon version
   ADDON_VERSION="6.0"
