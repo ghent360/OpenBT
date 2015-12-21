@@ -16,34 +16,27 @@
 #  along with OpenELEC.  If not, see <http://www.gnu.org/licenses/>.
 ################################################################################
 
-PKG_NAME="imon-mce"
-PKG_VERSION="7.0"
-PKG_REV="0"
+PKG_NAME="alsa-plugins"
+PKG_VERSION="1.0.29"
+PKG_REV="1"
 PKG_ARCH="any"
-PKG_LICENSE="OSS"
-PKG_SITE="http://www.openelec.tv"
-PKG_URL=""
-PKG_DEPENDS_TARGET="toolchain"
+PKG_LICENSE="GPL"
+PKG_SITE="http://www.alsa-project.org/"
+PKG_URL="ftp://ftp.alsa-project.org/pub/plugins/$PKG_NAME-$PKG_VERSION.tar.bz2"
+PKG_DEPENDS_TARGET="toolchain alsa-lib"
 PKG_PRIORITY="optional"
-PKG_SECTION="driver/remote"
-PKG_SHORTDESC="imon-mce: a driver to add support for MCE remotes to the imon driver"
-PKG_LONGDESC="imon-mce is a driver to add support for MCE remotes to the imon driver. To readd imon remote support uninstall or disable this addon again."
+PKG_SECTION="audio"
+PKG_SHORTDESC=""
+PKG_LONGDESC=""
 
-PKG_IS_ADDON="yes"
-PKG_ADDON_TYPE="xbmc.service"
-PKG_ADDON_PROVIDES=""
-PKG_ADDON_REPOVERSION="7.0"
+PKG_IS_ADDON="no"
+PKG_AUTORECONF="yes"
 
-PKG_AUTORECONF="no"
-
-make_target() {
-  : # nothing to do here
-}
-
-makeinstall_target() {
-  : # nothing to do here
-}
-
-addon() {
-  : # nothing to do here
-}
+# package specific configure options
+PKG_CONFIGURE_OPTS_TARGET="--disable-jack \
+                           --enable-pulseaudio \
+                           --disable-samplerate \
+                           --disable-maemo-plugin \
+                           --disable-maemo-resource-manager \
+                           --disable-avcodec \
+                           --with-plugindir=/usr/lib/alsa"
