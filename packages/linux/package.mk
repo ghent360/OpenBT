@@ -1,6 +1,6 @@
 ################################################################################
 #      This file is part of OpenELEC - http://www.openelec.tv
-#      Copyright (C) 2009-2014 Stephan Raue (stephan@openelec.tv)
+#      Copyright (C) 2009-2016 Stephan Raue (stephan@openelec.tv)
 #
 #  OpenELEC is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ case "$LINUX" in
     PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET imx6-status-led imx6-soc-fan"
     ;;
   *)
-    PKG_VERSION="4.4-rc6"
+    PKG_VERSION="4.4-rc7"
     PKG_URL="http://www.kernel.org/pub/linux/kernel/v4.x/testing/$PKG_NAME-$PKG_VERSION.tar.xz"
     ;;
 esac
