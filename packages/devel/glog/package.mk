@@ -17,12 +17,12 @@
 ################################################################################
 
 PKG_NAME="glog"
-PKG_VERSION="0.3.3"
+PKG_VERSION="0.3.4"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="BSD_3"
-PKG_SITE="https://code.google.com/p/google-glog/"
-PKG_URL="https://google-glog.googlecode.com/files/$PKG_NAME-$PKG_VERSION.tar.gz"
+PKG_SITE="https://github.com/google/glog"
+PKG_URL="https://github.com/google/glog/archive/v$PKG_VERSION.tar.gz"
 PKG_DEPENDS_TARGET="toolchain zlib gflags"
 PKG_PRIORITY="optional"
 PKG_SECTION="devel"

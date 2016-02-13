@@ -17,7 +17,7 @@
 ################################################################################
 
 PKG_NAME="gflags"
-PKG_VERSION="2.1.1"
+PKG_VERSION="2.1.2"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="BSD_3"
@@ -36,7 +36,7 @@ PKG_AUTORECONF="no"
 configure_target() {
   cmake -DCMAKE_TOOLCHAIN_FILE=$CMAKE_CONF \
         -DCMAKE_INSTALL_PREFIX=/usr \
-        -DTHREADS_PTHREAD_ARG=0 \
+        -DBUILD_SHARED_LIBS=true \
         ..
 }
 
