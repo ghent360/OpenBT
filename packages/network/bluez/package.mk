@@ -68,7 +68,7 @@ PKG_CONFIGURE_OPTS_TARGET="--disable-dependency-tracking \
 pre_configure_target() {
 # bluez fails to build in subdirs
   cd $ROOT/$PKG_BUILD
-    rm -rf .$TARGET_NAME
+  rm -rf .$TARGET_NAME
 }
 
 post_makeinstall_target() {
