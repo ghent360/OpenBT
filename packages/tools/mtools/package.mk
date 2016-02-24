@@ -16,33 +16,25 @@
 #  along with OpenELEC.  If not, see <http://www.gnu.org/licenses/>.
 ################################################################################
 
-PKG_NAME="pvr.mythtv"
-PKG_VERSION="2e5a649"
+PKG_NAME="mtools"
+PKG_VERSION="4.0.18"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
-PKG_SITE="http://www.kodi.tv"
-PKG_URL="$DISTRO_SRC/$PKG_NAME-$PKG_VERSION.tar.xz"
-PKG_DEPENDS_TARGET="toolchain kodi-platform"
+PKG_SITE="http://www.gnu.org/software/mtools/"
+PKG_URL="ftp://ftp.gnu.org/gnu/$PKG_NAME/$PKG_NAME-$PKG_VERSION.tar.bz2"
+PKG_DEPENDS_HOST=""
 PKG_PRIORITY="optional"
-PKG_SECTION=""
-PKG_SHORTDESC="pvr.mythtv"
-PKG_LONGDESC="pvr.mythtv"
+PKG_SECTION="tools"
+PKG_SHORTDESC="mtools: A collection of utilities to access MS-DOS disks"
+PKG_LONGDESC="mtools: A collection of utilities to access MS-DOS disks"
+PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
+PKG_AUTORECONF="yes"
 
-PKG_IS_ADDON="yes"
-PKG_ADDON_TYPE="xbmc.pvrclient"
+makeinstall_host() {
+  $STRIP mtools
 
-configure_target() {
-  cmake -DCMAKE_TOOLCHAIN_FILE=$CMAKE_CONF \
-        -DCMAKE_INSTALL_PREFIX=/usr \
-        -DCMAKE_MODULE_PATH=$SYSROOT_PREFIX/usr/lib/kodi \
-        -DCMAKE_PREFIX_PATH=$SYSROOT_PREFIX/usr \
-        ..
-}
-
-addon() {
-  mkdir -p $ADDON_BUILD/$PKG_ADDON_ID/
-  cp -PR $PKG_BUILD/.install_pkg/usr/share/kodi/addons/$PKG_NAME/* $ADDON_BUILD/$PKG_ADDON_ID/
-  cp -PL $PKG_BUILD/.install_pkg/usr/lib/kodi/addons/$PKG_NAME/*.so $ADDON_BUILD/$PKG_ADDON_ID/
+  mkdir -p $ROOT/$TOOLCHAIN/sbin
+  cp -P mtools mformat mcopy mmd $ROOT/$TOOLCHAIN/sbin
 }
