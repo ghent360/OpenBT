@@ -83,7 +83,12 @@ else
     $SCRIPTS/extract $1 "$1*.tgz"     $BUILD
     $SCRIPTS/extract $1 "$1*.7z"      $BUILD
     $SCRIPTS/extract $1 "$1*.zip"     $BUILD
+<<<<<<< HEAD
     $SCRIPTS/extract $1 `basename $PKG_URL`     $BUILD
+=======
+  elif [ -n "$PKG_GIT_URL" ]; then
+    $SCRIPTS/extract $1 "$1*.tar.xz"  $BUILD
+>>>>>>> 51c94452b87a85ddfa674c3c90d4b414bb9253d9
   fi
 fi
 
@@ -96,7 +101,7 @@ if [ -d "$PKG_DIR/sources" ]; then
   cp -PRf $PKG_DIR/sources/* $BUILD/${PKG_NAME}-${PKG_VERSION}
 fi
 
-if [ -z "$PKG_URL" ]; then
+if [ -z "$PKG_URL" -o -z "$PKG_GIT_URL" ]; then
   mkdir -p "${BUILD}/${PKG_NAME}-${PKG_VERSION}"
 fi
 

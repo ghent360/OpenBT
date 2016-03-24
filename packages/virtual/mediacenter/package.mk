@@ -24,9 +24,12 @@ PKG_LICENSE="GPL"
 PKG_SITE="http://www.openelec.tv"
 PKG_URL=""
 PKG_DEPENDS_TARGET="toolchain $MEDIACENTER"
+<<<<<<< HEAD
 if test ! -z "$SKIN_DEFAULT"; then
  PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET $MEDIACENTER-theme-$SKIN_DEFAULT"
 fi
+=======
+>>>>>>> 51c94452b87a85ddfa674c3c90d4b414bb9253d9
 PKG_PRIORITY="optional"
 PKG_SECTION="virtual"
 PKG_SHORTDESC="Mediacenter: Metapackage"
@@ -35,9 +38,11 @@ PKG_LONGDESC=""
 PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
-for i in $SKINS; do
-  PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET $MEDIACENTER-theme-$i"
-done
+if [ -n "$SKINS" ]; then
+  for i in $SKINS; do
+    PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET $MEDIACENTER-theme-$i"
+  done
+fi
 
 if [ "$MEDIACENTER" = "kodi" ]; then
 # some python stuff needed for various addons

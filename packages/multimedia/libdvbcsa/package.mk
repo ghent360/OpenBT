@@ -23,7 +23,8 @@ PKG_ARCH="any"
 PKG_LICENSE="LGPL"
 PKG_SITE="http://www.videolan.org/developers/libdvbcsa.html"
 PKG_SITE="https://github.com/glenvt18/libdvbcsa/"
-PKG_URL="$DISTRO_SRC/${PKG_NAME}-${PKG_VERSION}.tar.xz"
+PKG_GIT_URL="https://github.com/glenvt18/libdvbcsa.git"
+PKG_GIT_BRANCH="master"
 PKG_DEPENDS_TARGET="toolchain"
 PKG_PRIORITY="optional"
 PKG_SECTION="lib"
@@ -50,5 +51,7 @@ fi
 pre_configure_target() {
 # libdvbcsa is a bit faster without LTO, and tests will fail with gcc-5.x
   strip_lto
+
+  export CFLAGS="$CFLAGS -fPIC"
 }
 
