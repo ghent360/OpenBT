@@ -83,12 +83,9 @@ else
     $SCRIPTS/extract $1 "$1*.tgz"     $BUILD
     $SCRIPTS/extract $1 "$1*.7z"      $BUILD
     $SCRIPTS/extract $1 "$1*.zip"     $BUILD
-<<<<<<< HEAD
     $SCRIPTS/extract $1 `basename $PKG_URL`     $BUILD
-=======
   elif [ -n "$PKG_GIT_URL" ]; then
     $SCRIPTS/extract $1 "$1*.tar.xz"  $BUILD
->>>>>>> 51c94452b87a85ddfa674c3c90d4b414bb9253d9
   fi
 fi
 
