@@ -71,7 +71,6 @@ if [ "$(type -t pre_unpack)" = "function" ]; then
   pre_unpack
 fi
 
-<<<<<<< HEAD
 if [ "$(type -t unpack)" = "function" ]; then
   unpack
 else
