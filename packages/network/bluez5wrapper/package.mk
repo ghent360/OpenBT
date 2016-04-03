@@ -17,7 +17,7 @@
 ################################################################################
 
 PKG_NAME="bluez5wrapper"
-PKG_VERSION="3841b7a7262d2e"
+PKG_VERSION="938a880a5d8"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="OTHER"
