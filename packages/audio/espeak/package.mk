@@ -49,5 +49,11 @@ makeinstall_target() {
        CXXFLAGS="$CXXFLAGS" \
        LDFLAGS="$LDFLAGS" \
        AUDIO="" \
+       DESTDIR=$SYSROOT_PREFIX install
+
+  make -C src \
+       CXXFLAGS="$CXXFLAGS" \
+       LDFLAGS="$LDFLAGS" \
+       AUDIO="" \
        DESTDIR=$INSTALL install
 }

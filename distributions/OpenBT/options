@@ -14,7 +14,7 @@
   ROOT_PASSWORD="openbt"
 
 # Mediacenter to use (kodi / no)
-  MEDIACENTER="bt-a2dp"
+  MEDIACENTER="bluez_audio"
 
 
 # build and install espeak support (yes / no)
