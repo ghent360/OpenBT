@@ -1,6 +1,6 @@
 ################################################################################
 #      This file is part of OpenELEC - http://www.openelec.tv
-#      Copyright (C) 2009-2014 Stephan Raue (stephan@openelec.tv)
+#      Copyright (C) 2009-2016 Stephan Raue (stephan@openelec.tv)
 #
 #  OpenELEC is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -16,27 +16,22 @@
 #  along with OpenELEC.  If not, see <http://www.gnu.org/licenses/>.
 ################################################################################
 
-PKG_NAME="bt-a2dp"
-PKG_VERSION="1.3.2"
+PKG_NAME="dbuswrapper"
+PKG_VERSION="da8901a551710cbd0"
 PKG_REV="1"
 PKG_ARCH="any"
-PKG_LICENSE="APACHE-2"
-PKG_SITE="http://iquri.us/a2dp"
-PKG_URL="http://localhost/$PKG_NAME-$PKG_VERSION.tar.gz"
-PKG_DEPENDS_TARGET="toolchain glibc alsa-lib glog gflags espeak libgcrypt lzo libvorbis libogg fdk-aac soxr dbuswrapper"
+PKG_LICENSE="OTHER"
+PKG_SITE="http://www.iqury.us/dbuswrapper"
+PKG_GIT_URL="git@bitbucket.org:ghent360/dbuswrapper.git"
+PKG_GIT_BRANCH="master"
+PKG_DEPENDS_TARGET="toolchain dbus glog gflags"
 PKG_PRIORITY="optional"
-PKG_SECTION="audio"
-PKG_SHORTDESC="bt-a2dp: Bluetoothe A2DB sink daemon"
-PKG_LONGDESC="This package lets unicorns out of the speakers."
+PKG_SECTION="network"
+PKG_SHORTDESC="dbuswrapper: A small C++ wrapper library for d-bus."
+PKG_LONGDESC="A small C++ wrapper library for d-bus."
 
 PKG_IS_ADDON="no"
 PKG_AUTORECONF="yes"
 
-# package specific configure options
-PKG_CONFIGURE_OPTS_TARGET="ac_cv_func_malloc_0_nonnull=yes"
-
-post_install() {
-  ln -sf a2dp.target $INSTALL/usr/lib/systemd/system/default.target
-  enable_service a2dp.service
-}
+PKG_CONFIGURE_OPTS_TARGET=""
 
