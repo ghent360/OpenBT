@@ -17,7 +17,7 @@
 ################################################################################
 
 PKG_NAME="bluez_audio"
-PKG_VERSION="f4c49e9de77a"
+PKG_VERSION="b036e4ef2dda"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="OTHER"
