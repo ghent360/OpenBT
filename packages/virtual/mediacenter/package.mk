@@ -51,4 +51,3 @@ if [ "$MEDIACENTER" = "kodi" ]; then
     PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET kodi-language-addons"
   fi
 fi
-

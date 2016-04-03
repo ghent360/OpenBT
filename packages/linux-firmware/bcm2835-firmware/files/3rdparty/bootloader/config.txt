@@ -29,8 +29,8 @@
 
 # SDRAM size based GPU memory split, uncomment and setup to override 'gpu_mem'
   gpu_mem_256=16
-  gpu_mem_512=160
-  gpu_mem_1024=256
+  gpu_mem_512=16
+  gpu_mem_1024=16
 
 ################################################################################
 # Overclocking settings

@@ -24,6 +24,7 @@ PKG_LICENSE="LGPL"
 PKG_SITE="http://sourceforge.net/p/soxr/wiki/Home/"
 PKG_URL="$SOURCEFORGE_SRC/soxr/$PKG_NAME-$PKG_VERSION-Source.tar.xz"
 PKG_SOURCE_DIR="$PKG_NAME-$PKG_VERSION-Source"
+PKG_DEPENDS_TARGET="toolchain cmake:host"
 PKG_PRIORITY="optional"
 PKG_SECTION="audio"
 PKG_SHORTDESC="soxr: a library which performs one-dimensional sample-rate conversion."
@@ -32,6 +33,7 @@ PKG_LONGDESC="The SoX Resampler library performs one-dimensional sample-rate con
 PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
+# package specific configure options
 configure_target() {
   cmake -DCMAKE_TOOLCHAIN_FILE=$CMAKE_CONF \
         -DCMAKE_INSTALL_PREFIX=/usr \
