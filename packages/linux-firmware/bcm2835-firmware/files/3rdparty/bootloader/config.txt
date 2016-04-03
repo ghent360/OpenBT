@@ -108,5 +108,5 @@
 # all values below this line were inserted from config.txt.bk (your old config)
 # and can be merged with the above values
 ################################################################################
-device_tree_overlay=overlays/rpi-dac-overlay.dtb
+device_tree_overlay=overlays/rpi-dac.dtbo
 boot_delay=0
