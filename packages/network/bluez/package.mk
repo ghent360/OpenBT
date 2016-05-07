@@ -68,13 +68,8 @@ PKG_CONFIGURE_OPTS_TARGET="--disable-dependency-tracking \
 pre_configure_target() {
 # bluez fails to build in subdirs
   cd $ROOT/$PKG_BUILD
-<<<<<<< HEAD
   rm -rf .$TARGET_NAME
-=======
-    rm -rf .$TARGET_NAME
-
   export LIBS="-lncurses -lterminfo"
->>>>>>> d83a51b6c19d5a04176fb3a6b163e572bbf45191
 }
 
 post_makeinstall_target() {
