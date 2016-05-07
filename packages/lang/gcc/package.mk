@@ -17,7 +17,7 @@
 ################################################################################
 
 PKG_NAME="gcc"
-PKG_VERSION="5.3.0"
+PKG_VERSION="6.1.0"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
@@ -61,6 +61,7 @@ BOOTSTRAP_CONFIGURE_OPTS="--host=$HOST_NAME \
                           --disable-libssp \
                           --disable-libgomp \
                           --enable-cloog-backend=isl \
+                          --disable-libmpx \
                           --disable-shared \
                           --disable-multilib \
                           --disable-threads \
@@ -96,6 +97,7 @@ PKG_CONFIGURE_OPTS_HOST="--target=$TARGET_NAME \
                          --enable-lto \
                          --disable-libquadmath \
                          --disable-libgomp \
+                         --disable-libmpx \
                          --enable-tls \
                          --enable-shared \
                          --disable-static \
