@@ -39,6 +39,10 @@ for i in $SKINS; do
   PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET $MEDIACENTER-theme-$i"
 done
 
+if [ -n "$DEBUG" ]; then
+  PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET gdb"
+fi
+
 if [ "$MEDIACENTER" = "kodi" ]; then
 # some python stuff needed for various addons
   PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET Pillow"

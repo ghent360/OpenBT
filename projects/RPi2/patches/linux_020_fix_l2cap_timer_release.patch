@@ -1,0 +1,27 @@
+From f6d001d1845e84cf2c91d035e33af3df74ded726 Mon Sep 17 00:00:00 2001
+From: Venelin Efremov <veffremov.ve@gmail.com>
+Date: Sun, 22 May 2016 22:24:20 -0700
+Subject: [PATCH] Fix l2cap timer not being released properly.
+
+---
+ net/bluetooth/l2cap_core.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/net/bluetooth/l2cap_core.c b/net/bluetooth/l2cap_core.c
+index eb4f5f2..b6c53e2 100644
+--- a/net/bluetooth/l2cap_core.c
++++ b/net/bluetooth/l2cap_core.c
+@@ -7365,7 +7365,9 @@ static inline void l2cap_check_encryption(struct l2cap_chan *chan, u8 encrypt)
+ 			   chan->sec_level == BT_SECURITY_FIPS)
+ 			l2cap_chan_close(chan, ECONNREFUSED);
+ 	} else {
+-		if (chan->sec_level == BT_SECURITY_MEDIUM)
++		if (chan->sec_level == BT_SECURITY_MEDIUM
++                    || chan->sec_level == BT_SECURITY_HIGH
++                    || chan->sec_level == BT_SECURITY_FIPS)
+ 			__clear_chan_timer(chan);
+ 	}
+ }
+-- 
+2.7.4
+
