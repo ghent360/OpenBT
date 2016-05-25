@@ -14,7 +14,7 @@
   ROOT_PASSWORD="openbt"
 
 # Mediacenter to use (kodi / no)
-  MEDIACENTER="bluez_audio"
+  MEDIACENTER="bt-a2dp"
 
 
 # build and install espeak support (yes / no)
@@ -28,7 +28,7 @@
 
 # build and install bluetooth support (yes / no)
   BLUETOOTH_SUPPORT="yes"
-  BLUETOOTH_VERSION=5
+  BLUETOOTH_VERSION=4
 
 # build and install Avahi (Zeroconf) daemon (yes / no)
   AVAHI_DAEMON="no"
