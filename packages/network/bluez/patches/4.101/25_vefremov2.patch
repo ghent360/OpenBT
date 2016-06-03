@@ -1,0 +1,187 @@
+Index: avrcp/audio/control.c
+===================================================================
+--- avrcp.orig/audio/control.c	2015-02-02 01:15:14.036890762 -0800
++++ avrcp/audio/control.c	2015-02-05 23:38:38.309930883 -0800
+@@ -201,34 +201,46 @@
+ struct GetCapabilitiesReq {
+ 	struct avrcp_header hdr;
+ 	uint8_t capability_id;
+-};
++} __attribute__ ((packed));
+ 
+ struct GetCapabilitiesResponse {
+ 	struct avrcp_header hdr;
+ 	uint8_t capability_id;
+ 	uint8_t capability_cnt;
+ 	uint8_t data[0];
+-};
++} __attribute__ ((packed));
+ 
+ struct RegisterNotificationReq {
+ 	struct avrcp_header hdr;
+ 	uint8_t event_id;
+ 	uint32_t report_interval;
+-};
++} __attribute__ ((packed));
+ 
+ struct RegisterNotificationResponse {
+ 	struct avrcp_header hdr;
+ 	uint8_t event_id;
+ 	uint8_t data[0];
+-};
++} __attribute__ ((packed));
+ 
+ struct GetElementAttributesReq {
+ 	struct avrcp_header hdr;
+ 	uint8_t element_id[8];
+ 	uint8_t num_attr_ids;
+ 	uint8_t data[0];
++} __attribute__ ((packed));
++
++struct GetPlayStatusReq {
++	struct avrcp_header hdr;
+ };
+ 
++struct GetPlayStatusResponse {
++	struct avrcp_header hdr;
++	uint8_t song_length[4];
++	uint8_t song_pos[4];
++	uint8_t status;
++} __attribute__ ((packed));
++
++
+ struct control {
+ 	struct audio_device *dev;
+ 	struct avctp *session;
+@@ -264,6 +276,10 @@
+ 	data[1] = value;
+ }
+ 
++static uint32_t get_32_bit_be(uint8_t* data) {
++	return (data[0] << 24) | (data[1] << 16) | (data[2] << 8) | data[3];
++}
++
+ static uint32_t get_24_bit_be(uint8_t* data) {
+ 	return (data[0] << 16) | (data[1] << 8) | data[2];
+ }
+@@ -457,6 +473,7 @@
+ 		g_dbus_send_message(ctx->dev->conn, reply);
+ 		goto exit;
+ 	}
++
+ 	if (operand_count < sizeof(struct GetCapabilitiesResponse)) {
+ 		reply = btd_error_failed(ctx->msg, "Invalid response.");
+ 		g_dbus_send_message(ctx->dev->conn, reply);
+@@ -532,8 +549,7 @@
+ 	set_company_id(&request.hdr, METADATA_COMAPNY_ID);
+ 	request.hdr.packet_type = 0;
+ 	request.hdr.pdu_id = GET_CAPABILITIES_PUD;
+-	set_param_len(&request.hdr, sizeof(struct GetCapabilitiesReq)
+-			- sizeof(struct avrcp_header));
++	set_param_len(&request.hdr, sizeof(request) - sizeof(request.hdr));
+ 	request.capability_id = EVENTS_CAPABILITY_ID;
+ 	avctp_send_vendordep_req(control->session, AVC_CTYPE_STATUS,
+ 			PANNEL_SUBUNIT_ID, (uint8_t*)&request, sizeof(request),
+@@ -542,6 +558,93 @@
+ 	return NULL;
+ }
+ 
++static gboolean get_play_status_cb (struct avctp *session, uint8_t code,
++					uint8_t subunit, uint8_t *operands,
++					size_t operand_count, void *user_data) {
++	int idx;
++	struct msg_reply_ctx* ctx = (struct msg_reply_ctx*)user_data;
++	struct GetPlayStatusResponse* response;
++	DBusMessage *reply;
++
++	ctx->dev->control->in_call = 0;
++
++	if (code != AVC_CTYPE_STABLE) {
++		reply = btd_error_not_supported(ctx->msg);
++		g_dbus_send_message(ctx->dev->conn, reply);
++		goto exit;
++	}
++	if (operand_count < sizeof(struct GetPlayStatusResponse)) {
++		reply = btd_error_failed(ctx->msg, "Invalid response - too short");
++		g_dbus_send_message(ctx->dev->conn, reply);
++		goto exit;
++	}
++	response = (struct GetPlayStatusResponse*)operands;
++	if (response->hdr.pdu_id != GET_PLAYSTATUS_PUD) {
++		reply = btd_error_failed(ctx->msg, "Invalid response - invalid PUD");
++		g_dbus_send_message(ctx->dev->conn, reply);
++		goto exit;
++	}
++
++	reply = dbus_message_new_method_return(ctx->msg);
++	if (reply) {
++		DBusMessageIter args;
++		DBusMessageIter dict;
++		uint32_t value;
++		dbus_message_iter_init_append(reply, &args);
++		dbus_message_iter_open_container(&args, DBUS_TYPE_ARRAY,
++				DBUS_DICT_ENTRY_BEGIN_CHAR_AS_STRING
++				DBUS_TYPE_STRING_AS_STRING DBUS_TYPE_VARIANT_AS_STRING
++				DBUS_DICT_ENTRY_END_CHAR_AS_STRING, &dict);
++
++		value = get_32_bit_be(response->song_length);
++		dict_append_entry(&dict, "SongLength", DBUS_TYPE_UINT32, &value);
++		value = get_32_bit_be(response->song_pos);
++		dict_append_entry(&dict, "SongPos", DBUS_TYPE_UINT32, &value);
++		dict_append_entry(&dict, "Status", DBUS_TYPE_BYTE, &response->status);
++
++		dbus_message_iter_close_container(&args, &dict);
++		g_dbus_send_message(ctx->dev->conn, reply);
++	}
++exit:
++	free_reply_ctx(ctx);
++	return 0;  // remove the handler from the list
++}
++
++static DBusMessage *get_play_status(DBusConnection *conn, DBusMessage *msg,
++								void *data)
++{
++	struct audio_device *device = data;
++	struct control *control = device->control;
++	static struct GetPlayStatusReq request= {0};
++	struct msg_reply_ctx* ctx;
++	int err;
++
++	if (!control->session)
++		return btd_error_not_connected(msg);
++
++	if (!control->target)
++		return btd_error_not_supported(msg);
++
++	if (control->in_call) {
++		return btd_error_busy(msg);
++	}
++
++	ctx = create_reply_ctx(device, msg);
++	if (NULL == ctx)
++		return btd_error_failed(msg, "Out of memory.");
++
++	control->in_call = 1;
++	set_company_id(&request.hdr, METADATA_COMAPNY_ID);
++	request.hdr.packet_type = 0;
++	request.hdr.pdu_id = GET_PLAYSTATUS_PUD;
++	set_param_len(&request.hdr, sizeof(request) - sizeof(request.hdr));
++	avctp_send_vendordep_req(control->session, AVC_CTYPE_STATUS,
++			PANNEL_SUBUNIT_ID, (uint8_t*)&request, sizeof(request),
++			get_play_status_cb, ctx);
++
++	return NULL;
++}
++
+ static DBusMessage *control_get_properties(DBusConnection *conn,
+ 					DBusMessage *msg, void *data)
+ {
+@@ -584,6 +687,8 @@
+ 			GDBUS_ARGS({ "button", "y" }), NULL, send_button) },
+ 	{ GDBUS_ASYNC_METHOD("GetEventCapabilities", NULL,
+ 			GDBUS_ARGS({ "capabilities", "au" }), get_notification_capabilities) },
++	{ GDBUS_ASYNC_METHOD("GetPlayStatus", NULL,
++			GDBUS_ARGS({ "status", "a{sv}" }), get_play_status) },
+ 	{ }
+ };
+ 

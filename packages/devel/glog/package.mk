@@ -1,5 +1,3 @@
-#!/bin/sh
-
 ################################################################################
 #      This file is part of OpenELEC - http://www.openelec.tv
 #      Copyright (C) 2009-2014 Stephan Raue (stephan@openelec.tv)
@@ -18,12 +16,21 @@
 #  along with OpenELEC.  If not, see <http://www.gnu.org/licenses/>.
 ################################################################################
 
-. config/options $1
+PKG_NAME="glog"
+PKG_VERSION="0.3.3"
+PKG_REV="1"
+PKG_ARCH="any"
+PKG_LICENSE="BSD_3"
+PKG_SITE="https://code.google.com/p/google-glog/"
+PKG_URL="https://google-glog.googlecode.com/files/$PKG_NAME-$PKG_VERSION.tar.gz"
+PKG_DEPENDS_TARGET="toolchain zlib gflags"
+PKG_PRIORITY="optional"
+PKG_SECTION="devel"
+PKG_SHORTDESC="Gogle glog support library"
+PKG_LONGDESC="The glog library implements application-level logging. This library provides logging APIs based on C++-style streams and various helper macros."
 
-mkdir -p $RELEASE_DIR/3rdparty/bootloader
-  cp -PR $BUILD/bcm2835-bootloader-*/LICENCE* $RELEASE_DIR/3rdparty/bootloader/
-  cp -PR $BUILD/bcm2835-bootloader-*/bootcode.bin $RELEASE_DIR/3rdparty/bootloader/
-  cp -PR $BUILD/bcm2835-bootloader-*/fixup*.dat $RELEASE_DIR/3rdparty/bootloader/
-  cp -PR $BUILD/bcm2835-bootloader-*/start*.elf $RELEASE_DIR/3rdparty/bootloader/
-  cp -PR $INSTALL/usr/share/bootloader/*.dtb $RELEASE_DIR/3rdparty/bootloader/
-  cp -PR $INSTALL/usr/share/bootloader/overlays $RELEASE_DIR/3rdparty/bootloader/
+PKG_IS_ADDON="no"
+PKG_AUTORECONF="yes"
+
+PKG_CONFIGURE_OPTS_TARGET=
+

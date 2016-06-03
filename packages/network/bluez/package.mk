@@ -17,7 +17,11 @@
 ################################################################################
 
 PKG_NAME="bluez"
-PKG_VERSION="5.39"
+if [ "$BLUETOOTH_VERSION" = "5" ]; then
+  PKG_VERSION="5.39"
+else
+  PKG_VERSION="4.101"
+fi
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
@@ -56,6 +60,7 @@ PKG_CONFIGURE_OPTS_TARGET="--disable-dependency-tracking \
                            --enable-datafiles \
                            --disable-experimental \
                            --enable-sixaxis \
+                           --enable-audio \
                            --with-gnu-ld \
                            $BLUEZ_CONFIG \
                            storagedir=/storage/.cache/bluetooth"
@@ -69,11 +74,13 @@ pre_configure_target() {
 }
 
 post_makeinstall_target() {
-  rm -rf $INSTALL/usr/lib/systemd
-  rm -rf $INSTALL/usr/bin/bccmd
-  rm -rf $INSTALL/usr/bin/bluemoon
-  rm -rf $INSTALL/usr/bin/ciptool
-  rm -rf $INSTALL/usr/share/dbus-1
+  if [ "$BLUETOOTH_VERSION" = "5" ]; then
+    rm -rf $INSTALL/usr/lib/systemd
+    rm -rf $INSTALL/usr/bin/bccmd
+    rm -rf $INSTALL/usr/bin/bluemoon
+    rm -rf $INSTALL/usr/bin/ciptool
+    rm -rf $INSTALL/usr/share/dbus-1
+  fi
 }
 
 post_install() {

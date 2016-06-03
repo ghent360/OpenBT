@@ -1,0 +1,24 @@
+From: Ricardo Salveti <ricardo.salveti@canonical.com>
+Subject: disabling default inband ringtone option
+
+Inband ringtone is not yet supported by our userspace, so disable it
+by default on telephony-ofono (lack of a config, disabling at the
+definition). Can be removed once telephony-service is ready for inband
+ringtone (and pulseaudio-droid, on touch).
+
+Bug-Ubuntu: https://bugs.launchpad.net/bugs/1363046
+
+Index: bluez-4.101/audio/telephony-ofono.c
+===================================================================
+--- bluez-4.101.orig/audio/telephony-ofono.c
++++ bluez-4.101/audio/telephony-ofono.c
+@@ -1548,8 +1548,8 @@ static void handle_service_disconnect(DB
+ 
+ int telephony_init(void)
+ {
++	/* Ubuntu: INBAND RINGTONE not set by default as not yet supported by userspace  */
+ 	uint32_t features = AG_FEATURE_EC_ANDOR_NR |
+-				AG_FEATURE_INBAND_RINGTONE |
+ 				AG_FEATURE_REJECT_A_CALL |
+ 				AG_FEATURE_ENHANCED_CALL_STATUS |
+ 				AG_FEATURE_ENHANCED_CALL_CONTROL |

@@ -63,6 +63,7 @@ unset -f unpack
 unset -f post_unpack
 unset -f pre_patch
 unset -f post_patch
+unset -f PKG_ZIP_NEW
 
 . $PKG_DIR/package.mk
 
@@ -82,6 +83,7 @@ else
     $SCRIPTS/extract $1 "$1*.tgz"     $BUILD
     $SCRIPTS/extract $1 "$1*.7z"      $BUILD
     $SCRIPTS/extract $1 "$1*.zip"     $BUILD
+    $SCRIPTS/extract $1 `basename $PKG_URL`     $BUILD
   elif [ -n "$PKG_GIT_URL" ]; then
     $SCRIPTS/extract $1 "$1*.tar.xz"  $BUILD
   fi

@@ -1,5 +1,3 @@
-#!/bin/sh
-
 ################################################################################
 #      This file is part of OpenELEC - http://www.openelec.tv
 #      Copyright (C) 2009-2014 Stephan Raue (stephan@openelec.tv)
@@ -18,12 +16,27 @@
 #  along with OpenELEC.  If not, see <http://www.gnu.org/licenses/>.
 ################################################################################
 
-. config/options $1
+PKG_NAME="bt-a2dp"
+PKG_VERSION="1.3.3"
+PKG_REV="1"
+PKG_ARCH="any"
+PKG_LICENSE="APACHE-2"
+PKG_SITE="http://iquri.us/a2dp"
+PKG_URL="http://localhost/$PKG_NAME-$PKG_VERSION.tar.gz"
+PKG_DEPENDS_TARGET="toolchain glibc alsa-lib glog gflags espeak libgcrypt lzo libvorbis libogg fdk-aac soxr"
+PKG_PRIORITY="optional"
+PKG_SECTION="audio"
+PKG_SHORTDESC="bt-a2dp: Bluetoothe A2DB sink daemon"
+PKG_LONGDESC="This package lets unicorns out of the speakers."
 
-mkdir -p $RELEASE_DIR/3rdparty/bootloader
-  cp -PR $BUILD/bcm2835-bootloader-*/LICENCE* $RELEASE_DIR/3rdparty/bootloader/
-  cp -PR $BUILD/bcm2835-bootloader-*/bootcode.bin $RELEASE_DIR/3rdparty/bootloader/
-  cp -PR $BUILD/bcm2835-bootloader-*/fixup*.dat $RELEASE_DIR/3rdparty/bootloader/
-  cp -PR $BUILD/bcm2835-bootloader-*/start*.elf $RELEASE_DIR/3rdparty/bootloader/
-  cp -PR $INSTALL/usr/share/bootloader/*.dtb $RELEASE_DIR/3rdparty/bootloader/
-  cp -PR $INSTALL/usr/share/bootloader/overlays $RELEASE_DIR/3rdparty/bootloader/
+PKG_IS_ADDON="no"
+PKG_AUTORECONF="yes"
+
+# package specific configure options
+PKG_CONFIGURE_OPTS_TARGET="ac_cv_func_malloc_0_nonnull=yes"
+
+post_install() {
+  ln -sf a2dp.target $INSTALL/usr/lib/systemd/system/default.target
+  enable_service a2dp.service
+}
+

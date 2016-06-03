@@ -1,0 +1,13 @@
+Index: avrcp/src/main.conf
+===================================================================
+--- avrcp.orig/src/main.conf	2015-03-14 18:46:27.691150072 -0700
++++ avrcp/src/main.conf	2015-06-27 11:41:33.158150823 -0700
+@@ -10,7 +10,7 @@
+ 
+ # Default device class. Only the major and minor device class bits are
+ # considered.
+-Class = 0x000100
++Class = 0x200420
+ 
+ # How long to stay in discoverable mode before going back to non-discoverable
+ # The value is in seconds. Default is 180, i.e. 3 minutes.

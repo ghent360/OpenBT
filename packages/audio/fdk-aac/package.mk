@@ -1,5 +1,3 @@
-#!/bin/sh
-
 ################################################################################
 #      This file is part of OpenELEC - http://www.openelec.tv
 #      Copyright (C) 2009-2014 Stephan Raue (stephan@openelec.tv)
@@ -18,12 +16,23 @@
 #  along with OpenELEC.  If not, see <http://www.gnu.org/licenses/>.
 ################################################################################
 
-. config/options $1
+PKG_NAME="fdk-aac"
+PKG_VERSION="0.1.4a"
+PKG_REV="1"
+PKG_ARCH="any"
+PKG_LICENSE="APACHE-2"
+PKG_SITE="http://sourceforge.net/projects/opencore-amr/"
+PKG_URL="https://github.com/ghent360/fdk-aac/archive/v$PKG_VERSION.zip"
+PKG_DEPENDS_TARGET="toolchain glibc"
+PKG_PRIORITY="optional"
+PKG_SECTION="audio"
+PKG_SHORTDESC="fdk-aac: The Fraunhofer FDK AAC Codec Library"
+PKG_LONGDESC="The Fraunhofer FDK AAC Codec Library for Android ('FDK AAC Codec') is software that implements the MPEG Advanced Audio Coding ('AAC') encoding and decoding scheme for digital audio. This FDK AAC Codec software is intended to be used on a wide variety of Android devices."
 
-mkdir -p $RELEASE_DIR/3rdparty/bootloader
-  cp -PR $BUILD/bcm2835-bootloader-*/LICENCE* $RELEASE_DIR/3rdparty/bootloader/
-  cp -PR $BUILD/bcm2835-bootloader-*/bootcode.bin $RELEASE_DIR/3rdparty/bootloader/
-  cp -PR $BUILD/bcm2835-bootloader-*/fixup*.dat $RELEASE_DIR/3rdparty/bootloader/
-  cp -PR $BUILD/bcm2835-bootloader-*/start*.elf $RELEASE_DIR/3rdparty/bootloader/
-  cp -PR $INSTALL/usr/share/bootloader/*.dtb $RELEASE_DIR/3rdparty/bootloader/
-  cp -PR $INSTALL/usr/share/bootloader/overlays $RELEASE_DIR/3rdparty/bootloader/
+PKG_IS_ADDON="no"
+PKG_AUTORECONF="yes"
+PKG_ZIP_NEW="yes"
+
+# package specific configure options
+PKG_CONFIGURE_OPTS_TARGET="ac_cv_func_malloc_0_nonnull=yes"
+

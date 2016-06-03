@@ -1,0 +1,19 @@
+--- bluez-4.101/acinclude.m4	2012-06-22 09:36:49.000000000 -0700
++++ /home/vne-marti/raspi/OpenELEC.tv/build.OpenBT-RPi.arm-devel/bluez-4.101/acinclude.m4	2014-11-28 19:29:01.540842326 -0800
+@@ -70,10 +70,12 @@ AC_DEFUN([AC_INIT_BLUEZ], [
+ 		configdir="${sysconfdir}/bluetooth"
+ 	fi
+ 
+-	if (test "$localstatedir" = '${prefix}/var'); then
+-		storagedir="${prefix}/var/lib/bluetooth"
+-	else
+-		storagedir="${localstatedir}/lib/bluetooth"
++        if (test "x$storagedir" = 'x'); then
++		if (test "$localstatedir" = '${prefix}/var'); then
++			storagedir="${prefix}/var/lib/bluetooth"
++		else
++			storagedir="${localstatedir}/lib/bluetooth"
++		fi
+ 	fi
+ 
+ 	AC_DEFINE_UNQUOTED(CONFIGDIR, "${configdir}",

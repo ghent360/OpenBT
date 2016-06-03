@@ -76,7 +76,7 @@
   fi
 
   # clear screen and hide cursor
-  clear
+  #clear
   if [ -f /sys/devices/virtual/graphics/fbcon/cursor_blink ] ; then
     echo 0 > /sys/devices/virtual/graphics/fbcon/cursor_blink
   fi
@@ -206,7 +206,7 @@
       mount $MOUNT_OPTIONS $1 $2 >&$SILENT_OUT 2>&1
       [ "$?" -eq "0" ] && ERR_ENV=0 && break
 
-      usleep 1000000
+      # usleep 1000000
     done
     [ "$ERR_ENV" -ne "0" ] && error "mount_common" "Could not mount $1"
   }
@@ -430,16 +430,16 @@
         /bin/busybox umount /storage
       fi
 
-    usleep 2000000
+    usleep 200000
     /bin/busybox reboot
   }
 
   force_fsck() {
     echo "Filesystem corruption has been detected"
     echo "To prevent an automatic repair attempt continuing"
-    echo "press any key or power off your system within the next 120 seconds"
+    echo "press any key or power off your system within the next 2 seconds"
     echo ""
-    read -t120 -n1
+    read -t2 -n1
     # The exit status is 0 if input is available
     # The exit status is greater than 128 if the timeout is exceeded
     if [ "$?" -ne "0" -o "$?" -gt "128" ] ; then
@@ -563,7 +563,7 @@
         rm -rf $UPDATE_DIR/[0-9a-zA-Z]* &>/dev/null
         echo "Updating not supported on netboot. normal startup in 10s..."
         sync
-        usleep 10000000
+        usleep 100000
         return 0
       fi
 
@@ -579,7 +579,7 @@
         if [ ! -f "$UPDATE_DIR/$UPDATE_KERNEL" -o ! -f "$UPDATE_DIR/$UPDATE_SYSTEM" ] ; then
           echo "missing ${UPDATE_KERNEL} or ${UPDATE_SYSTEM}... normal startup in 10s"
           sync
-          usleep 10000000
+          usleep 100000
           return 0
         fi
       fi
@@ -654,13 +654,13 @@
           rm -rf $UPDATE_DIR/[0-9a-zA-Z]* &>/dev/null
           echo "md5 check failed. normal startup in 30s..."
           sync
-          usleep 30000000
+          usleep 300000
         fi
       else
         rm -rf $UPDATE_DIR/[0-9a-zA-Z]* &>/dev/null
         echo "size check failed. normal startup in 30s..."
         sync
-        usleep 30000000
+        usleep 300000
       fi
     fi
   }
@@ -686,7 +686,7 @@
       echo "your installation is now broken"
       echo ""
       echo "normal boot in 60s..."
-      usleep 60000000
+      usleep 600000
     fi
 
 
@@ -704,7 +704,6 @@
       mount_flash \
       load_splash \
       mount_storage \
-      check_update \
       prepare_sysroot; do
     $BOOT_STEP
     [ -n "$DEBUG" ] && break_after $BOOT_STEP

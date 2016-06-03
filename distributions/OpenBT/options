@@ -1,0 +1,143 @@
+# Name of the Distro to build (full name, without special characters)
+  DISTRONAME="OpenBT"
+
+# short project description
+  DESCRIPTION="OpenBT is a minimal linux environment for Bluetooth Appliance."
+
+# Welcome Message for e.g. SSH Server (up to 5 Lines)
+  GREETING0="#############################################"
+  GREETING1="# OpenBT - The bluetooth audio for everyone #"
+  GREETING2="#############################################"
+  GREETING3=""
+
+# Root password to integrate in the target system
+  ROOT_PASSWORD="openbt"
+
+# Mediacenter to use (kodi / no)
+  MEDIACENTER="bt-a2dp"
+
+
+# build and install espeak support (yes / no)
+  ESPEAK_SUPPORT="yes"
+
+# additional drivers to install:
+# for a list of additinoal drivers see packages/linux-drivers
+# Space separated list is supported,
+# e.g. ADDITIONAL_DRIVERS="DRIVER1 DRIVER2"
+  ADDITIONAL_DRIVERS=""
+
+# build and install bluetooth support (yes / no)
+  BLUETOOTH_SUPPORT="yes"
+  BLUETOOTH_VERSION=4
+
+# build and install Avahi (Zeroconf) daemon (yes / no)
+  AVAHI_DAEMON="no"
+
+# build with NFS support (mounting nfs shares via the OS) (yes / no)
+  NFS_SUPPORT="no"
+
+# build with Samba Client support (mounting samba shares via the OS) (yes / no)
+  SAMBA_SUPPORT="no"
+
+# build and install Samba Server (yes / no)
+  SAMBA_SERVER="no"
+
+# build and install SFTP Server (yes / no)
+  SFTP_SERVER="no"
+
+# build and install diskmounter support (udevil)
+# this service provide auto mounting support for external drives in the
+# mediacenter also automount internally drives at boottime via udev (yes / no)
+  UDEVIL="yes"
+
+# build and install exFAT fuse support (yes / no)
+  EXFAT="yes"
+
+# build and install NTFS-3G fuse support (yes / no)
+  NTFS3G="yes"
+
+# build and install hfs filesystem utilities (yes / no)
+  HFSTOOLS="no"
+
+# Windowmanager to use (ratpoison / fluxbox / none)
+  WINDOWMANAGER="none"
+
+# Xorg Graphic drivers to use (all / i915,i965,r200,r300,r600,nvidia)
+# Space separated list is supported,
+# e.g. GRAPHIC_DRIVERS="i915 i965 r300 r600 radeonsi nvidia"
+  if [ "$TARGET_ARCH" = "x86_64" ]; then
+    GRAPHIC_DRIVERS="r300 r600 radeonsi i915 i965 nvidia"
+  fi
+
+# build and install remote support (yes / no)
+  REMOTE_SUPPORT="no"
+
+# build and install ATV IR remote support (yes / no)
+  ATVCLIENT_SUPPORT="no"
+
+# build and install IRServer IR/LCD support (yes / no)
+  IRSERVER_SUPPORT="no"
+
+# build and install Joystick support (yes / no)
+  JOYSTICK_SUPPORT="no"
+
+# build and install CEC adapter support (yes / no)
+  CEC_SUPPORT="no"
+
+# build and install iSCSI support - iscsistart (yes / no)
+  ISCSI_SUPPORT="no"
+
+# LCD driver to Use - Possible drivers are ( Comma seperated:
+# bayrad,CFontz,CFontz633,CFontzPacket,curses,CwLnx,dm140,
+# ea65,EyeboxOne,g15,glcdlib,glk,hd44780,i2500vfd,
+# icp_a106,imon,imonlcd,IOWarrior,irman,irtrans,
+# joy,lb216,lcdm001,lcterm,lirc,lis,MD8800,mdm166a,
+# ms6931,mtc_s16209x,MtxOrb,mx5000,NoritakeVFD,
+# picolcd,pyramid,sed1330,sed1520,serialPOS,
+# serialVFD,shuttleVFD,sli,stv5730,SureElec,svga,vlsys_m428
+# 'all' compiles all drivers;
+# 'all,!xxx,!yyy' de-selects previously selected drivers
+# "none" for disable LCD support
+  LCD_DRIVER="none"
+
+# Support for partitioning and formating disks in initramfs (yes / no)
+# This adds support for parted and mkfs.ext3/4 to initramfs for OEM usage
+  INITRAMFS_PARTED_SUPPORT="no"
+
+# build with swap support (yes / no)
+  SWAP_SUPPORT="no"
+
+# swap support enabled per default (yes / no)
+  SWAP_ENABLED_DEFAULT="no"
+
+# swapfile size if SWAP_SUPPORT=yes in MB
+  SWAPFILESIZE="256"
+
+# build with installer (yes / no)
+  INSTALLER_SUPPORT="yes"
+
+# Testpackages for development (yes / no)
+  TESTING="no"
+
+# OEM packages for OEM's (yes / no)
+  OEM_SUPPORT="no"
+
+# build and install nano text editor (yes / no)
+  NANO_EDITOR="no"
+
+# cron support (yes / no)
+  CRON_SUPPORT="no"
+
+# Distribution Specific source location
+  DISTRO_MIRROR="http://sources.openelec.tv/mirror"
+  DISTRO_SRC="http://sources.openelec.tv/$OPENELEC_VERSION"
+
+# Addon Server Url
+  ADDON_SERVER_URL="http://addons.openelec.tv"
+
+# set the addon dirs
+  ADDON_PATH="$ADDON_VERSION/$PROJECT/$TARGET_ARCH"
+  ADDON_URL="$ADDON_SERVER_URL/$ADDON_PATH"
+
+#Do not install fonts
+  FONTS_SUPPORT="no"

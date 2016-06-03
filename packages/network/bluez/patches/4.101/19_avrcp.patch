@@ -1,0 +1,26 @@
+From: Michael Frey <michael.frey@canonical.com>
+Subject: Fix for BUS Signal when de-referenceing the pdu pointer.
+
+This patch fixes avrcp when the remote connection sends attributes via pdu.  Before this, referencing the identifier would cause a BUS signal and crash bluetoothd.
+
+
+Index: bluez/audio/avrcp.c
+===================================================================
+--- bluez.orig/audio/avrcp.c	2014-07-03 09:46:38.972887000 -0400
++++ bluez/audio/avrcp.c	2014-07-03 09:58:04.292191071 -0400
+@@ -662,13 +662,13 @@
+ 						uint8_t transaction)
+ {
+ 	uint16_t len = ntohs(pdu->params_len);
+-	uint64_t *identifier = (uint64_t *) &pdu->params[0];
++	uint64_t identifier = bt_get_le64(&pdu->params[0]);
+ 	uint16_t pos;
+ 	uint8_t nattr;
+ 	GList *attr_ids;
+ 	uint16_t offset;
+ 
+-	if (len < 9 || *identifier != 0)
++	if (len < 9 || identifier != 0)
+ 		goto err;
+ 
+ 	nattr = pdu->params[8];

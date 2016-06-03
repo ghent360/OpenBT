@@ -38,6 +38,10 @@ if [ -n "$SKINS" ]; then
   done
 fi
 
+if [ -n "$DEBUG" ]; then
+  PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET gdb"
+fi
+
 if [ "$MEDIACENTER" = "kodi" ]; then
 # some python stuff needed for various addons
   PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET Pillow"
@@ -51,4 +55,6 @@ if [ "$MEDIACENTER" = "kodi" ]; then
   if [ "$KODI_LANGUAGE_ADDONS" = "yes" ]; then
     PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET kodi-language-addons"
   fi
+else
+  PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET bt-a2dp"
 fi

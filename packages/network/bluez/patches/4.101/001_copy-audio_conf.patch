@@ -1,0 +1,12 @@
+--- bluez-4.101/Makefile.am	2012-06-22 09:36:49.000000000 -0700
++++ /home/vne-marti/raspi/OpenELEC.tv/build.OpenBT-RPi.arm-devel/bluez-4.101/Makefile.am	2014-11-28 00:35:05.318789312 -0800
+@@ -326,6 +326,9 @@ man_MANS = src/bluetoothd.8
+ 
+ if DATAFILES
+ conf_DATA += src/main.conf
++if AUDIOPLUGIN
++conf_DATA += audio/audio.conf
++endif
+ endif
+ 
+ EXTRA_DIST += src/genbuiltin src/bluetooth.conf src/org.bluez.service \

@@ -164,7 +164,11 @@ EOF
     mcopy $TARGET_IMG/$IMAGE_NAME.system ::/SYSTEM
     mcopy $RELEASE_DIR/3rdparty/bootloader/bootcode.bin ::
     mcopy $RELEASE_DIR/3rdparty/bootloader/fixup.dat ::
+    mcopy $RELEASE_DIR/3rdparty/bootloader/fixup_x.dat ::
+    mcopy $RELEASE_DIR/3rdparty/bootloader/fixup_cd.dat ::
     mcopy $RELEASE_DIR/3rdparty/bootloader/start.elf ::
+    mcopy $RELEASE_DIR/3rdparty/bootloader/start_x.elf ::
+    mcopy $RELEASE_DIR/3rdparty/bootloader/start_cd.elf ::
     mcopy $RELEASE_DIR/3rdparty/bootloader/config.txt ::
 
     for dtb in $RELEASE_DIR/3rdparty/bootloader/*.dtb ; do

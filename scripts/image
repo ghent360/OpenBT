@@ -132,8 +132,10 @@ fi
   $SCRIPTS/install $BOOTLOADER
   $SCRIPTS/install busybox
   $SCRIPTS/install util-linux
-  $SCRIPTS/install corefonts
   $SCRIPTS/install network
+
+# Fonts
+  [ ! "$FONTS_SUPPORT" = "no" ] && $SCRIPTS/install corefonts
 
 # Graphic support
   [ ! "$DISPLAYSERVER" = "no" ] && $SCRIPTS/install $DISPLAYSERVER
@@ -471,8 +473,12 @@ fi
       # copy Bootloader
         cp -PR $BUILD/bcm2835-firmware-*/LICENCE* $RELEASE_DIR/${DISTRONAME}_${PROJECT}/System/
         cp -PR $BUILD/bcm2835-firmware-*/bootcode.bin $RELEASE_DIR/${DISTRONAME}_${PROJECT}/System/
-        cp -PR $BUILD/bcm2835-firmware-*/fixup_x.dat $RELEASE_DIR/${DISTRONAME}_${PROJECT}/System/fixup.dat
-        cp -PR $BUILD/bcm2835-firmware-*/start_x.elf $RELEASE_DIR/${DISTRONAME}_${PROJECT}/System/start.elf
+        cp -PR $BUILD/bcm2835-firmware-*/fixup.dat $RELEASE_DIR/${DISTRONAME}_${PROJECT}/System/fixup.dat
+        cp -PR $BUILD/bcm2835-firmware-*/fixup_x.dat $RELEASE_DIR/${DISTRONAME}_${PROJECT}/System/fixup_x.dat
+        cp -PR $BUILD/bcm2835-firmware-*/fixup_cd.dat $RELEASE_DIR/${DISTRONAME}_${PROJECT}/System/fixup_cd.dat
+        cp -PR $BUILD/bcm2835-firmware-*/start.elf $RELEASE_DIR/${DISTRONAME}_${PROJECT}/System/start.elf
+        cp -PR $BUILD/bcm2835-firmware-*/start_x.elf $RELEASE_DIR/${DISTRONAME}_${PROJECT}/System/start_x.elf
+        cp -PR $BUILD/bcm2835-firmware-*/start_cd.elf $RELEASE_DIR/${DISTRONAME}_${PROJECT}/System/start_cd.elf
 
       # copy system files
         cp $TARGET_IMG/$IMAGE_NAME.system $RELEASE_DIR/${DISTRONAME}_${PROJECT}/System/SYSTEM

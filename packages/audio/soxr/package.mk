@@ -21,34 +21,36 @@ PKG_VERSION="0.1.2"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="LGPL"
-PKG_SITE="http://sourceforge.net/p/soxr/wiki/Home/"
-PKG_URL="$SOURCEFORGE_SRC/soxr/$PKG_NAME-$PKG_VERSION-Source.tar.xz"
-PKG_SOURCE_DIR="$PKG_NAME-$PKG_VERSION-Source"
-PKG_DEPENDS_TARGET="toolchain cmake:host"
+PKG_SITE="http://sourceforge.net/projects/opencore-amr/"
+PKG_URL="http://iweb.dl.sourceforge.net/project/soxr/$PKG_NAME-$PKG_VERSION-Source.tar.xz"
+PKG_DEPENDS_TARGET="toolchain cmake:host glibc"
 PKG_PRIORITY="optional"
 PKG_SECTION="audio"
-PKG_SHORTDESC="soxr: a library which performs one-dimensional sample-rate conversion."
-PKG_LONGDESC="The SoX Resampler library performs one-dimensional sample-rate conversion. it may be used, for example, to resample PCM-encoded audio."
+PKG_SHORTDESC="libsoxr: High quality, one-dimensional sample-rate conversion library"
+PKG_LONGDESC="The SoX Resampler library libsoxr performs one-dimensional sample-rate conversion—it may be used, for example, to resample PCM-encoded audio.
 
+It aims to give fast and high quality results for any constant (rational or irrational) resampling ratio. Phase-response, preserved bandwidth, aliasing, and rejection level parameters are all configurable; alternatively, simple preset configurations may be selected. An experimental, variable-rate resampling mode of operation is also included."
+PKG_SOURCE_DIR="$PKG_NAME-$PKG_VERSION-Source"
 PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
-# package specific configure options
 configure_target() {
   cmake -DCMAKE_TOOLCHAIN_FILE=$CMAKE_CONF \
         -DCMAKE_INSTALL_PREFIX=/usr \
+        -DCMAKE_BUILD_TYPE=Release \
         -DHAVE_WORDS_BIGENDIAN_EXITCODE=1 \
         -DBUILD_TESTS=0 \
-        -DBUILD_EXAMPLES=1 \
-        -DBUILD_SHARED_LIBS=OFF ..
+        -DBUILD_EXAMPLES=0 \
+        -DWITH_LSR_BINDINGS=0 \
+        -Wno-dev \
+        ..
 }
 
-#post_makeinstall_target() {
-#  rm -rf $INSTALL/usr/bin
-#  # pkgconf hack
-#  $SED "s:\(['=\" ]\)/usr:\\1$SYSROOT_PREFIX/usr:g" $SYSROOT_PREFIX/usr/bin/taglib-config
-#  $SED "s:\([':\" ]\)-I/usr:\\1-I$SYSROOT_PREFIX/usr:g" $SYSROOT_PREFIX/usr/lib/pkgconfig/taglib.pc
-#  $SED "s:\([':\" ]\)-L/usr:\\1-L$SYSROOT_PREFIX/usr:g" $SYSROOT_PREFIX/usr/lib/pkgconfig/taglib.pc
-#  $SED "s:\([':\" ]\)-I/usr:\\1-I$SYSROOT_PREFIX/usr:g" $SYSROOT_PREFIX/usr/lib/pkgconfig/taglib_c.pc
-#  $SED "s:\([':\" ]\)-L/usr:\\1-L$SYSROOT_PREFIX/usr:g" $SYSROOT_PREFIX/usr/lib/pkgconfig/taglib_c.pc
-#}
+post_makeinstall_target() {
+  echo Post Install
+  #mv $SYSROOT_PREFIX/usr/lib/libyajl_s.a $SYSROOT_PREFIX/usr/lib/libyajl.a
+  #rm $SYSROOT_PREFIX/usr/lib/libyajl.so*
+  #rm -rf $INSTALL/usr/bin
+  #rm -rf $INSTALL/usr/lib
+}
+

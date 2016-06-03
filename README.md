@@ -1,3 +1,5 @@
+This project is a slightly modifier version of the OpenELEC embedded linux distribution. The main change is added support for the old Bluez V4 stack. The original readme from OpenELEC is bellow:
+
 #Orange Pi 2 development
 
 **This is unofficial and should be usable, however expect bugs**
@@ -16,7 +18,6 @@
 Any help appreciated via pull requests or [Orange Pi forum](http://www.orangepi.org/orangepibbsen/forum.php?mod=viewthread&tid=648)
 
 Latest prebuilt images can be found [here](http://www.orangepi.org/orangepibbsen/forum.php?mod=viewthread&tid=1075)
-
 
 [OpenELEC](http://www.openelec.tv)
 
