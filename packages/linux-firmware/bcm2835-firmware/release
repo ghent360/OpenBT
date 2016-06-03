@@ -21,9 +21,9 @@
 . config/options $1
 
 mkdir -p $RELEASE_DIR/3rdparty/bootloader
-  cp -PR $BUILD/bcm2835-bootloader-*/LICENCE* $RELEASE_DIR/3rdparty/bootloader/
-  cp -PR $BUILD/bcm2835-bootloader-*/bootcode.bin $RELEASE_DIR/3rdparty/bootloader/
-  cp -PR $BUILD/bcm2835-bootloader-*/fixup*.dat $RELEASE_DIR/3rdparty/bootloader/
-  cp -PR $BUILD/bcm2835-bootloader-*/start*.elf $RELEASE_DIR/3rdparty/bootloader/
+  cp -PR $BUILD/bcm2835-firmware-*/boot/LICENCE* $RELEASE_DIR/3rdparty/bootloader/
+  cp -PR $BUILD/bcm2835-firmware-*/boot/bootcode.bin $RELEASE_DIR/3rdparty/bootloader/
+  cp -PR $BUILD/bcm2835-firmware-*/boot/fixup*.dat $RELEASE_DIR/3rdparty/bootloader/
+  cp -PR $BUILD/bcm2835-firmware-*/boot/start*.elf $RELEASE_DIR/3rdparty/bootloader/
   cp -PR $INSTALL/usr/share/bootloader/*.dtb $RELEASE_DIR/3rdparty/bootloader/
   cp -PR $INSTALL/usr/share/bootloader/overlays $RELEASE_DIR/3rdparty/bootloader/

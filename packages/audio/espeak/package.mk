@@ -23,6 +23,7 @@ PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="http://espeak.sourceforge.net/"
 PKG_URL="http://sourceforge.net/projects/espeak/files/espeak/espeak-1.48/$PKG_NAME-$PKG_VERSION.zip"
+PKG_SOURCE_DIR="$PKG_NAME/$PKG_NAME-$PKG_VERSION"
 PKG_DEPENDS_TARGET="toolchain"
 PKG_PRIORITY="optional"
 PKG_SECTION="audio"
@@ -44,6 +45,12 @@ make_target() {
 }
 
 makeinstall_target() {
+  make -C src \
+       CXXFLAGS="$CXXFLAGS" \
+       LDFLAGS="$LDFLAGS" \
+       AUDIO="" \
+       DESTDIR=$SYSROOT_PREFIX install
+
   make -C src \
        CXXFLAGS="$CXXFLAGS" \
        LDFLAGS="$LDFLAGS" \
