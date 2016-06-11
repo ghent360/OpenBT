@@ -1,0 +1,25 @@
+From 7ee02dd4d686e3b1752be6eb8f2d490e64a4a3e4 Mon Sep 17 00:00:00 2001
+From: Venelin Efremov <veffremov.ve@gmail.com>
+Date: Fri, 10 Jun 2016 23:37:57 -0700
+Subject: [PATCH] Update audio drive debug msg.
+
+---
+ sound/soc/sunxi/daudio0/snddaudio0.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/sunxi/daudio0/snddaudio0.c b/sound/soc/sunxi/daudio0/snddaudio0.c
+index 3bcafa6..fb3cf52 100755
+--- a/sound/soc/sunxi/daudio0/snddaudio0.c
++++ b/sound/soc/sunxi/daudio0/snddaudio0.c
+@@ -184,7 +184,7 @@ static int __init snddaudio_codec_init(void)
+ 		if ((err = platform_driver_register(&snddaudio_codec_driver)) < 0)
+ 			return err;
+ 	} else {
+-       pr_err("[I2S]snddaudio cannot find any using configuration for controllers, return directly!\n");
++       pr_err("[I2S]snddaudio cannot find any using configuration for controller %s, return directly!\n", TDM_NAME);
+        return 0;
+     }
+ 	
+-- 
+2.7.4
+
