@@ -1,6 +1,8 @@
+#!/bin/sh
+
 ################################################################################
 #      This file is part of OpenELEC - http://www.openelec.tv
-#      Copyright (C) 2009-2016 Stephan Raue (stephan@openelec.tv)
+#      Copyright (C) 2016 Jernej Škrabec (jernej.skrabec@siol.net)
 #
 #  OpenELEC is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -16,27 +18,17 @@
 #  along with OpenELEC.  If not, see <http://www.gnu.org/licenses/>.
 ################################################################################
 
-PKG_NAME="wlan-firmware"
-PKG_VERSION="d79ada7"
-PKG_REV="1"
-PKG_ARCH="any"
-PKG_LICENSE="Free-to-use"
-PKG_SITE="https://github.com/jernejsk/wlan-firmware"
-PKG_GIT_URL="https://github.com/jernejsk/wlan-firmware.git"
-PKG_GIT_BRANCH="master"
-PKG_DEPENDS_TARGET="toolchain"
-PKG_PRIORITY="optional"
-PKG_SECTION="firmware"
-PKG_SHORTDESC="wlan-firmware: firmwares for various WLAN drivers"
-PKG_LONGDESC="wlan-firmware: firmwares for various WLAN drivers"
-
-PKG_IS_ADDON="no"
-PKG_AUTORECONF="no"
-
-make_target() {
-  : # nothing todo
-}
-
-makeinstall_target() {
-  DESTDIR=$INSTALL ./install
-}
+# check if bluetooth is enabled
+value=`read_fex bt_para bt_used`
+if [ "$value" == "1" ]; then
+  # for now we know to handle only ap6212
+  value=`read_fex module_para module_num`
+  if [ "$value" == "4" ]; then
+    echo "0" > /sys/class/rfkill/rfkill0/state
+    echo "1" > /sys/class/rfkill/rfkill0/state
+    # assert RTS on UART
+    echo " " > /dev/ttyS1
+    # load firmware and start it
+    hciattach /dev/ttyS1 bcm43xx 1500000
+  fi
+fi
