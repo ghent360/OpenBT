@@ -118,7 +118,8 @@
   # additional Firmware to use (dvb-firmware, misc-firmware, wlan-firmware)
   # Space separated list is supported,
   # e.g. FIRMWARE="dvb-firmware misc-firmware wlan-firmware"
-    FIRMWARE="misc-firmware wlan-firmware dvb-firmware"
+  #  FIRMWARE="misc-firmware wlan-firmware dvb-firmware"
+    FIRMWARE="misc-firmware"
 
   # build and install ATV IR remote support (yes / no)
     ATVCLIENT_SUPPORT="no"
@@ -139,4 +140,4 @@
     INSTALLER_SUPPORT="no"
 
   # additional drivers
-    ADDITIONAL_DRIVERS+=" mt7601u rtk8188eu media_build RTL8189ES RTL8189FS"
+  #  ADDITIONAL_DRIVERS+=" mt7601u rtk8188eu media_build RTL8189ES RTL8189FS"

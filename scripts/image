@@ -346,7 +346,7 @@ fi
           if [ -n "$SYSTEM" ]; then
             UBOOT_SYSTEM="$SYSTEM"
           else
-            UBOOT_SYSTEM="opi2"
+            UBOOT_SYSTEM="opione"
           fi
         fi
 
