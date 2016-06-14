@@ -43,11 +43,13 @@ case "$LINUX" in
     PKG_VERSION="f6f3129"
     PKG_GIT_URL="https://github.com/raspberrypi/linux.git"
     PKG_GIT_BRANCH="rpi-4.4.y"
+    PKG_KEEP_CHECKOUT="yes"
     ;;
   sun8i)
     PKG_VERSION="3753b95"
     PKG_GIT_URL="https://github.com/jernejsk/linux.git"
     PKG_GIT_BRANCH="master"
+    PKG_KEEP_CHECKOUT="yes"
     PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET sunxi-tools:host u-boot-tools H3-sys-utils"
     ;;
   *)
