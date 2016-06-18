@@ -46,7 +46,7 @@ case "$LINUX" in
     PKG_KEEP_CHECKOUT="yes"
     ;;
   sun8i)
-    PKG_VERSION="3753b95"
+    PKG_VERSION="d0bce70"
     PKG_GIT_URL="https://github.com/jernejsk/linux.git"
     PKG_GIT_BRANCH="master"
     PKG_KEEP_CHECKOUT="yes"
