@@ -18,15 +18,17 @@
 
 PKG_NAME="bluez"
 if [ "$BLUETOOTH_VERSION" = "5" ]; then
-  PKG_VERSION="5.39"
+  PKG_VERSION="c3fd16ddd9"
+  PKG_GIT_URL="https://github.com/ghent360/bluez.git"
+  PKG_GIT_BRANCH="master"
 else
   PKG_VERSION="4.101"
+  PKG_URL="http://www.kernel.org/pub/linux/bluetooth/$PKG_NAME-$PKG_VERSION.tar.xz"
 fi
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="http://www.bluez.org/"
-PKG_URL="http://www.kernel.org/pub/linux/bluetooth/$PKG_NAME-$PKG_VERSION.tar.xz"
 PKG_DEPENDS_TARGET="toolchain dbus glib readline netbsd-curses systemd"
 PKG_PRIORITY="optional"
 PKG_SECTION="network"
