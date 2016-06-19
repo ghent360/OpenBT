@@ -1,4 +1,11 @@
-This project is a slightly modifier version of the OpenELEC embedded linux distribution. The main change is added support for the old Bluez V4 stack. The original readme from OpenELEC is bellow:
+This project is a slightly modifier version of the OpenELEC embedded linux distribution. The main change is added support for the old Bluez V4 stack.
+
+This OS runs on a Raspberry Pi inside the Jaguar Optical audio adapter. The purpose of the image is to handle audio streaming via bluetooth and
+output the audio via the i2s inteface on the Pi. The audio is then routed to the car's optical D2B bus via proprietary hardware.
+
+There is a branch of the OS image fo the Orange Pi as an experiment.
+
+The original readme from OpenELEC is bellow:
 
 [OpenELEC](http://www.openelec.tv)
 
