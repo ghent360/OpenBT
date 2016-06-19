@@ -1,0 +1,24 @@
+From 32318a9cd388d9a5b002edb47e63dbb5abcd8b65 Mon Sep 17 00:00:00 2001
+From: Venelin Efremov <veffremov.ve@gmail.com>
+Date: Sat, 18 Jun 2016 21:31:02 -0700
+Subject: [PATCH 2/2] Fix the occ8001 config file.
+
+---
+ sound/soc/codecs/Kconfig | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 5f28458..3b6c630 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -1021,4 +1021,7 @@ config SND_SOC_TPA6130A2
+ 	tristate "Texas Instruments TPA6130A2 headphone amplifier"
+ 	depends on I2C
+ 
++config SND_SOC_OCC8001
++	tristate "Conan OCC8001 D2B interface chip"
++
+ endmenu
+-- 
+2.7.4
+

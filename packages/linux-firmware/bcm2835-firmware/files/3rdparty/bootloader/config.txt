@@ -109,7 +109,7 @@
 # and can be merged with the above values
 ################################################################################
 boot_delay=0
-dtoverlay=rpi-dac
+dtoverlay=iquryus-optical
 dtparam=audio=on
 dtoverlay=i2c-rtc,ds3231
 
