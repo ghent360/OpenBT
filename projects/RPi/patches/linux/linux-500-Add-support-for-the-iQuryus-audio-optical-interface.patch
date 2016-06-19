@@ -1,0 +1,338 @@
+From a68897392c130ac2106cb3ddc327c206b1c86a99 Mon Sep 17 00:00:00 2001
+From: Venelin Efremov <veffremov.ve@gmail.com>
+Date: Sat, 18 Jun 2016 21:20:31 -0700
+Subject: [PATCH] Add support for the iQuryus audio optical interface.
+
+---
+ arch/arm/boot/dts/overlays/Makefile                |   1 +
+ .../boot/dts/overlays/iquryus-optical-overlay.dts  |  34 ++++++
+ sound/soc/bcm/Kconfig                              |   8 ++
+ sound/soc/bcm/Makefile                             |   2 +
+ sound/soc/bcm/iquryus-optical.c                    | 119 +++++++++++++++++++++
+ sound/soc/codecs/Kconfig                           |   1 +
+ sound/soc/codecs/Makefile                          |   2 +
+ sound/soc/codecs/occ8001.c                         |  68 ++++++++++++
+ 8 files changed, 235 insertions(+)
+ create mode 100644 arch/arm/boot/dts/overlays/iquryus-optical-overlay.dts
+ create mode 100644 sound/soc/bcm/iquryus-optical.c
+ create mode 100644 sound/soc/codecs/occ8001.c
+
+diff --git a/arch/arm/boot/dts/overlays/Makefile b/arch/arm/boot/dts/overlays/Makefile
+index e6daef5..8cd9064 100644
+--- a/arch/arm/boot/dts/overlays/Makefile
++++ b/arch/arm/boot/dts/overlays/Makefile
+@@ -79,6 +79,7 @@ dtbo-$(RPI_DT_OVERLAYS) += vga666.dtbo
+ dtbo-$(RPI_DT_OVERLAYS) += w1-gpio.dtbo
+ dtbo-$(RPI_DT_OVERLAYS) += w1-gpio-pullup.dtbo
+ dtbo-$(RPI_DT_OVERLAYS) += wittypi.dtbo
++dtbo-$(RPI_DT_OVERLAYS) += iquryus-optical.dtbo
+ 
+ targets += dtbs dtbs_install
+ targets += $(dtbo-y)
+diff --git a/arch/arm/boot/dts/overlays/iquryus-optical-overlay.dts b/arch/arm/boot/dts/overlays/iquryus-optical-overlay.dts
+new file mode 100644
+index 0000000..ea1fd89
+--- /dev/null
++++ b/arch/arm/boot/dts/overlays/iquryus-optical-overlay.dts
+@@ -0,0 +1,34 @@
++// Definitions for iQurius Optical audio interface
++/dts-v1/;
++/plugin/;
++
++/ {
++	compatible = "brcm,bcm2708";
++
++	fragment@0 {
++		target = <&sound>;
++		__overlay__ {
++			compatible = "iquryus,iqconan";
++			i2s-controller = <&i2s>;
++			status = "okay";
++		};
++	};
++
++	fragment@1 {
++		target = <&i2s>;
++		__overlay__ {
++			status = "okay";
++		};
++	};
++
++	fragment@2 {
++		target-path = "/";
++		__overlay__ {
++			occ8001-codec {
++				#sound-dai-cells = <0>;
++				compatible = "conan,occ8001";
++				status = "okay";
++			};
++		};
++	};
++};
+diff --git a/sound/soc/bcm/Kconfig b/sound/soc/bcm/Kconfig
+index 1a3f826..61ad92e 100644
+--- a/sound/soc/bcm/Kconfig
++++ b/sound/soc/bcm/Kconfig
+@@ -64,3 +64,11 @@ config SND_BCM2708_SOC_RASPIDAC3
+ 	select SND_SOC_TPA6130A2
+ 	help
+ 	  Say Y or M if you want to add support for RaspiDAC Rev.3x.
++
++config SND_BCM2708_SOC_IQURYUS_OPTICAL
++        tristate "Support for the iQuryus optical audio interface"
++        depends on SND_BCM2708_SOC_I2S || SND_BCM2835_SOC_I2S
++        select SND_SOC_OCC8001
++        help
++         Say Y or M if you want to add support for the iQuryus optical audio interface.
++
+diff --git a/sound/soc/bcm/Makefile b/sound/soc/bcm/Makefile
+index b21e11e..ac775e3 100644
+--- a/sound/soc/bcm/Makefile
++++ b/sound/soc/bcm/Makefile
+@@ -12,6 +12,7 @@ snd-soc-rpi-dac-objs := rpi-dac.o
+ snd-soc-rpi-proto-objs := rpi-proto.o
+ snd-soc-iqaudio-dac-objs := iqaudio-dac.o
+ snd-soc-raspidac3-objs := raspidac3.o
++snd-soc-iquryus-optical-objs := iquryus-optical.o
+ 
+ obj-$(CONFIG_SND_BCM2708_SOC_HIFIBERRY_DAC) += snd-soc-hifiberry-dac.o
+ obj-$(CONFIG_SND_BCM2708_SOC_HIFIBERRY_DACPLUS) += snd-soc-hifiberry-dacplus.o
+@@ -21,3 +22,4 @@ obj-$(CONFIG_SND_BCM2708_SOC_RPI_DAC) += snd-soc-rpi-dac.o
+ obj-$(CONFIG_SND_BCM2708_SOC_RPI_PROTO) += snd-soc-rpi-proto.o
+ obj-$(CONFIG_SND_BCM2708_SOC_IQAUDIO_DAC) += snd-soc-iqaudio-dac.o
+ obj-$(CONFIG_SND_BCM2708_SOC_RASPIDAC3) += snd-soc-raspidac3.o
++obj-$(CONFIG_SND_BCM2708_SOC_IQURYUS_OPTICAL) += snd-soc-iquryus-optical.o
+diff --git a/sound/soc/bcm/iquryus-optical.c b/sound/soc/bcm/iquryus-optical.c
+new file mode 100644
+index 0000000..6e11c8f
+--- /dev/null
++++ b/sound/soc/bcm/iquryus-optical.c
+@@ -0,0 +1,119 @@
++/*
++ * ASoC Driver for the iQuryus optical audio interface.
++ *
++ * Author:	Venelin Efremov <veffremov.ve@gmail.com>
++ *		Copyright 2016
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * version 2 as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ */
++
++#include <linux/module.h>
++#include <linux/platform_device.h>
++
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++#include <sound/jack.h>
++
++static int snd_iquryus_conan_init(struct snd_soc_pcm_runtime *rtd)
++{
++	return 0;
++}
++
++static int snd_iquryus_conan_hw_params(struct snd_pcm_substream *substream,
++				       struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
++
++	return snd_soc_dai_set_bclk_ratio(cpu_dai, 32*2);
++}
++
++/* machine stream operations */
++static struct snd_soc_ops snd_iquryus_conan_ops = {
++	.hw_params = snd_iquryus_conan_hw_params,
++};
++
++static struct snd_soc_dai_link snd_iquryus_conan_dai[] = {
++{
++	.name		= "iQuryus Conan",
++	.stream_name	= "iQuryus Optical Interface",
++	.cpu_dai_name	= "bcm2708-i2s.0",
++	.codec_dai_name	= "occ8001",
++	.platform_name	= "bcm2708-i2s.0",
++	.codec_name	= "occ8001-codec",
++	.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
++			  SND_SOC_DAIFMT_CBS_CFS,
++	.ops		= &snd_iquryus_conan_ops,
++	.init		= snd_iquryus_conan_init,
++},
++};
++
++/* audio machine driver */
++static struct snd_soc_card snd_iquryus_conan = {
++	.name         = "snd_iquryus_conan",
++	.owner        = THIS_MODULE,
++	.dai_link     = snd_iquryus_conan_dai,
++	.num_links    = ARRAY_SIZE(snd_iquryus_conan_dai),
++};
++
++static int snd_iquryus_conan_probe(struct platform_device *pdev)
++{
++	int ret = 0;
++
++	snd_iquryus_conan.dev = &pdev->dev;
++	
++	if (pdev->dev.of_node) {
++		struct device_node *i2s_node;
++		struct snd_soc_dai_link *dai = &snd_iquryus_conan_dai[0];
++		i2s_node = of_parse_phandle(pdev->dev.of_node, "i2s-controller", 0);
++
++		if (i2s_node) {
++			dai->cpu_dai_name = NULL;
++			dai->cpu_of_node = i2s_node;
++			dai->platform_name = NULL;
++			dai->platform_of_node = i2s_node;
++		}
++	}
++	
++	ret = snd_soc_register_card(&snd_iquryus_conan);
++	if (ret)
++		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n", ret);
++
++	return ret;
++}
++
++static int snd_iquryus_conan_remove(struct platform_device *pdev)
++{
++	return snd_soc_unregister_card(&snd_iquryus_conan);
++}
++
++static const struct of_device_id snd_iquryus_conan_of_match[] = {
++	{ .compatible = "iquryus,iqconan", },
++	{},
++};
++MODULE_DEVICE_TABLE(of, snd_iquryus_conan_of_match);
++
++static struct platform_driver snd_iquryus_conan_driver = {
++        .driver = {
++                .name   = "snd-iquryus-conan",
++                .owner  = THIS_MODULE,
++                .of_match_table = snd_iquryus_conan_of_match,
++        },
++        .probe          = snd_iquryus_conan_probe,
++        .remove         = snd_iquryus_conan_remove,
++};
++
++module_platform_driver(snd_iquryus_conan_driver);
++
++MODULE_AUTHOR("Venelin Efremov <veffremov.ve@gmail.com>");
++MODULE_DESCRIPTION("ASoC Driver for the iQurus optical audio interface");
++MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index ebcfbfd..5f28458 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -194,6 +194,7 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_WM9705 if SND_SOC_AC97_BUS
+ 	select SND_SOC_WM9712 if SND_SOC_AC97_BUS
+ 	select SND_SOC_WM9713 if SND_SOC_AC97_BUS
++	select SND_SOC_OCC8001
+         help
+           Normally ASoC codec drivers are only built if a machine driver which
+           uses them is also built since they are only usable with a machine
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index 9974a13..ccb6ab5 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -81,6 +81,7 @@ snd-soc-max9850-objs := max9850.o
+ snd-soc-mc13783-objs := mc13783.o
+ snd-soc-ml26124-objs := ml26124.o
+ snd-soc-nau8825-objs := nau8825.o
++snd-soc-occ8001-objs := occ8001.o
+ snd-soc-pcm1681-objs := pcm1681.o
+ snd-soc-pcm179x-codec-objs := pcm179x.o
+ snd-soc-pcm179x-i2c-objs := pcm179x-i2c.o
+@@ -293,6 +294,7 @@ obj-$(CONFIG_SND_SOC_MAX9850)	+= snd-soc-max9850.o
+ obj-$(CONFIG_SND_SOC_MC13783)	+= snd-soc-mc13783.o
+ obj-$(CONFIG_SND_SOC_ML26124)	+= snd-soc-ml26124.o
+ obj-$(CONFIG_SND_SOC_NAU8825)   += snd-soc-nau8825.o
++obj-$(CONFIG_SND_SOC_OCC8001)	+= snd-soc-occ8001.o
+ obj-$(CONFIG_SND_SOC_PCM1681)	+= snd-soc-pcm1681.o
+ obj-$(CONFIG_SND_SOC_PCM179X)	+= snd-soc-pcm179x-codec.o
+ obj-$(CONFIG_SND_SOC_PCM179X_I2C)	+= snd-soc-pcm179x-i2c.o
+diff --git a/sound/soc/codecs/occ8001.c b/sound/soc/codecs/occ8001.c
+new file mode 100644
+index 0000000..e7791f4
+--- /dev/null
++++ b/sound/soc/codecs/occ8001.c
+@@ -0,0 +1,68 @@
++/*
++ * Driver for the OCC8001 codec
++ *
++ * Author:	Venelin Efremov <veffremov.ve@gmail.com>
++ *		Copyright 2016
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * version 2 as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ */
++
++
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++
++#include <sound/soc.h>
++
++static struct snd_soc_dai_driver occ8001_dai = {
++	.name = "occ8001",
++	.playback = {
++		.channels_min = 2,
++		.channels_max = 2,
++		.rates = SNDRV_PCM_RATE_44100,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE
++	},
++};
++
++static struct snd_soc_codec_driver soc_codec_dev_occ8001;
++
++static int occ8001_probe(struct platform_device *pdev)
++{
++	return snd_soc_register_codec(&pdev->dev, &soc_codec_dev_occ8001,
++			&occ8001_dai, 1);
++}
++
++static int occ8001_remove(struct platform_device *pdev)
++{
++	snd_soc_unregister_codec(&pdev->dev);
++	return 0;
++}
++
++static const struct of_device_id occ8001_of_match[] = {
++	{ .compatible = "conan,occ8001", },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, occ8001_of_match);
++
++static struct platform_driver occ8001_codec_driver = {
++	.probe 		= occ8001_probe,
++	.remove 	= occ8001_remove,
++	.driver		= {
++		.name	= "occ8001-codec",
++		.owner	= THIS_MODULE,
++		.of_match_table = of_match_ptr(occ8001_of_match),
++	},
++};
++
++module_platform_driver(occ8001_codec_driver);
++
++MODULE_DESCRIPTION("ASoC OCC8001 codec driver");
++MODULE_AUTHOR("Venelin Efremov <veffremov.ve@gmail.com>");
++MODULE_LICENSE("GPL v2");
+-- 
+2.7.4
+
