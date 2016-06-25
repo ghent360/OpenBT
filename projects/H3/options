@@ -141,4 +141,3 @@
 
   # additional drivers
   #  ADDITIONAL_DRIVERS+=" mt7601u rtk8188eu media_build RTL8189ES RTL8189FS"
-  #  ADDITIONAL_DRIVERS+=" mt7601u rtk8188eu media_build"
