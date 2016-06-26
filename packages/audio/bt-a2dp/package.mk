@@ -17,7 +17,7 @@
 ################################################################################
 
 PKG_NAME="bt-a2dp"
-PKG_VERSION="1.3.4f"
+PKG_VERSION="1.3.5"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="APACHE-2"
