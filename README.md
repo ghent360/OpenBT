@@ -4,7 +4,7 @@ This project is a slightly modifier version of the OpenELEC embedded linux distr
 
 **This is unofficial and should be usable, however expect bugs**
 
-**Feel free to contribute!**
+**WARNING: Current code is using Allwinner's CedarX blobs which have license issues (https://linux-sunxi.org/CedarX)**
 
 **Current Status**
 * video is HW decoded
