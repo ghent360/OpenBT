@@ -1,6 +1,6 @@
 [product]
 version = "100"
-machine = "opiplus2e"
+machine = "opipcplus"
 
 ;---------------------------------------------------------------------------------------------------------
 ; eraseflag - 1 erase data partition, 0 - do not erase data partition
@@ -93,16 +93,16 @@ pll_de           = 864
 ;dram_para2 = 0x00001100  ;on behalf of a single channel is enabled dram
 ;*****************************************************************************
 [dram_para]
-dram_clk        = 672
+dram_clk        = 624
 dram_type       = 3
 dram_zq         = 0x3b3bfb
 dram_odt_en     = 0x1
-dram_para1      = 285476864
+dram_para1      = 0x10E40000
 dram_para2      = 0x0000
-dram_mr0        = 7280
+dram_mr0        = 0x1840
 dram_mr1        = 0x40
 dram_mr2        = 0x18
-dram_mr3        = 0
+dram_mr3        = 0x2
 dram_tpr0       = 0x0048A192
 dram_tpr1       = 0x01C2418D
 dram_tpr2       = 0x00076051
@@ -116,7 +116,7 @@ dram_tpr9       = 0
 dram_tpr10      = 0
 dram_tpr11      = 0x6aaa0000
 dram_tpr12      = 0x7979
-dram_tpr13      = 0x1800801
+dram_tpr13      = 0x800800
 
 ;---------------------------------------------------------------------------------------------------------
 ; wakeup_src_para:
@@ -414,29 +414,8 @@ pwm_positive        = port:PA05<3><0><default><default>
 ;   PD05  *                 PD11   *           *    PD17   *           *       ;
 ;------------------------------------------------------------------------------;
 [gmac0]
-gmac_used          = 1
-gmac_rxd3          = port:PD00<2><default><3><default>
-gmac_rxd2          = port:PD01<2><default><3><default>
-gmac_rxd1          = port:PD02<2><default><3><default>
-gmac_rxd0          = port:PD03<2><default><3><default>
-gmac_rxclk         = port:PD04<2><default><3><default>
-gmac_rxdv          = port:PD05<2><default><3><default>
-;gmac_rxerr         = port:PD06<2><default><3><default>
-gmac_txd3          = port:PD07<2><default><3><default>
-gmac_txd2          = port:PD08<2><default><3><default>
-gmac_txd1          = port:PD09<2><default><3><default>
-gmac_txd0          = port:PD10<2><default><3><default>
-;gmac_crs           = port:PD11<2><default><3><default>
-gmac_txclk         = port:PD12<2><default><3><default>
-gmac_txen          = port:PD13<2><default><3><default>
-;gmac_txerr         = port:PD14<2><default><3><default>
-gmac_col           = port:PD15<2><default><3><default>
-gmac_mdc           = port:PD16<2><default><3><default>
-gmac_mdio          = port:PD17<2><default><3><default>
+gmac_used = 2
 gmac_power1 =
-
-[gmac_phy_power]
-gmac_phy_power_en   = port:PD06<1><default><default><0>
 
 ;--------------------------------------------------------------------------------
 ;vip (video input port) configuration
@@ -582,7 +561,7 @@ di_by_pass = 0
 ;--------------------------------------------------------------------------------
 [mmc0_para]
 sdc_used          = 1
-sdc_detmode       = 3
+sdc_detmode       = 1
 sdc_buswidth      = 4
 sdc_clk           = port:PF02<2><1><2><default>
 sdc_cmd           = port:PF03<2><1><2><default>
@@ -786,12 +765,12 @@ lpo_use_apclk       =
 ;--------------------------------------------------------------------------------
 [wifi_para]
 wifi_used = 1
-wifi_sdc_id = 1
-wifi_usbc_id = 2
-wifi_usbc_type = 1
-wl_reg_on = port:PL07<1><default><default><0>
-wl_host_wake = port:PG10<0><default><default><0> 
-wl_host_wake_invert = 0
+wifi_sdc_id           = 1
+wifi_usbc_id          = 2
+wifi_usbc_type        = 1
+wl_reg_on             = port:PL07<1><default><default><0>
+wl_host_wake          = port:PG10<0><default><default><0> 
+wl_host_wake_invert   = 0
 
 ;--------------------------------------------------------------------------------
 ;bluetooth configuration
@@ -978,7 +957,7 @@ pmu_gpio0 = port:PL06<1><1><2><1>
 pmu_level0 = 11300
 pmu_level1 = 1100
 extremity_freq = 1296000000
-max_freq = 1296000000
+max_freq = 1200000000
 min_freq = 480000000
 LV_count = 7
 LV1_freq = 1296000000
