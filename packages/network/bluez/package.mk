@@ -18,7 +18,7 @@
 
 PKG_NAME="bluez"
 if [ "$BLUETOOTH_VERSION" = "5" ]; then
-  PKG_VERSION="c3fd16ddd9"
+  PKG_VERSION="59286dbeb3656"
   PKG_GIT_URL="https://github.com/ghent360/bluez.git"
   PKG_GIT_BRANCH="master"
 else
