@@ -17,14 +17,14 @@
 ################################################################################
 
 PKG_NAME="screensaver.biogenesis"
-PKG_VERSION="39928ee"
+PKG_VERSION="717fea7"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="https://github.com/notspiff/screensaver.biogenesis"
 PKG_GIT_URL="https://github.com/notspiff/screensaver.biogenesis"
 PKG_GIT_BRANCH="master"
-PKG_DEPENDS_TARGET="toolchain kodi-platform"
+PKG_DEPENDS_TARGET="toolchain kodi-platform opengl"
 PKG_PRIORITY="optional"
 PKG_SECTION=""
 PKG_SHORTDESC="screensaver.biogenesis"
@@ -34,7 +34,7 @@ PKG_AUTORECONF="no"
 PKG_IS_ADDON="yes"
 PKG_ADDON_TYPE="xbmc.ui.screensaver"
 
-if [ "$OPENGL" = "no" ] ; then
+if [ ! "$OPENGL" = "mesa" ] ; then
   exit 0
 fi
 

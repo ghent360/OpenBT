@@ -17,14 +17,14 @@
 ################################################################################
 
 PKG_NAME="screensaver.asterwave"
-PKG_VERSION="0dc2c48"
+PKG_VERSION="c39ed33"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="https://github.com/notspiff/screensaver.asterwave"
 PKG_GIT_URL="https://github.com/notspiff/screensaver.asterwave"
 PKG_GIT_BRANCH="master"
-PKG_DEPENDS_TARGET="toolchain kodi-platform soil $OPENGL"
+PKG_DEPENDS_TARGET="toolchain kodi-platform soil opengl"
 PKG_PRIORITY="optional"
 PKG_SECTION=""
 PKG_SHORTDESC="screensaver.asterwave"
@@ -34,7 +34,7 @@ PKG_AUTORECONF="no"
 PKG_IS_ADDON="yes"
 PKG_ADDON_TYPE="xbmc.ui.screensaver"
 
-if [ "$OPENGL" = "no" ] ; then
+if [ ! "$OPENGL" = "mesa" ] ; then
   exit 0
 fi
 

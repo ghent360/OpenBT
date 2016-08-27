@@ -17,7 +17,7 @@
 ################################################################################
 
 PKG_NAME="xorg-server"
-PKG_VERSION="1.18.3"
+PKG_VERSION="1.18.4"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="OSS"
@@ -34,8 +34,8 @@ PKG_AUTORECONF="yes"
 
 get_graphicdrivers
 
-if [ ! "$OPENGL" = "no" ]; then
-  PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET glproto $OPENGL libepoxy glu"
+if [ "$OPENGL" = "mesa" ]; then
+  PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET glproto opengl libepoxy glu"
   XORG_MESA="--enable-glx --enable-dri --enable-glamor"
 else
   XORG_MESA="--disable-glx --disable-dri --disable-glamor"

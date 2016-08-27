@@ -17,7 +17,7 @@
 ################################################################################
 
 PKG_NAME="visualization.fishbmc"
-PKG_VERSION="50c38c2"
+PKG_VERSION="93d8845"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
@@ -34,7 +34,7 @@ PKG_AUTORECONF="no"
 PKG_IS_ADDON="yes"
 PKG_ADDON_TYPE="xbmc.player.musicviz"
 
-if [ "$OPENGL" = "no" ] ; then
+if [ ! "$OPENGL" = "mesa" ] ; then
   exit 0
 fi
 

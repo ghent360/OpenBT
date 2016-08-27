@@ -17,7 +17,7 @@
 ################################################################################
 
 PKG_NAME="screensaver.pingpong"
-PKG_VERSION="5c7cf6f"
+PKG_VERSION="f162213"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
@@ -34,7 +34,7 @@ PKG_AUTORECONF="no"
 PKG_IS_ADDON="yes"
 PKG_ADDON_TYPE="xbmc.ui.screensaver"
 
-if [ "$OPENGL" = "no" ] ; then
+if [ ! "$OPENGL" = "mesa" ] ; then
   exit 0
 fi
 

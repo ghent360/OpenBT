@@ -17,7 +17,7 @@
 ################################################################################
 
 PKG_NAME="visualization.projectm"
-PKG_VERSION="8ca7efb"
+PKG_VERSION="dcd7179"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
@@ -34,7 +34,7 @@ PKG_AUTORECONF="no"
 PKG_IS_ADDON="yes"
 PKG_ADDON_TYPE="xbmc.player.musicviz"
 
-if [ "$OPENGL" = "no" ] ; then
+if [ ! "$OPENGL" = "mesa" ] ; then
   exit 0
 fi
 

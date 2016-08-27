@@ -87,7 +87,7 @@ PKG_CONFIGURE_OPTS_HOST="--target=$TARGET_NAME \
                          --disable-libada \
                          --enable-decimal-float \
                          --disable-libmudflap \
-                         --disable-libssp \
+                         --enable-libssp \
                          --disable-multilib \
                          --disable-libatomic \
                          --disable-libitm \
@@ -111,6 +111,10 @@ PKG_CONFIGURE_OPTS_HOST="--target=$TARGET_NAME \
                          --disable-nls \
                          --enable-checking=release \
                          --with-default-libstdcxx-abi=gcc4-compatible"
+
+pre_configure_host() {
+  export CXXFLAGS="$CXXFLAGS -std=gnu++98"
+}
 
 pre_configure_bootstrap() {
   setup_toolchain host
@@ -176,6 +180,7 @@ makeinstall_target() {
   mkdir -p $INSTALL/usr/lib
     cp -P $ROOT/$PKG_BUILD/.$HOST_NAME/$TARGET_NAME/libgcc/libgcc_s.so* $INSTALL/usr/lib
     cp -P $ROOT/$PKG_BUILD/.$HOST_NAME/$TARGET_NAME/libstdc++-v3/src/.libs/libstdc++.so* $INSTALL/usr/lib
+    cp -P $ROOT/$PKG_BUILD/.$HOST_NAME/$TARGET_NAME/libssp/.libs/libssp.so* $INSTALL/usr/lib
 }
 
 configure_init() {
