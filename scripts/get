@@ -99,7 +99,6 @@ if [ -n "$PKG_URL" -o -n "$PKG_GIT_URL" ]; then
     fi
     DL="yes"
 
-  if [ "$DL" == "yes" ]; then
     rm -f $STAMP
 
     printf "%${BUILD_INDENT}c ${boldcyan}CHECKOUT${endcolor}      $1\n" ' '>&$SILENT_OUT
