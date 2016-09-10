@@ -57,6 +57,7 @@ case "$LINUX" in
     PKG_SOURCE_NAME="$PKG_SOURCE_DIR.tar.xz"
     PKG_URL="$DISTRO_SRC/$PKG_SOURCE_NAME"
     PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET imx6-status-led imx6-soc-fan irqbalanced"
+    ;;
   rpi)
     PKG_VERSION="60060825"
     PKG_GIT_URL="https://github.com/raspberrypi/linux.git"

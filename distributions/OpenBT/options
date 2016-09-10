@@ -13,9 +13,14 @@
 # Root password to integrate in the target system
   ROOT_PASSWORD="openbt"
 
+# Install glibc locales to the build (yes / no)
+  GLIBC_LOCALES="no"
+
 # Mediacenter to use (kodi / no)
   MEDIACENTER="bt-a2dp"
 
+# build and install PulseAudio support (yes / no)
+  PULSEAUDIO_SUPPORT="no"
 
 # build and install espeak support (yes / no)
   ESPEAK_SUPPORT="yes"
@@ -44,6 +49,9 @@
 
 # build and install SFTP Server (yes / no)
   SFTP_SERVER="no"
+
+# build and install OpenVPN support (yes / no)
+  OPENVPN_SUPPORT="no"
 
 # build and install diskmounter support (udevil)
 # this service provide auto mounting support for external drives in the
@@ -129,11 +137,11 @@
   CRON_SUPPORT="no"
 
 # Distribution Specific source location
-  DISTRO_MIRROR="http://sources.openelec.tv/mirror"
-  DISTRO_SRC="http://sources.openelec.tv/$OPENELEC_VERSION"
+  DISTRO_MIRROR="http://sources.libreelec.tv/mirror"
+  DISTRO_SRC="http://sources.libreelec.tv/$LIBREELEC_VERSION"
 
 # Addon Server Url
-  ADDON_SERVER_URL="http://addons.openelec.tv"
+  ADDON_SERVER_URL="http://addons.libreelec.tv"
 
 # set the addon dirs
   ADDON_PATH="$ADDON_VERSION/$PROJECT/$TARGET_ARCH"
@@ -141,3 +149,9 @@
 
 #Do not install fonts
   FONTS_SUPPORT="no"
+
+# Default size of system partition, in MB, eg. 512
+  SYSTEM_SIZE=512
+# Default system partition offset, in sectors, eg. 2048
+  SYSTEM_PART_START=2048
+
