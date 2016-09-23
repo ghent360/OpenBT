@@ -61,6 +61,11 @@ case "$LINUX" in
     PKG_GIT_BRANCH="rpi-4.6.y"
     PKG_KEEP_CHECKOUT="yes"
     ;;
+  mt76*)
+    PKG_VERSION="3.18.36"
+    PKG_URL="http://www.kernel.org/pub/linux/kernel/v3.x/$PKG_NAME-$PKG_VERSION.tar.xz"
+    PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET sunxi-tools:host sunxi-sys-utils"
+    ;;
   *)
     PKG_VERSION="4.8.4"
     PKG_URL="http://www.kernel.org/pub/linux/kernel/v4.x/$PKG_NAME-$PKG_VERSION.tar.xz"
