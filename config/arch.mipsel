@@ -12,7 +12,7 @@
     mips*)
       TARGET_SUBARCH=mipsel
       TARGET_ABI=
-      TARGET_EXTRA_FLAGS="-mips32r2 -mtune=24kec -mno-branch-likely -mdsp"
+      TARGET_EXTRA_FLAGS="-mips32r2 -mtune=24kec -mno-branch-likely -mdsp -msoft-float -fpic -fPIC -fno-caller-saves"
       TARGET_FPU_FLAGS=""
       SIMD_SUPPORT="no"
       ;;
@@ -24,5 +24,5 @@
 # setup ARCH specific *FLAGS
   TARGET_CFLAGS="$TARGET_EXTRA_FLAGS"
   [ -n "$TARGET_FPU" ] && TARGET_CFLAGS="$TARGET_CFLAGS $TARGET_FPU_FLAGS"
-  TARGET_LDFLAGS="-mips32r2 -mtune=24kec -mdsp"
-  GCC_OPTS=""
+  TARGET_LDFLAGS="-mips32r2 -mtune=24kec -mdsp -msoft-float -fpic -fPIC -fno-caller-saves"
+  GCC_OPTS="--with-float=soft"

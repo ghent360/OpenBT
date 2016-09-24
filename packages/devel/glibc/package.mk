@@ -43,6 +43,7 @@ PKG_CONFIGURE_OPTS_TARGET="BASH_SHELL=/bin/sh \
                            --enable-bind-now \
                            --with-elf \
                            --with-tls \
+                           --without-fp \
                            --with-__thread \
                            --with-binutils=$BUILD/toolchain/bin \
                            --with-headers=$SYSROOT_PREFIX/usr/include \
