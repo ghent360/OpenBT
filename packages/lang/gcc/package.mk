@@ -41,8 +41,6 @@ GCC_COMMON_CONFIGURE_OPTS="--target=$TARGET_NAME \
                            --with-gnu-as \
                            --with-gnu-ld \
                            --enable-plugin \
-                           --enable-lto \
-                           --enable-gold \
                            --enable-ld=default \
                            --disable-multilib \
                            --disable-nls \
@@ -85,6 +83,20 @@ PKG_CONFIGURE_OPTS_HOST="$GCC_COMMON_CONFIGURE_OPTS \
                          --enable-libstdcxx-time \
                          --enable-clocale=gnu \
                          $GCC_OPTS"
+
+if [ "$LTO_SUPPORT" = yes ];then
+  PKG_CONFIGURE_OPTS_BOOTSTRAP="$PKG_CONFIGURE_OPTS_BOOTSTRAP \
+                         --enable-lto"
+  PKG_CONFIGURE_OPTS_HOST="$PKG_CONFIGURE_OPTS_HOST \
+                         --enable-lto"
+fi
+  
+if [ "$GOLD_SUPPORT" = yes ];then
+  PKG_CONFIGURE_OPTS_BOOTSTRAP="$PKG_CONFIGURE_OPTS_BOOTSTRAP \
+                         --enable-gold"
+  PKG_CONFIGURE_OPTS_HOST="$PKG_CONFIGURE_OPTS_HOST \
+                         --enable-gold"
+fi
 
 pre_configure_host() {
   export CXXFLAGS="$CXXFLAGS -std=gnu++98"

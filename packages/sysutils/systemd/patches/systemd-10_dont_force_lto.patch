@@ -1,0 +1,15 @@
+--- systemd-229/configure.ac	2016-09-25 03:04:39.283573790 -0700
++++ systemd-229.new/configure.ac	2016-09-25 02:03:21.506255610 -0700
+@@ -210,12 +210,6 @@
+         ])])
+ 
+ AS_CASE([$CFLAGS], [*-O[[12345sz\ ]]*],
+-        [CC_CHECK_FLAGS_APPEND([with_cflags], [CFLAGS], [\
+-               -flto])],
+-        [AC_MSG_RESULT([skipping -flto, optimization not enabled])])
+-AC_SUBST([OUR_CFLAGS], "$with_cflags $sanitizer_cflags")
+-
+-AS_CASE([$CFLAGS], [*-O[[12345sz\ ]]*],
+         [CC_CHECK_FLAGS_APPEND([with_cppflags], [CPPFLAGS], [\
+                -Wp,-D_FORTIFY_SOURCE=2])],
+         [AC_MSG_RESULT([skipping -D_FORTIFY_SOURCE, optimization not enabled])])
