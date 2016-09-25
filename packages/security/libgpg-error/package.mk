@@ -45,6 +45,10 @@ pre_configure_target() {
       GPGERROR_TUPLE=arm-unknown-linux-gnueabi
       GPGERROR_TARGET=linux-gnueabi
       ;;
+    mipsel)
+      GPGERROR_TUPLE=mipsel-unknown-linux-gnu
+      GPGERROR_TARGET=linux-gnu
+      ;;
     i386)
       GPGERROR_TUPLE=i486-pc-linux-gnu
       GPGERROR_TARGET=linux-gnu
