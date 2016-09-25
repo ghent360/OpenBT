@@ -53,10 +53,8 @@ BOOTSTRAP_CONFIGURE_OPTS="--host=$HOST_NAME \
                           --disable-libatomic \
                           --disable-libitm \
                           --disable-libsanitizer \
-                          --enable-gold \
                           --enable-ld=default \
                           --enable-plugin \
-                          --enable-lto \
                           --disable-libquadmath \
                           --disable-libssp \
                           --disable-libgomp \
@@ -90,10 +88,8 @@ PKG_CONFIGURE_OPTS_HOST="--target=$TARGET_NAME \
                          --disable-multilib \
                          --disable-libatomic \
                          --disable-libitm \
-                         --enable-gold \
                          --enable-ld=default \
                          --enable-plugin \
-                         --enable-lto \
                          --disable-libquadmath \
                          --disable-libgomp \
                          --enable-tls \
@@ -109,6 +105,20 @@ PKG_CONFIGURE_OPTS_HOST="--target=$TARGET_NAME \
                          --disable-nls \
                          --enable-checking=release \
                          --with-default-libstdcxx-abi=gcc4-compatible"
+
+if [ "$LTO_SUPPORT" = yes ];then
+  BOOTSTRAP_CONFIGURE_OPTS="$BOOTSTRAP_CONFIGURE_OPTS \
+                         --enable-lto"
+  PKG_CONFIGURE_OPTS_HOST="$PKG_CONFIGURE_OPTS_HOST \
+                         --enable-lto"
+fi
+  
+if [ "$GOLD_SUPPORT" = yes ];then
+  BOOTSTRAP_CONFIGURE_OPTS="$BOOTSTRAP_CONFIGURE_OPTS \
+                         --enable-gold"
+  PKG_CONFIGURE_OPTS_HOST="$PKG_CONFIGURE_OPTS_HOST \
+                         --enable-gold"
+fi
 
 pre_configure_bootstrap() {
   setup_toolchain host
