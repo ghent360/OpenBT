@@ -22,7 +22,7 @@ PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="http://www.kernel.org"
 PKG_DEPENDS_HOST="ccache:host"
-PKG_DEPENDS_TARGET="toolchain cpio:host kmod:host pciutils xz:host wireless-regdb keyutils"
+PKG_DEPENDS_TARGET="toolchain cpio:host kmod:host pciutils xz:host wireless-regdb keyutils irqbalance"
 PKG_DEPENDS_INIT="toolchain cpu-firmware:init"
 PKG_NEED_UNPACK="$LINUX_DEPENDS"
 PKG_PRIORITY="optional"
@@ -36,19 +36,19 @@ case "$LINUX" in
     PKG_GIT_BRANCH="amlogic-3.10.y"
     ;;
   imx6)
-    PKG_VERSION="4386797"
-    PKG_GIT_URL="https://github.com/SolidRun/linux-fslc.git"
-    PKG_GIT_BRANCH="3.14-1.0.x-mx6-sr"
+    PKG_VERSION="f14907b"
+    PKG_GIT_URL="https://github.com/xbianonpi/xbian-sources-kernel.git"
+    PKG_GIT_BRANCH="imx6-4.4.y"
     PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET imx6-status-led imx6-soc-fan"
     ;;
   rpi)
-    PKG_VERSION="338dfd6"
+    PKG_VERSION="447249f"
     PKG_GIT_URL="https://github.com/OpenELEC/linux.git"
-    PKG_GIT_BRANCH="raspberry-rpi-4.7.y"
+    PKG_GIT_BRANCH="raspberry-rpi-4.8.y"
     ;;
   *)
-    PKG_VERSION="4.7.1"
-    PKG_URL="http://www.kernel.org/pub/linux/kernel/v4.x/$PKG_NAME-$PKG_VERSION.tar.xz"
+    PKG_VERSION="4.8-rc8"
+    PKG_URL="http://www.kernel.org/pub/linux/kernel/v4.x/testing/$PKG_NAME-$PKG_VERSION.tar.xz"
     ;;
 esac
 
@@ -68,8 +68,8 @@ post_patch() {
     KERNEL_CFG_FILE=$PKG_DIR/config/$PKG_NAME.$TARGET_ARCH.conf
   fi
 
-  sed -i -e "s|^HOSTCC[[:space:]]*=.*$|HOSTCC = $HOST_CC|" \
-         -e "s|^HOSTCXX[[:space:]]*=.*$|HOSTCXX = $HOST_CXX|" \
+  sed -i -e "s|^HOSTCC[[:space:]]*=.*$|HOSTCC = $ROOT/$TOOLCHAIN/bin/host-gcc|" \
+         -e "s|^HOSTCXX[[:space:]]*=.*$|HOSTCXX = $ROOT/$TOOLCHAIN/bin/host-g++|" \
          -e "s|^ARCH[[:space:]]*?=.*$|ARCH = $TARGET_KERNEL_ARCH|" \
          -e "s|^CROSS_COMPILE[[:space:]]*?=.*$|CROSS_COMPILE = $TARGET_PREFIX|" \
          $PKG_BUILD/Makefile

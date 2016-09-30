@@ -25,7 +25,7 @@ PKG_SITE="http://www.boost.org/"
 PKG_URL="$SOURCEFORGE_SRC/boost/boost/1.61.0/${PKG_NAME}_${PKG_VERSION}.tar.bz2"
 PKG_SOURCE_DIR="${PKG_NAME}_${PKG_VERSION}"
 PKG_DEPENDS_HOST=""
-PKG_DEPENDS_TARGET="toolchain boost:host Python:host zlib bzip2"
+PKG_DEPENDS_TARGET="toolchain boost:host Python:host libz bzip2"
 PKG_PRIORITY="optional"
 PKG_SECTION="devel"
 PKG_SHORTDESC="boost: Peer-reviewed STL style libraries for C++"
@@ -55,7 +55,7 @@ configure_target() {
                   --with-bjam=$ROOT/$TOOLCHAIN/bin/bjam \
                   --with-python=$ROOT/$TOOLCHAIN/bin/python \
 
-  echo "using gcc : `$TARGET_CC -v 2>&1  | tail -n 1 |awk '{print $3}'` : $TARGET_CC  : <compileflags>\"$CFLAGS\" <linkflags>\"$LDFLAGS\" ;" \
+  echo "using gcc : `$CC -v 2>&1  | tail -n 1 |awk '{print $3}'` : $CC  : <compileflags>\"$CFLAGS\" <linkflags>\"$LDFLAGS\" ;" \
     > tools/build/src/user-config.jam
 }
 

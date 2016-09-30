@@ -17,13 +17,13 @@
 ################################################################################
 
 PKG_NAME="mesa"
-PKG_VERSION="12.0.1"
+PKG_VERSION="12.0.3"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="OSS"
 PKG_SITE="http://www.mesa3d.org/"
 PKG_URL="ftp://freedesktop.org/pub/mesa/$PKG_VERSION/$PKG_NAME-$PKG_VERSION.tar.xz"
-PKG_DEPENDS_TARGET="toolchain Python:host expat glproto dri2proto presentproto libdrm libXext libXdamage libXfixes libXxf86vm libxcb libX11 systemd dri3proto libxshmfence libressl zlib"
+PKG_DEPENDS_TARGET="toolchain Python:host expat glproto dri2proto presentproto libdrm libXext libXdamage libXfixes libXxf86vm libxcb libX11 systemd dri3proto libxshmfence libressl libz"
 PKG_PRIORITY="optional"
 PKG_SECTION="graphics"
 PKG_SHORTDESC="mesa: 3-D graphics library with OpenGL API"
@@ -38,7 +38,7 @@ PKG_AUTORECONF="yes"
 if [ "$LLVM_SUPPORT" = "yes" ]; then
   PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET elfutils llvm"
   export LLVM_CONFIG="$SYSROOT_PREFIX/usr/bin/llvm-config-host"
-  MESA_GALLIUM_LLVM="--enable-gallium-llvm --disable-llvm-shared-libs"
+  MESA_GALLIUM_LLVM="--enable-gallium-llvm --enable-llvm-shared-libs"
 else
   MESA_GALLIUM_LLVM="--disable-gallium-llvm"
 fi
@@ -56,8 +56,8 @@ PKG_CONFIGURE_OPTS_TARGET="CC_FOR_BUILD=$HOST_CC \
                            CXXFLAGS_FOR_BUILD= \
                            LDFLAGS_FOR_BUILD= \
                            X11_INCLUDES= \
-                           DRI_DRIVER_INSTALL_DIR=$XORG_PATH_DRI \
-                           DRI_DRIVER_SEARCH_DIR=$XORG_PATH_DRI \
+                           DRI_DRIVER_INSTALL_DIR=/usr/lib/dri \
+                           DRI_DRIVER_SEARCH_DIR=/usr/lib/dri \
                            --disable-debug \
                            --disable-mangling \
                            --enable-texture-float \

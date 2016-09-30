@@ -17,7 +17,7 @@
 ################################################################################
 
 PKG_NAME="pvr.nextpvr"
-PKG_VERSION="32b3c2f"
+PKG_VERSION="f99b17d"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
@@ -38,13 +38,8 @@ pre_configure_target() {
   CXXFLAGS="$CXXFLAGS -Wno-narrowing"
 }
 
-configure_target() {
-  cmake -DCMAKE_TOOLCHAIN_FILE=$CMAKE_CONF \
-        -DCMAKE_INSTALL_PREFIX=/usr \
-        -DCMAKE_MODULE_PATH=$SYSROOT_PREFIX/usr/lib/kodi \
-        -DCMAKE_PREFIX_PATH=$SYSROOT_PREFIX/usr \
-        ..
-}
+PKG_CMAKE_OPTS_TARGET="-DCMAKE_MODULE_PATH=$SYSROOT_PREFIX/usr/share/kodi \
+                       -DCMAKE_PREFIX_PATH=$SYSROOT_PREFIX/usr"
 
 addon() {
   mkdir -p $ADDON_BUILD/$PKG_ADDON_ID/

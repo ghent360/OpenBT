@@ -66,11 +66,7 @@ fi
 if [ ! -f $STAMP ]; then
   rm -f $STAMP
 
-  if [ "$TARGET" = "bootstrap" -o "$TARGET" = "init" ]; then
-    setup_toolchain target
-  else
-    setup_toolchain $TARGET
-  fi
+  setup_toolchain $TARGET
 
   # unset functions
     unset -f pre_build_target
@@ -118,7 +114,6 @@ if [ ! -f $STAMP ]; then
     unset -f post_makeinstall_bootstrap
 
   # configure TARGET build defaults
-    unset -v TARGET_CONFIGURE_OPTS
     TARGET_CONFIGURE_OPTS="--host=$TARGET_NAME \
                            --build=$HOST_NAME \
                            --prefix=/usr \
@@ -130,8 +125,10 @@ if [ ! -f $STAMP ]; then
                            --disable-static \
                            --enable-shared"
 
+    TARGET_CMAKE_OPTS="-DCMAKE_TOOLCHAIN_FILE=$CMAKE_CONF \
+                       -DCMAKE_INSTALL_PREFIX=/usr"
+
   # configure HOST build defaults
-    unset -v HOST_CONFIGURE_OPTS
     HOST_CONFIGURE_OPTS="--host=$HOST_NAME \
                          --build=$HOST_NAME \
                          --prefix=$ROOT/$TOOLCHAIN \
@@ -143,31 +140,16 @@ if [ ! -f $STAMP ]; then
                          --disable-static \
                          --enable-shared"
 
+    HOST_CMAKE_OPTS="-DCMAKE_TOOLCHAIN_FILE=$CMAKE_CONF \
+                     -DCMAKE_INSTALL_PREFIX=$ROOT/$TOOLCHAIN"
+
   # configure INIT build defaults
-    unset -v INIT_CONFIGURE_OPTS
-    INIT_CONFIGURE_OPTS="--host=$TARGET_NAME \
-                         --build=$HOST_NAME \
-                         --prefix=/usr \
-                         --bindir=/usr/bin \
-                         --sbindir=/usr/sbin \
-                         --sysconfdir=/etc \
-                         --libexecdir=/usr/lib \
-                         --localstatedir=/var \
-                         --disable-static \
-                         --enable-shared"
+    INIT_CONFIGURE_OPTS="$TARGET_CONFIGURE_OPTS"
+    INIT_CMAKE_OPTS="$TARGET_CMAKE_OPTS"
 
   # configure BOOTSTRAP build defaults
-    unset -v BOOTSTRAP_CONFIGURE_OPTS
-    BOOTSTRAP_CONFIGURE_OPTS="--host=$TARGET_NAME \
-                              --build=$HOST_NAME \
-                              --prefix=/usr \
-                              --bindir=/usr/bin \
-                              --sbindir=/usr/sbin \
-                              --sysconfdir=/etc \
-                              --libexecdir=/usr/lib \
-                              --localstatedir=/var \
-                              --disable-static \
-                              --enable-shared"
+    BOOTSTRAP_CONFIGURE_OPTS="$HOST_CONFIGURE_OPTS"
+    BOOTSTRAP_CMAKE_OPTS="$HOST_CMAKE_OPTS"
 
   # include buildfile
     . $PKG_DIR/package.mk
@@ -220,10 +202,16 @@ if [ ! -f $STAMP ]; then
       else
         PKG_CONFIGURE_SCRIPT="$ROOT/$PKG_BUILD/$PKG_CONFIGURE_SCRIPT"
       fi
-      if [ -z "$PKG_CMAKE_SCRIPT" ]; then
-        PKG_CMAKE_SCRIPT="$ROOT/$PKG_BUILD/CMakeLists.txt"
-      else
-        PKG_CMAKE_SCRIPT="$ROOT/$PKG_BUILD/$PKG_CMAKE_SCRIPT"
+
+      PKG_CMAKE_SCRIPT="$ROOT/$PKG_BUILD/CMakeLists.txt"
+      if [ "$TARGET" = "target" -a -n "$PKG_CMAKE_SCRIPT_TARGET" ]; then
+        PKG_CMAKE_SCRIPT="$ROOT/$PKG_BUILD/$PKG_CMAKE_SCRIPT_TARGET"
+      elif [ "$TARGET" = "host" -a -n "$PKG_CMAKE_SCRIPT_HOST" ]; then
+        PKG_CMAKE_SCRIPT="$ROOT/$PKG_BUILD/$PKG_CMAKE_SCRIPT_HOST"
+      elif [ "$TARGET" = "init" -a -n "$PKG_CMAKE_SCRIPT_INIT" ]; then
+        PKG_CMAKE_SCRIPT="$ROOT/$PKG_BUILD/$PKG_CMAKE_SCRIPT_INIT"
+      elif [ "$TARGET" = "bootstrap" -a -n "$PKG_CMAKE_SCRIPT_BOOTSTRAP" ]; then
+        PKG_CMAKE_SCRIPT="$ROOT/$PKG_BUILD/$PKG_CMAKE_SCRIPT_BOOTSTRAP"
       fi
 
       # include build template and build
@@ -250,13 +238,13 @@ if [ ! -f $STAMP ]; then
         fi
       elif [ "$TARGET" = "init" ]; then
         if [ -f "$PKG_CONFIGURE_SCRIPT" -o -f "$PKG_CMAKE_SCRIPT" ]; then
-          mkdir -p .$TARGET_NAME-init
-          cd .$TARGET_NAME-init
+          mkdir -p .$TARGET_NAME-$TARGET
+          cd .$TARGET_NAME-$TARGET
         fi
       elif [ "$TARGET" = "bootstrap" ]; then
         if [ -f "$PKG_CONFIGURE_SCRIPT" -o -f "$PKG_CMAKE_SCRIPT" ]; then
-          mkdir -p .$TARGET_NAME-bootstrap
-          cd .$TARGET_NAME-bootstrap
+          mkdir -p .$HOST_NAME-$TARGET
+          cd .$HOST_NAME-$TARGET
         fi
       fi
 
@@ -266,6 +254,16 @@ if [ ! -f $STAMP ]; then
       fi
       if [ "$(type -t configure_$TARGET)" = "function" ]; then
         configure_$TARGET
+      elif [ -f "$PKG_CMAKE_SCRIPT" -a ! "$PKG_USE_CMAKE" = "no" ]; then
+        if [ "$TARGET" = "target" ]; then
+          cmake $TARGET_CMAKE_OPTS $PKG_CMAKE_OPTS_TARGET $(dirname $PKG_CMAKE_SCRIPT)
+        elif [ "$TARGET" = "host" ]; then
+          cmake $HOST_CMAKE_OPTS $PKG_CMAKE_OPTS_HOST $(dirname $PKG_CMAKE_SCRIPT)
+        elif [ "$TARGET" = "init" ]; then
+          cmake $INIT_CMAKE_OPTS $PKG_CMAKE_OPTS_INIT $(dirname $PKG_CMAKE_SCRIPT)
+        elif [ "$TARGET" = "bootstrap" ]; then
+          cmake $BOOTSTRAP_CMAKE_OPTS $PKG_CMAKE_OPTS_BOOTSTRAP $(dirname $PKG_CMAKE_SCRIPT)
+        fi
       elif [ -f "$PKG_CONFIGURE_SCRIPT" ]; then
         if [ "$TARGET" = "target" ]; then
           $PKG_CONFIGURE_SCRIPT $TARGET_CONFIGURE_OPTS $PKG_CONFIGURE_OPTS_TARGET
@@ -317,7 +315,7 @@ if [ ! -f $STAMP ]; then
         elif [ "$TARGET" = "init" ]; then
           make install DESTDIR=$INSTALL $PKG_MAKEINSTALL_OPTS_INIT
         elif [ "$TARGET" = "bootstrap" ]; then
-          $MAKEINSTALL $PKG_MAKEINSTALL_OPTS_BOOTSTRAP
+          make install $PKG_MAKEINSTALL_OPTS_BOOTSTRAP
         fi
       fi
       if [ "$(type -t post_makeinstall_$TARGET)" = "function" ]; then
@@ -339,14 +337,15 @@ if [ ! -f $STAMP ]; then
             rm -rf $i/share/locale
             rm -rf $i/share/man
             rm -rf $i/share/pkgconfig
-            find $i -name "*.la" -exec rm -f "{}" ";" 2>/dev/null || true
-            find $i -name "*.a" -exec rm -f "{}" ";" 2>/dev/null || true
-            find $i -name "*.so*T" -exec rm -f "{}" ";" 2>/dev/null || true
-            # patch backups nonsense
-            find $i -name "*.orig" -exec rm -f "{}" ";" 2>/dev/null || true
-            # kodi / addons nonsense
-            find $i -name "addon.xml.in" -exec rm -f "{}" ";" 2>/dev/null || true
-            find $i -name "Makefile.in" -exec rm -f "{}" ";" 2>/dev/null || true
+            find $i \( -name "*.orig" \
+                    -o -name "*.rej" \
+                    -o -name "*.a" \
+                    -o -name "*.la" \
+                    -o -name "*.so*T" \
+                    -o -name "*.o" \
+                    -o -name "*.in" \
+                    -o -name ".git*" \) \
+            -exec rm -f "{}" ";" 2>/dev/null || true
           done
 
           find $INSTALL -type d -exec rmdir -p "{}" ";" 2>/dev/null || true

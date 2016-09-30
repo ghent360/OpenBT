@@ -17,7 +17,7 @@
 ################################################################################
 
 PKG_NAME="xf86-video-nvidia-legacy"
-PKG_VERSION="340.96"
+PKG_VERSION="340.98"
 PKG_REV="1"
 PKG_ARCH="x86_64"
 PKG_LICENSE="nonfree"
@@ -50,13 +50,13 @@ make_target() {
 }
 
 makeinstall_target() {
-  mkdir -p $INSTALL/$XORG_PATH_MODULES/drivers
-    cp -P nvidia_drv.so $INSTALL/$XORG_PATH_MODULES/drivers/nvidia-legacy_drv.so
-    ln -sf /var/lib/nvidia_drv.so $INSTALL/$XORG_PATH_MODULES/drivers/nvidia_drv.so
+  mkdir -p $INSTALL/usr/lib/xorg/modules/drivers
+    cp -P nvidia_drv.so $INSTALL/usr/lib/xorg/modules/drivers/nvidia-legacy_drv.so
+    ln -sf /var/lib/nvidia_drv.so $INSTALL/usr/lib/xorg/modules/drivers/nvidia_drv.so
 
-  mkdir -p $INSTALL/$XORG_PATH_MODULES/extensions
+  mkdir -p $INSTALL/usr/lib/xorg/modules/extensions
   # rename to not conflicting with Mesa libGL.so
-    cp -P libglx.so* $INSTALL/$XORG_PATH_MODULES/extensions/libglx_nvidia-legacy.so
+    cp -P libglx.so* $INSTALL/usr/lib/xorg/modules/extensions/libglx_nvidia-legacy.so
 
   mkdir -p $INSTALL/etc/X11
     cp $PKG_DIR/config/*.conf $INSTALL/etc/X11

@@ -17,13 +17,13 @@
 ################################################################################
 
 PKG_NAME="util-linux"
-PKG_VERSION="2.28.1"
+PKG_VERSION="2.28.2"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_URL="http://www.kernel.org/pub/linux/utils/util-linux/v2.28/$PKG_NAME-$PKG_VERSION.tar.xz"
 PKG_DEPENDS_TARGET="toolchain"
-PKG_DEPENDS_INIT="toolchain"
+PKG_DEPENDS_INIT="toolchain gcc:init"
 PKG_PRIORITY="optional"
 PKG_SECTION="system"
 PKG_SHORTDESC="util-linux: Miscellaneous system utilities for Linux"
@@ -74,7 +74,7 @@ PKG_CONFIGURE_OPTS_TARGET="$UTILLINUX_CONFIG_DEFAULT \
                            --enable-blkid"
 
 if [ "$SWAP_SUPPORT" = "yes" ]; then
-  PKG_CONFIGURE_OPTS_TARGET="$PKG_CONFIGURE_OPTS_TARGET --enable-swapon"
+  PKG_CONFIGURE_OPTS_TARGET+=" --enable-swapon"
 fi
 
 PKG_CONFIGURE_OPTS_HOST="--enable-static \
@@ -95,7 +95,7 @@ PKG_CONFIGURE_OPTS_INIT="--prefix=/ \
                          --enable-fsck"
 
 if [ "$INITRAMFS_PARTED_SUPPORT" = "yes" ]; then
-  PKG_CONFIGURE_OPTS_INIT="$PKG_CONFIGURE_OPTS_INIT --enable-mkfs --enable-libuuid"
+  PKG_CONFIGURE_OPTS_INIT+=" --enable-mkfs --enable-libuuid"
 fi
 
 post_makeinstall_target() {

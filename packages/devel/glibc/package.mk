@@ -34,6 +34,8 @@ PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
 PKG_CONFIGURE_OPTS_TARGET="BASH_SHELL=/bin/sh \
+                           libc_cv_slibdir=/usr/lib \
+                           libc_cv_rtlddir=/lib \
                            ac_cv_path_PERL= \
                            ac_cv_prog_MAKEINFO= \
                            --libexecdir=/usr/lib/glibc \
@@ -45,7 +47,7 @@ PKG_CONFIGURE_OPTS_TARGET="BASH_SHELL=/bin/sh \
                            --with-elf \
                            --with-tls \
                            --with-__thread \
-                           --with-binutils=$BUILD/toolchain/bin \
+                           --with-binutils=$ROOT/$BUILD/toolchain/bin \
                            --with-headers=$SYSROOT_PREFIX/usr/include \
                            --enable-kernel=3.0.0 \
                            --without-cvs \
@@ -57,12 +59,10 @@ PKG_CONFIGURE_OPTS_TARGET="BASH_SHELL=/bin/sh \
                            --disable-timezone-tools"
 
 if [ "$DEBUG" = yes ]; then
-  PKG_CONFIGURE_OPTS_TARGET="$PKG_CONFIGURE_OPTS_TARGET --enable-debug"
+  PKG_CONFIGURE_OPTS_TARGET+=" --enable-debug"
 else
-  PKG_CONFIGURE_OPTS_TARGET="$PKG_CONFIGURE_OPTS_TARGET --disable-debug"
+  PKG_CONFIGURE_OPTS_TARGET+=" --disable-debug"
 fi
-
-NSS_CONF_DIR="$PKG_BUILD/nss"
 
 GLIBC_EXCLUDE_BIN="catchsegv gencat getconf iconv iconvconfig ldconfig"
 GLIBC_EXCLUDE_BIN="$GLIBC_EXCLUDE_BIN localedef makedb mtrace pcprofiledump"
@@ -103,10 +103,8 @@ pre_configure_target() {
 
   unset LD_LIBRARY_PATH
 
-  # set some CFLAGS we need
+# set some CFLAGS we need
   export CFLAGS="$CFLAGS -g"
-
-  export BUILD_CC=$HOST_CC
   export OBJDUMP_FOR_HOST=objdump
 
 cat >config.cache <<EOF
@@ -117,15 +115,16 @@ libc_cv_ssp_strong=no
 libc_cv_slibdir=/lib
 EOF
 
-echo "libdir=/usr/lib" >> configparms
-echo "slibdir=/lib" >> configparms
-echo "sbindir=/usr/bin" >> configparms
-echo "rootsbindir=/usr/bin" >> configparms
+  echo "sbindir=/usr/bin" >> configparms
+  echo "rootsbindir=/usr/bin" >> configparms
 }
 
 post_makeinstall_target() {
 # we are linking against ld.so, so symlink
   ln -sf $(basename $INSTALL/lib/ld-*.so) $INSTALL/lib/ld.so
+  if [ "$TARGET_ARCH" = "arm" -a "$TARGET_FLOAT" = "hard" ]; then
+    ln -sf ld.so $INSTALL/lib/ld-linux.so.3
+  fi
 
 # cleanup
   for i in $GLIBC_EXCLUDE_BIN; do
@@ -133,17 +132,17 @@ post_makeinstall_target() {
   done
   rm -rf $INSTALL/usr/lib/audit
   rm -rf $INSTALL/usr/lib/glibc
-  rm -rf $INSTALL/usr/lib/libc_pic
   rm -rf $INSTALL/usr/lib/*.o
-  rm -rf $INSTALL/usr/lib/*.map
   rm -rf $INSTALL/var
+
+# remove ldscripts
+  rm -rf $INSTALL/usr/lib/libc.so
+  rm -rf $INSTALL/usr/lib/libpthread.so
 
 # remove locales and charmaps
   rm -rf $INSTALL/usr/share/i18n/charmaps
-
   if [ ! "$GLIBC_LOCALES" = yes ]; then
     rm -rf $INSTALL/usr/share/i18n/locales
-
     mkdir -p $INSTALL/usr/share/i18n/locales
       cp -PR $ROOT/$PKG_BUILD/localedata/locales/POSIX $INSTALL/usr/share/i18n/locales
   fi
@@ -151,12 +150,8 @@ post_makeinstall_target() {
 # create default configs
   mkdir -p $INSTALL/etc
     cp $PKG_DIR/config/nsswitch.conf $INSTALL/etc
-    cp $PKG_DIR/config/host.conf $INSTALL/etc
     cp $PKG_DIR/config/gai.conf $INSTALL/etc
-
-  if [ "$TARGET_ARCH" = "arm" -a "$TARGET_FLOAT" = "hard" ]; then
-    ln -sf ld.so $INSTALL/lib/ld-linux.so.3
-  fi
+    echo "multi on" > $INSTALL/etc/host.conf
 }
 
 configure_init() {
@@ -172,7 +167,6 @@ makeinstall_init() {
   mkdir -p $INSTALL/lib
     cp -PR $ROOT/$PKG_BUILD/.$TARGET_NAME/elf/ld*.so* $INSTALL/lib
     cp $ROOT/$PKG_BUILD/.$TARGET_NAME/libc.so.6 $INSTALL/lib
-    cp $ROOT/$PKG_BUILD/.$TARGET_NAME/math/libm.so* $INSTALL/lib
     cp $ROOT/$PKG_BUILD/.$TARGET_NAME/nptl/libpthread.so.0 $INSTALL/lib
     cp -PR $ROOT/$PKG_BUILD/.$TARGET_NAME/rt/librt.so* $INSTALL/lib
 

@@ -33,16 +33,8 @@ PKG_LONGDESC="The SoX Resampler library performs one-dimensional sample-rate con
 PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
-# package specific configure options
-configure_target() {
-  cmake -DCMAKE_TOOLCHAIN_FILE=$CMAKE_CONF \
-        -DCMAKE_INSTALL_PREFIX=/usr \
-        -DCMAKE_BUILD_TYPE=Release \
-        -DHAVE_WORDS_BIGENDIAN_EXITCODE=1 \
-        -DBUILD_TESTS=0 \
-        -DBUILD_EXAMPLES=0 \
-        -DWITH_LSR_BINDINGS=0 \
-        -Wno-dev \
-        ..
-}
-
+PKG_CMAKE_OPTS_TARGET="-DHAVE_WORDS_BIGENDIAN_EXITCODE=1 \
+                       -DBUILD_TESTS=0 \
+                       -DBUILD_EXAMPLES=0 \
+                       -DWITH_LSR_BINDINGS=0 \
+                       -DBUILD_SHARED_LIBS=ON"

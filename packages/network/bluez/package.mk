@@ -38,18 +38,6 @@ PKG_LONGDESC="Bluetooth Tools and System Daemons for Linux."
 PKG_IS_ADDON="no"
 PKG_AUTORECONF="yes"
 
-if [ "$DEBUG" = "yes" ]; then
-  BLUEZ_CONFIG="--enable-debug"
-else
-  BLUEZ_CONFIG="--disable-debug"
-fi
-
-if [ "$DEVTOOLS" = "yes" ]; then
-  BLUEZ_CONFIG="$BLUEZ_CONFIG --enable-monitor --enable-test"
-else
-  BLUEZ_CONFIG="$BLUEZ_CONFIG --disable-monitor --disable-test"
-fi
-
 PKG_CONFIGURE_OPTS_TARGET="--disable-dependency-tracking \
                            --disable-silent-rules \
                            --disable-library \
@@ -64,8 +52,20 @@ PKG_CONFIGURE_OPTS_TARGET="--disable-dependency-tracking \
                            --enable-sixaxis \
                            --enable-audio \
                            --with-gnu-ld \
-                           $BLUEZ_CONFIG \
                            storagedir=/storage/.cache/bluetooth"
+
+if [ "$DEBUG" = "yes" ]; then
+  PKG_CONFIGURE_OPTS_TARGET+=" --enable-debug"
+else
+  PKG_CONFIGURE_OPTS_TARGET+=" --disable-debug"
+fi
+
+if [ "$DEVTOOLS" = "yes" ]; then
+  PKG_CONFIGURE_OPTS_TARGET+=" --enable-monitor --enable-test"
+else
+  PKG_CONFIGURE_OPTS_TARGET+=" --disable-monitor --disable-test"
+fi
+
 
 pre_configure_target() {
 # bluez fails to build in subdirs

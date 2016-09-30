@@ -17,7 +17,7 @@
 ################################################################################
 
 PKG_NAME="screensaver.asteroids"
-PKG_VERSION="2adf852"
+PKG_VERSION="0fc066d"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
@@ -38,13 +38,8 @@ if [ ! "$OPENGL" = "mesa" ] ; then
   exit 0
 fi
 
-configure_target() {
-  cmake -DCMAKE_TOOLCHAIN_FILE=$CMAKE_CONF \
-        -DCMAKE_INSTALL_PREFIX=/usr \
-        -DCMAKE_MODULE_PATH=$SYSROOT_PREFIX/usr/lib/kodi \
-        -DCMAKE_PREFIX_PATH=$SYSROOT_PREFIX/usr \
-        ..
-}
+PKG_CMAKE_OPTS_TARGET="-DCMAKE_MODULE_PATH=$SYSROOT_PREFIX/usr/share/kodi \
+                       -DCMAKE_PREFIX_PATH=$SYSROOT_PREFIX/usr"
 
 addon() {
   mkdir -p $ADDON_BUILD/$PKG_ADDON_ID/
