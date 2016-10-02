@@ -165,6 +165,7 @@ make_target() {
     done
   fi
 
+  echo LDFLAGS="" make $KERNEL_TARGET $KERNEL_MAKE_EXTRACMD
   LDFLAGS="" make $KERNEL_TARGET $KERNEL_MAKE_EXTRACMD
 
   if [ "$BUILD_ANDROID_BOOTIMG" = "yes" ]; then
