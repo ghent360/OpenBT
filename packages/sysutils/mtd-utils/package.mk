@@ -16,43 +16,31 @@
 #  along with OpenELEC.  If not, see <http://www.gnu.org/licenses/>.
 ################################################################################
 
-PKG_NAME="mediacenter"
-PKG_VERSION=""
+PKG_NAME="mtd-utils"
+PKG_VERSION="e4c8885bddac"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
-PKG_SITE="https://libreelec.tv"
-PKG_URL=""
-PKG_DEPENDS_TARGET="toolchain $MEDIACENTER"
-PKG_SECTION="virtual"
-PKG_SHORTDESC="Mediacenter: Metapackage"
-PKG_LONGDESC=""
+PKG_SITE="http://www.linux-mtd.infradead.org/"
+PKG_GIT_URL="git://git.infradead.org/mtd-utils.git"
+PKG_GIT_BRANCH="master"
+PKG_DEPENDS_TARGET="toolchain"
+PKG_PRIORITY="optional"
+PKG_SECTION="sysutils"
+PKG_SHORTDESC="mtd-utils"
+PKG_LONGDESC="tools to create dope filesystems on flash deices."
 
 PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
-if [ "$MEDIACENTER" = "kodi" ]; then
-  PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET $MEDIACENTER-theme-$SKIN_DEFAULT"
-
-  for i in $SKINS; do
-    PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET $MEDIACENTER-theme-$i"
-  done
-
-# some python stuff needed for various addons
-  PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET Pillow \
-                                          simplejson \
-                                          pycrypto"
-# other packages
-  PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET LibreELEC-settings \
-                                          xmlstarlet \
-                                          peripheral.joystick"
-fi
-
-if [ -n "$DEBUG" ]; then
-  PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET gdb"
-fi
-
-if [ "$MTD_SUPPORT" = "yes" ]; then
-  PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET mtd-utils"
-fi
+make_target() {
+  make CC=$TARGET_CC \
+       AR=$TARGET_AR \
+       RANLIB=$TARGET_RANLIB \
+       CFLAGS="$TARGET_CFLAGS" \
+       BUILD_CC=$HOST_CC \
+       BUILD_CFLAGS="$HOST_CFLAGS -I$ROOT/$PKG_BUILD/libcap/include" \
+       WITHOUT_XATTR=1 \
+       lib=/lib
+}
 
