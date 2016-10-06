@@ -56,5 +56,9 @@ if [ "$MEDIACENTER" = "kodi" ]; then
     PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET kodi-language-addons"
   fi
 else
-  PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET bt-a2dp"
+  PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET $MEDIACENTER"
+fi
+
+if [ "$MTD_SUPPORT" = "yes" ]; then
+  PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET mtd-utils"
 fi
