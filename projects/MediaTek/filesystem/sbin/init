@@ -10,6 +10,7 @@ if ! /bin/mount -t jffs2 /dev/mtdblock6 /storage; then
   fi
 fi
 /bin/mount -t tmpfs null /tmp
+/bin/dd if=/dev/mtd2 of=/tmp/mt7628.eeprom bs=1 count=512 skip=0
 /usr/bin/swconfig dev switch0 set reset 1
 
 exec /usr/lib/systemd/systemd
