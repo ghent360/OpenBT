@@ -31,16 +31,17 @@ PKG_LONGDESC="Kodi Media Center (which was formerly named Xbox Media Center or X
 
 case "$KODIPLAYER_DRIVER" in
   bcm2835-firmware)
-    PKG_VERSION="49082fb"
+    PKG_VERSION="4c67f75"
     PKG_GIT_URL="https://github.com/OpenELEC/xbmc.git"
     PKG_GIT_BRANCH="newclock5"
     PKG_KEEP_CHECKOUT="no"
     ;;
   *)
-    PKG_VERSION="d51d4ae"
+    PKG_VERSION="e596558"
     PKG_GIT_URL="https://github.com/xbmc/xbmc.git"
     PKG_GIT_BRANCH="master"
     PKG_KEEP_CHECKOUT="no"
+    PKG_PATCH_DIRS="$LINUX"
     ;;
 esac
 
@@ -212,6 +213,7 @@ if [ ! "$KODIPLAYER_DRIVER" = default ]; then
     PKG_CMAKE_OPTS_TARGET+=" -DENABLE_MMAL=ON -DCORE_SYSTEM_NAME=rbpi"
   elif [ "$KODIPLAYER_DRIVER" = libfslvpuwrap ]; then
     PKG_CMAKE_OPTS_TARGET+=" -DENABLE_IMXVPU=ON"
+    strip_lto # fails to build with LTO support (todo)
   elif [ "$KODIPLAYER_DRIVER" = libamcodec ]; then
     PKG_CMAKE_OPTS_TARGET+=" -DENABLE_AML=ON"
   fi

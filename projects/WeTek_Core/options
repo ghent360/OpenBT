@@ -50,21 +50,24 @@
   # Kernel target
     KERNEL_TARGET="uImage-dtb"
 
+  # Kernel devicetree image
+    KERNEL_UBOOT_DT_IMAGE=""
+
   # Kernel extra targets to build
     KERNEL_UBOOT_EXTRA_TARGET="meson8m2_wetek_core.dtd meson8m2_wetek_core.dtb"
 
   # Build Android kernel image using mkbootimg
     BUILD_ANDROID_BOOTIMG="yes"
 
-  # Path to a file that will be passed as the --second parameter to Android mkbootimg
-    ANDROID_BOOTIMG_SECOND="arch/arm/boot/dts/amlogic/meson8m2_wetek_core.dtb"
+  # Additional options to be passed to Android mkbootimg
+    ANDROID_BOOTIMG_OPTIONS="--second arch/arm/boot/dts/amlogic/meson8m2_wetek_core.dtb"
 
   # Additional kernel make parameters (for example to specify the u-boot loadaddress)
     KERNEL_MAKE_EXTRACMD=""
 
   # Kernel to use. values can be:
   # default:  default mainline kernel
-    LINUX="amlogic"
+    LINUX="amlogic-3.10"
 
 
 ################################################################################
@@ -93,7 +96,7 @@
   # build and install ALSA Audio support (yes / no)
     ALSA_SUPPORT="yes"
 
-  # OpenGL (X/ES) implementation to use (mesa / bcm2835-firmware / meson6 / meson8)
+  # OpenGL (X/ES) implementation to use (mesa / bcm2835-firmware / meson6 / meson8 / meson-gxbb / gpu-imx-gpu-viv)
     OPENGL="meson8"
 
   # include uvesafb support (yes / no)
@@ -105,9 +108,9 @@
   # Windowmanager to use (ratpoison / fluxbox / none)
     WINDOWMANAGER="none"
 
-  # Xorg Graphic drivers to use (all / i915,i965,r200,r300,r600,nvidia,nouveau)
+  # Xorg Graphic drivers to use (all / i915,i965,r200,r300,r600,nvidia)
   # Space separated list is supported,
-  # e.g. GRAPHIC_DRIVERS="i915 i965 r300 r600 radeonsi nvidia nouveau"
+  # e.g. GRAPHIC_DRIVERS="i915 i965 r300 r600 radeonsi nvidia"
     GRAPHIC_DRIVERS=""
 
   # KODI Player implementation to use (default / bcm2835-firmware / libfslvpuwrap / libamcodec)
@@ -121,6 +124,14 @@
   # Space separated list is supported,
   # e.g. ADDITIONAL_DRIVERS="DRIVER1 DRIVER2"
     ADDITIONAL_DRIVERS="$ADDITIONAL_DRIVERS"
+
+
+  # install extra kernel drivers, see configfiles in packages/linux/config/*.config
+  # or projects/*/linux/*.config or distributions/*/linux/*.config
+  # please add all configfiles which should be included without the suffix and prefix
+  # except the default-*.config and the ones included in packages/linux/package.mk
+  # Space separated list is supported,
+    KERNEL_EXTRA_CONFIG+=" "
 
   # additional Firmware to use (dvb-firmware, misc-firmware, wlan-firmware)
   # Space separated list is supported,
@@ -147,18 +158,6 @@
 
   # build with installer (yes / no)
     INSTALLER_SUPPORT="no"
-
-  # build and install 'RSXS' Screensaver (yes / no)
-    KODI_SCR_RSXS="no"
-
-  # build and install 'ProjectM' Visualization (yes / no)
-    KODI_VIS_PROJECTM="no"
-
-  # build and install 'GOOM' Visualization (yes / no)
-    KODI_VIS_GOOM="no"
-
-  # build and install 'FishBMC' Visualization (yes / no)
-    KODI_VIS_FISHBMC="no"
 
   # extra build dependeices
     EXTRA_DEPS="mkimage"

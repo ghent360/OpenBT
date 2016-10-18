@@ -17,7 +17,7 @@
 ################################################################################
 
 PKG_NAME="dbus"
-PKG_VERSION="1.10.10"
+PKG_VERSION="1.10.12"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
@@ -62,6 +62,6 @@ post_install() {
   add_group dbus 81
   add_group netdev 497
 
-  echo "chmod 4750 $INSTALL/usr/lib/dbus/dbus-daemon-launch-helper" >> $FAKEROOT_SCRIPT
-  echo "chown 0:81 $INSTALL/usr/lib/dbus/dbus-daemon-launch-helper" >> $FAKEROOT_SCRIPT
+  echo "chmod 4750 $INSTALL/usr/lib/dbus/dbus-daemon-launch-helper" >> $FAKEROOT_SCRIPT_SYSTEM
+  echo "chown 0:81 $INSTALL/usr/lib/dbus/dbus-daemon-launch-helper" >> $FAKEROOT_SCRIPT_SYSTEM
 }
