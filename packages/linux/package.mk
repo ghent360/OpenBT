@@ -29,17 +29,13 @@ PKG_SECTION="linux"
 PKG_SHORTDESC="linux26: The Linux kernel 2.6 precompiled kernel binary image and modules"
 PKG_LONGDESC="This package contains a precompiled kernel image and the modules."
 case "$LINUX" in
-  hardkernel)
-    PKG_VERSION="3b08361"
-    PKG_URL="https://github.com/hardkernel/linux/archive/$PKG_VERSION.tar.gz"
-    ;;
   amlogic-3.10)
     PKG_VERSION="86c93aa"
     PKG_URL="https://github.com/LibreELEC/linux-amlogic/archive/$PKG_VERSION.tar.gz"
     PKG_SOURCE_DIR="$PKG_NAME-amlogic-$PKG_VERSION*"
     ;;
   amlogic-3.14)
-    PKG_VERSION="a0d96f4"
+    PKG_VERSION="069e204"
     PKG_URL="https://github.com/LibreELEC/linux-amlogic/archive/$PKG_VERSION.tar.gz"
     PKG_SOURCE_DIR="$PKG_NAME-amlogic-$PKG_VERSION*"
     ;;
@@ -53,7 +49,7 @@ case "$LINUX" in
     ;;
   imx6-4.4-xbian)
     PKG_VERSION="4.4-xbian"
-    PKG_COMMIT="20160403-d08b62d"
+    PKG_COMMIT="20160821-f14907b"
     PKG_SOURCE_DIR="$PKG_NAME-$PKG_VERSION-$PKG_COMMIT"
     PKG_SOURCE_NAME="$PKG_SOURCE_DIR.tar.xz"
     PKG_URL="$DISTRO_SRC/$PKG_SOURCE_NAME"
@@ -66,7 +62,7 @@ case "$LINUX" in
     PKG_KEEP_CHECKOUT="yes"
     ;;
   *)
-    PKG_VERSION="4.7.5"
+    PKG_VERSION="4.8.2"
     PKG_URL="http://www.kernel.org/pub/linux/kernel/v4.x/$PKG_NAME-$PKG_VERSION.tar.xz"
     ;;
 esac
