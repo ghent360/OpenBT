@@ -1,0 +1,10 @@
+--- wpa_supplicant-2.5/wpa_supplicant/Makefile	2015-09-27 12:02:05.000000000 -0700
++++ wpa_supplicant-2.5-new/wpa_supplicant/Makefile	2016-09-25 02:38:20.293360108 -0700
+@@ -1409,6 +1409,7 @@
+ OBJS += $(DBUS_OBJS)
+ CFLAGS += $(DBUS_CFLAGS)
+ LIBS += $(DBUS_LIBS)
++LIBS += -lpthread -lm
+ 
+ ifdef CONFIG_READLINE
+ OBJS_c += ../src/utils/edit_readline.o
