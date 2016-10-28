@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <advancedsettings>
-  
-  <cputempcommand>echo "$(cat /sys/devices/virtual/thermal/thermal_zone0/temp)C"</cputempcommand>
-
   <showexitbutton>false</showexitbutton>
 
   <fanartres>720</fanartres>
@@ -15,9 +12,4 @@
   <samba>
     <clienttimeout>30</clienttimeout>
   </samba>
-
-  <network>
-    <readbufferfactor>4.0</readbufferfactor>
-  </network>
-
 </advancedsettings>

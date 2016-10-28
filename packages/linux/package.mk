@@ -64,7 +64,7 @@ case "$LINUX" in
   mt76*)
     PKG_VERSION="3.18.36"
     PKG_URL="http://www.kernel.org/pub/linux/kernel/v3.x/$PKG_NAME-$PKG_VERSION.tar.xz"
-    PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET sunxi-tools:host sunxi-sys-utils"
+    PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET"
     ;;
   *)
     PKG_VERSION="4.8.4"

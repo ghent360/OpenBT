@@ -34,13 +34,14 @@ PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
 make_target() {
-  make CC=$TARGET_CC \
-       AR=$TARGET_AR \
-       RANLIB=$TARGET_RANLIB \
-       CFLAGS="$TARGET_CFLAGS" \
-       BUILD_CC=$HOST_CC \
-       BUILD_CFLAGS="$HOST_CFLAGS -I$ROOT/$PKG_BUILD/libcap/include" \
+  make CROSS=${TARGET_PREFIX} \
        WITHOUT_XATTR=1 \
        lib=/lib
 }
 
+makeinstall_target() {
+  make CROSS=${TARGET_PREFIX} \
+       DESTDIR=$SYSROOT_PREFIX \
+       WITHOUT_XATTR=1 \
+       lib=/lib install
+}
