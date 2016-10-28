@@ -1,0 +1,11 @@
+--- linux-4.8.4/arch/mips/pci/pci-mt7620.c	2016-10-22 03:41:00.000000000 -0700
++++ linux-4.8.4-ralink/arch/mips/pci/pci-mt7620.c	2016-10-27 22:40:44.558913831 -0700
+@@ -122,7 +122,7 @@
+ 		else
+ 			break;
+ 		if (retry++ > WAITRETRY_MAX) {
+-			printk(KERN_WARN "PCIE-PHY retry failed.\n");
++			printk(KERN_WARNING "PCIE-PHY retry failed.\n");
+ 			return -1;
+ 		}
+ 	}

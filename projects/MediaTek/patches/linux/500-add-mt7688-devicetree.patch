@@ -1,6 +1,6 @@
-diff -Naur linux-3.18.36.orig/arch/mips/boot/dts/linkit7688.dts linux-3.18.36/arch/mips/boot/dts/linkit7688.dts
---- linux-3.18.36.orig/arch/mips/boot/dts/linkit7688.dts	1969-12-31 16:00:00.000000000 -0800
-+++ linux-3.18.36/arch/mips/boot/dts/linkit7688.dts	2016-10-01 16:11:27.965607195 -0700
+diff -Nrau linux-4.8.4/arch/mips/boot/dts/ralink/linkit7688.dts linux-4.8.4-ralink/arch/mips/boot/dts/ralink/linkit7688.dts
+--- linux-4.8.4/arch/mips/boot/dts/ralink/linkit7688.dts	1969-12-31 16:00:00.000000000 -0800
++++ linux-4.8.4-ralink/arch/mips/boot/dts/ralink/linkit7688.dts	2016-10-23 14:15:17.159016539 -0700
 @@ -0,0 +1,166 @@
 +/dts-v1/;
 +
@@ -168,36 +168,20 @@ diff -Naur linux-3.18.36.orig/arch/mips/boot/dts/linkit7688.dts linux-3.18.36/ar
 +	};
 +
 +};
-diff -Naur linux-3.18.36.orig/arch/mips/boot/dts/Makefile linux-3.18.36/arch/mips/boot/dts/Makefile
---- linux-3.18.36.orig/arch/mips/boot/dts/Makefile	2016-10-01 16:10:13.724388921 -0700
-+++ linux-3.18.36/arch/mips/boot/dts/Makefile	2016-10-01 16:19:14.390723628 -0700
-@@ -8,6 +8,7 @@
- dtb-$(CONFIG_DTB_RT305X_EVAL)		+= rt3052_eval.dtb
- dtb-$(CONFIG_DTB_RT3883_EVAL)		+= rt3883_eval.dtb
- dtb-$(CONFIG_DTB_MT7620A_EVAL)		+= mt7620a_eval.dtb
-+dtb-$(CONFIG_DTB_LINKIT_7688)		+= linkit7688.dtb
- dtb-$(CONFIG_MIPS_SEAD3)		+= sead3.dtb
+diff -Nrau linux-4.8.4/arch/mips/boot/dts/ralink/Makefile linux-4.8.4-ralink/arch/mips/boot/dts/ralink/Makefile
+--- linux-4.8.4/arch/mips/boot/dts/ralink/Makefile	2016-10-22 03:41:00.000000000 -0700
++++ linux-4.8.4-ralink/arch/mips/boot/dts/ralink/Makefile	2016-10-23 14:16:27.596467476 -0700
+@@ -2,6 +2,7 @@
+ dtb-$(CONFIG_DTB_RT305X_EVAL)	+= rt3052_eval.dtb
+ dtb-$(CONFIG_DTB_RT3883_EVAL)	+= rt3883_eval.dtb
+ dtb-$(CONFIG_DTB_MT7620A_EVAL)	+= mt7620a_eval.dtb
++dtb-$(CONFIG_DTB_LINKIT_7688)   += linkit7688.dtb
  
- obj-y		+= $(patsubst %.dtb, %.dtb.o, $(dtb-y))
-diff -Naur linux-3.18.36.orig/arch/mips/ralink/Kconfig linux-3.18.36/arch/mips/ralink/Kconfig
---- linux-3.18.36.orig/arch/mips/ralink/Kconfig	2016-10-01 16:10:14.132373504 -0700
-+++ linux-3.18.36/arch/mips/ralink/Kconfig	2016-10-01 16:20:55.005655847 -0700
-@@ -90,6 +90,12 @@
- 		bool "MT7621 eval kit"
- 		depends on SOC_MT7621
+ obj-y				+= $(patsubst %.dtb, %.dtb.o, $(dtb-y))
  
-+	config DTB_LINKIT_7688
-+		bool "Linkit 7688 kit"
-+		depends on SOC_MT7620
-+               select BUILTIN_DTB
-+
-+
- endchoice
- 
- endif
-diff -Naur linux-3.18.36.orig/arch/mips/boot/dts/mt7628an.dtsi linux-3.18.36/arch/mips/boot/dts/mt7628an.dtsi
---- linux-3.18.36.orig/arch/mips/boot/dts/mt7628an.dtsi	1969-12-31 16:00:00.000000000 -0800
-+++ linux-3.18.36/arch/mips/boot/dts/mt7628an.dtsi	2016-10-01 22:57:54.188840017 -0700
+diff -Nrau linux-4.8.4/arch/mips/boot/dts/ralink/mt7628an.dtsi linux-4.8.4-ralink/arch/mips/boot/dts/ralink/mt7628an.dtsi
+--- linux-4.8.4/arch/mips/boot/dts/ralink/mt7628an.dtsi	1969-12-31 16:00:00.000000000 -0800
++++ linux-4.8.4-ralink/arch/mips/boot/dts/ralink/mt7628an.dtsi	2016-10-23 14:15:17.159016539 -0700
 @@ -0,0 +1,440 @@
 +/ {
 +	#address-cells = <1>;
@@ -639,3 +623,19 @@ diff -Naur linux-3.18.36.orig/arch/mips/boot/dts/mt7628an.dtsi linux-3.18.36/arc
 +	};
 +
 +};
+diff -Nrau linux-4.8.4/arch/mips/ralink/Kconfig linux-4.8.4-ralink/arch/mips/ralink/Kconfig
+--- linux-4.8.4/arch/mips/ralink/Kconfig	2016-10-22 03:41:00.000000000 -0700
++++ linux-4.8.4-ralink/arch/mips/ralink/Kconfig	2016-10-23 14:15:17.159016539 -0700
+@@ -81,6 +81,12 @@
+ 		depends on SOC_MT7620
+ 		select BUILTIN_DTB
+ 
++	config DTB_LINKIT_7688
++		bool "Linkit 7688 kit"
++		depends on SOC_MT7620
++               select BUILTIN_DTB
++
++
+ endchoice
+ 
+ endif
