@@ -62,9 +62,8 @@ case "$LINUX" in
     PKG_KEEP_CHECKOUT="yes"
     ;;
   mt76*)
-    PKG_VERSION="3.18.36"
-    PKG_URL="http://www.kernel.org/pub/linux/kernel/v3.x/$PKG_NAME-$PKG_VERSION.tar.xz"
-    PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET"
+    PKG_VERSION="4.4.7"
+    PKG_URL="https://kernel.org/pub/linux/kernel/v4.x/$PKG_NAME-$PKG_VERSION.tar.xz"
     ;;
   *)
     PKG_VERSION="4.8.4"
