@@ -16,29 +16,27 @@
 #  along with OpenELEC.  If not, see <http://www.gnu.org/licenses/>.
 ################################################################################
 
-PKG_NAME="libXi"
-PKG_VERSION="1.7.7"
+PKG_NAME="localedef-eglibc"
+PKG_VERSION="2.14.1-r17443-ptx1"
 PKG_REV="1"
 PKG_ARCH="any"
-PKG_LICENSE="OSS"
-PKG_SITE="http://www.x.org/"
-PKG_URL="http://xorg.freedesktop.org/archive/individual/lib/$PKG_NAME-$PKG_VERSION.tar.bz2"
-PKG_DEPENDS_TARGET="toolchain util-macros libX11 inputproto libXfixes"
+PKG_LICENSE="GPL"
+PKG_SITE="http://public.pengutronix.de"
+PKG_URL="http://public.pengutronix.de/mirror/software/ptxdist/temporary-src/$PKG_NAME-$PKG_VERSION.tar.bz2"
+PKG_DEPENDS_HOST="ccache:host"
 PKG_PRIORITY="optional"
-PKG_SECTION="x11/lib"
-PKG_SHORTDESC="libxi: X11 Input extension library"
-PKG_LONGDESC="LibXi provides an X Window System client interface to the XINPUT extension to the X protocol."
+PKG_SECTION="toolchain/devel"
+PKG_SHORTDESC="localedef: Locale definition compiler"
+PKG_LONGDESC="The localedef program reads the indicated charmap and input files, compiles them to a form usable by the locale(7) functions in the C library, and places the six output files in the outputpath directory."
 
 PKG_IS_ADDON="no"
 PKG_AUTORECONF="yes"
 
-PKG_CONFIGURE_OPTS_TARGET="--enable-static --disable-shared \
-                           --enable-malloc0returnsnull \
-                           --disable-silent-rules \
-                           --disable-docs \
-                           --disable-specs \
-                           --without-xmlto \
-                           --without-fop \
-                           --without-xsltproc \
-                           --without-asciidoc \
-                           --with-gnu-ld"
+PKG_CONFIGURE_OPTS_HOST="--prefix=/usr --with-glibc=../eglibc"
+
+CFLAGS+=" -fgnu89-inline"
+
+makeinstall_host() {
+  mkdir -p $ROOT/$TOOLCHAIN/bin
+    cp localedef $ROOT/$TOOLCHAIN/bin
+}

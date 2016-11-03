@@ -17,7 +17,7 @@
 ################################################################################
 
 PKG_NAME="imx-vpu"
-PKG_VERSION="5.4.32"
+PKG_VERSION="5.4.33"
 PKG_REV="1"
 PKG_ARCH="arm"
 PKG_LICENSE="other"
@@ -33,7 +33,7 @@ PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
 make_target() {
-  make DIRS="vpu" CFLAGS="$CFLAGS" PLATFORM=IMX6Q CROSS_COMPILE=$TARGET_PREFIX
+  make DIRS="vpu" CFLAGS="$CFLAGS" PLATFORM=IMX6Q
 }
 
 makeinstall_target() {

@@ -53,13 +53,13 @@ case "$LINUX" in
     PKG_PATCH_DIRS="linux-4.4 imx6-4.4"
     ;;
   rpi)
-    PKG_VERSION="c018644"
+    PKG_VERSION="7ede3d57"
     PKG_GIT_URL="https://github.com/OpenELEC/linux.git"
     PKG_GIT_BRANCH="raspberry-rpi-4.8.y"
     PKG_PATCH_DIRS="linux-4.8"
     ;;
   *)
-    PKG_VERSION="4.8.1"
+    PKG_VERSION="4.8.5"
     PKG_URL="http://www.kernel.org/pub/linux/kernel/v4.x/$PKG_NAME-$PKG_VERSION.tar.xz"
     PKG_PATCH_DIRS="linux-4.8"
     ;;
@@ -87,10 +87,8 @@ post_patch() {
 
   cp $KERNEL_CFG_FILE $PKG_BUILD/.config
 
-  sed -i -e "s|^HOSTCC[[:space:]]*=.*$|HOSTCC = $ROOT/$TOOLCHAIN/bin/host-gcc|" \
-         -e "s|^HOSTCXX[[:space:]]*=.*$|HOSTCXX = $ROOT/$TOOLCHAIN/bin/host-g++|" \
-         -e "s|^ARCH[[:space:]]*?=.*$|ARCH = $TARGET_KERNEL_ARCH|" \
-         -e "s|^CROSS_COMPILE[[:space:]]*?=.*$|CROSS_COMPILE = $TARGET_PREFIX|" \
+  sed -i -e "s|^ARCH[[:space:]]*?=.*$|ARCH = $TARGET_KERNEL_ARCH|" \
+         -e "s|^CROSS_COMPILE[[:space:]]*?=.*$|CROSS_COMPILE = ${TARGET_NAME}-|" \
          $PKG_BUILD/Makefile
 
   if [ ! "$BUILD_ANDROID_BOOTIMG" = "yes" ]; then
@@ -146,12 +144,14 @@ post_patch() {
 }
 
 makeinstall_host() {
-  make INSTALL_HDR_PATH=$SYSROOT_PREFIX/usr headers_install
+  make INSTALL_HDR_PATH=dest headers_install
+  mkdir -p $SYSROOT_PREFIX/usr/include
+    cp -R dest/include/* $SYSROOT_PREFIX/usr/include
 }
 
 pre_make_target() {
   # regdb
-  cp $(get_build_dir wireless-regdb)/db.txt $ROOT/$PKG_BUILD/net/wireless/db.txt
+  cp $(get_pkg_build wireless-regdb)/db.txt $ROOT/$PKG_BUILD/net/wireless/db.txt
 
   if [ "$BOOTLOADER" = "u-boot" ]; then
     ( cd $ROOT

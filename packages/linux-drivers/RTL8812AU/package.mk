@@ -41,8 +41,8 @@ pre_make_target() {
 make_target() {
   make V=1 \
        ARCH=$TARGET_KERNEL_ARCH \
-       KSRC=$(kernel_path) \
-       CROSS_COMPILE=$TARGET_PREFIX \
+       KSRC=$(get_pkg_build linux) \
+       CROSS_COMPILE=${TARGET_NAME}- \
        CONFIG_POWER_SAVING=n
 }
 

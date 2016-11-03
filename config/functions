@@ -2,26 +2,28 @@ setup_toolchain() {
   case "$1" in
     target|init)
       export DESTIMAGE="target"
-      export CC="${TARGET_PREFIX}gcc"
-      export CXX="${TARGET_PREFIX}g++"
-      export CPP="${TARGET_PREFIX}cpp"
-      export LD="${TARGET_PREFIX}ld"
-      export AS="${TARGET_PREFIX}as"
-      export AR="${TARGET_PREFIX}ar"
-      export NM="${TARGET_PREFIX}nm"
-      export RANLIB="${TARGET_PREFIX}ranlib"
-      export OBJCOPY="${TARGET_PREFIX}objcopy"
-      export OBJDUMP="${TARGET_PREFIX}objdump"
-      export STRIP="${TARGET_PREFIX}strip"
+      export CC="${TARGET_NAME}-gcc"
+      export CXX="${TARGET_NAME}-g++"
+      export CPP="${TARGET_NAME}-cpp"
+      export LD="${TARGET_NAME}-ld"
+      export AS="${TARGET_NAME}-as"
+      export AR="${TARGET_NAME}-ar"
+      export NM="${TARGET_NAME}-nm"
+      export RANLIB="${TARGET_NAME}-ranlib"
+      export OBJCOPY="${TARGET_NAME}-objcopy"
+      export OBJDUMP="${TARGET_NAME}-objdump"
+      export STRIP="${TARGET_NAME}-strip"
       export CPPFLAGS="$TARGET_CPPFLAGS"
       export CFLAGS="$TARGET_CFLAGS"
       export CXXFLAGS="$TARGET_CXXFLAGS"
       export LDFLAGS="$TARGET_LDFLAGS"
+      export LDSHARED="$CC -shared"
       export PKG_CONFIG_PATH=""
       export PKG_CONFIG_LIBDIR="$SYSROOT_PREFIX/usr/lib/pkgconfig:$SYSROOT_PREFIX/usr/share/pkgconfig"
       export PKG_CONFIG_SYSROOT_DIR="$SYSROOT_PREFIX"
       export CMAKE_CONF=$ROOT/$TOOLCHAIN/etc/cmake-$TARGET_NAME.conf
       export CMAKE="cmake -DCMAKE_TOOLCHAIN_FILE=$CMAKE_CONF -DCMAKE_INSTALL_PREFIX=/usr"
+      export PYTHONXCPREFIX="$SYSROOT_PREFIX/usr"
       if [ ! -f $CMAKE_CONF ] ; then
         mkdir -p $ROOT/$TOOLCHAIN/etc
         echo "SET(CMAKE_SYSTEM_NAME Linux)" >> $CMAKE_CONF
@@ -35,8 +37,8 @@ setup_toolchain() {
         echo "SET(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)"  >> $CMAKE_CONF
         echo "SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)"  >> $CMAKE_CONF
       fi
-      export HOST_CC="$ROOT/$TOOLCHAIN/bin/host-gcc"
-      export HOST_CXX="$ROOT/$TOOLCHAIN/bin/host-g++"
+      export HOST_CC="gcc"
+      export HOST_CXX="g++"
       export HOSTCC="$HOST_CC"
       export HOSTCXX="$HOST_CXX"
       export CC_FOR_BUILD="$HOST_CC"
@@ -50,8 +52,8 @@ setup_toolchain() {
     host|bootstrap)
       export DESTIMAGE="host"
       export AWK="gawk"
-      export CC="$ROOT/$TOOLCHAIN/bin/host-gcc"
-      export CXX="$ROOT/$TOOLCHAIN/bin/host-g++"
+      export CC="gcc"
+      export CXX="g++"
       export CPP="cpp"
       export LD="ld"
       export AS="as"
@@ -65,6 +67,7 @@ setup_toolchain() {
       export CFLAGS="$HOST_CFLAGS"
       export CXXFLAGS="$HOST_CXXFLAGS"
       export LDFLAGS="$HOST_LDFLAGS"
+      export LDSHARED="$CC -shared"
       export PKG_CONFIG_PATH=""
       export PKG_CONFIG_LIBDIR="$ROOT/$TOOLCHAIN/lib/pkgconfig:$ROOT/$TOOLCHAIN/share/pkgconfig"
       export PKG_CONFIG_SYSROOT_DIR=""
@@ -83,6 +86,7 @@ setup_toolchain() {
         echo "SET(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY BOTH)" >> $CMAKE_CONF
         echo "SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE BOTH)" >> $CMAKE_CONF
       fi
+      export PYTHONXCPREFIX="$ROOT/$TOOLCHAIN"
       export HOST_CC="$CC"
       export HOST_CXX="$CXX"
       export HOSTCC="$CC"
@@ -95,64 +99,50 @@ setup_toolchain() {
   esac
 }
 
-kernel_path() {
-  if [ -e $HOME/.openelec/projects/$PROJECT/packages/linux/package.mk ]; then
-    . $HOME/.openelec/projects/$PROJECT/packages/linux/package.mk
-  elif [ -e $HOME/.openelec/packages/linux/package.mk ]; then
-    . $HOME/.openelec/packages/linux/package.mk
-  elif [ -e $ROOT/projects/$PROJECT/packages/linux/package.mk ]; then
-    . $ROOT/projects/$PROJECT/packages/linux/package.mk
-  else
-    . $ROOT/packages/linux/package.mk
-  fi
+get_pkg_dir() {
+  PKG_EXTRA_FOLDERS="$HOME/.openelec/projects/$PROJECT/packages \
+                     $HOME/.openelec/packages \
+                     $ROOT/projects/$PROJECT/packages"
 
-  echo $ROOT/$BUILD/${PKG_NAME}-${PKG_VERSION}
+  for i in $PKG_EXTRA_FOLDERS ; do
+    if [ -d $i ]; then
+      PKG_FOLDERS+=" $i"
+    fi
+  done
+
+  PKG_FOLDERS+=" $ROOT/packages"
+
+  if [ ! -z $1 ] ; then
+    local _PKG_DIR=$(find $PKG_FOLDERS -name $1 | head -n1 2>/dev/null)
+    if [ -d "$_PKG_DIR" -a -f $_PKG_DIR/package.mk ] ; then
+      echo $_PKG_DIR
+    fi
+  fi
 }
 
-kernel_version() {
-  if [ -e $HOME/.openelec/projects/$PROJECT/packages/linux/package.mk ]; then
-    . $HOME/.openelec/projects/$PROJECT/packages/linux/package.mk
-  elif [ -e $HOME/.openelec/packages/linux/package.mk ]; then
-    . $HOME/.openelec/packages/linux/package.mk
-  elif [ -e $ROOT/projects/$PROJECT/packages/linux/package.mk ]; then
-    . $ROOT/projects/$PROJECT/packages/linux/package.mk
-  else
-    . $ROOT/packages/linux/package.mk
+get_pkg_version() {
+  if [ ! -z $1 ] ; then
+    local _PKG_DIR=$(get_pkg_dir $1)
+    if [ -d "$_PKG_DIR" -a -f $_PKG_DIR/package.mk ] ; then
+      . $_PKG_DIR/package.mk
+    fi
+    echo ${PKG_VERSION}
   fi
+}
 
-  echo ${PKG_VERSION}
+get_pkg_build() {
+  if [ ! -z $1 ] ; then
+    local _PKG_DIR=$(get_pkg_dir $1)
+    if [ -d "$_PKG_DIR" -a -f $_PKG_DIR/package.mk ] ; then
+      . $_PKG_DIR/package.mk
+    fi
+    echo $ROOT/$BUILD/${PKG_NAME}-${PKG_VERSION}
+  fi
 }
 
 # get kernel module dir
 get_module_dir() {
-  basename $(ls -d $(get_build_dir linux)/.install_pkg/lib/modules/*)
-}
-
-# get package's build dir
-get_build_dir() {
-  if [ ! -z $1 ] ; then
-    local _PKG_DIR=$(find $HOME/.openelec/projects/$PROJECT/packages -name $1 2>/dev/null)
-    if [ -d "$_PKG_DIR" -a -f $_PKG_DIR/package.mk ] ; then
-      . $_PKG_DIR/package.mk
-    else
-      local _PKG_DIR=$(find $HOME/.openelec/packages -name $1 2>/dev/null)
-      if [ -d "$_PKG_DIR" -a -f $_PKG_DIR/package.mk ] ; then
-        . $_PKG_DIR/package.mk
-      else
-        local _PKG_DIR=$(find $ROOT/projects/$PROJECT/packages -name $1 2>/dev/null)
-        if [ -d "$_PKG_DIR" -a -f $_PKG_DIR/package.mk ] ; then
-          . $_PKG_DIR/package.mk
-        else
-          local _PKG_DIR=$(find $ROOT/packages -name $1 2>/dev/null)
-          if [ -d "$_PKG_DIR" -a -f $_PKG_DIR/package.mk ] ; then
-            . $_PKG_DIR/package.mk
-          fi
-        fi
-      fi
-    fi
-
-    echo $ROOT/$BUILD/${PKG_NAME}-${PKG_VERSION}
-  fi
+  basename $(ls -d $(get_pkg_build linux)/.install_pkg/lib/modules/*)
 }
 
 tolower(){
@@ -286,208 +276,63 @@ enable_service () {
   fi
 }
 
-check_path() {
-dashes="==========================="
-  if [ "${PWD##/usr}" != "${PWD}" ]; then
-    check_pathmessage="$check_pathmessage\n $dashes$dashes$dashes"
-    check_pathmessage="$check_pathmessage\n ERROR: You try to build inside /usr"
-    check_pathmessage="$check_pathmessage\n $dashes$dashes$dashes"
-    check_pathmessage="$check_pathmessage\n This is not supported with our buildsystem."
-    check_pathmessage="$check_pathmessage\n Please use another dir (for example your \$HOME) to build $DISTRONAME"
+show_message() {
+  dashes="==========================="
+  show_message+="\n $@"
+}
 
-    echo -e $check_pathmessage
+check_path() {
+  show_message=""
+  if [ "${PWD##/usr}" != "${PWD}" ]; then
+    show_message "$dashes$dashes$dashes"
+    show_message "ERROR: You try to build inside /usr"
+    show_message "$dashes$dashes$dashes"
+    show_message "This is not supported with our buildsystem."
+    show_message "Please use another dir (for example your \$HOME) to build $DISTRONAME"
+
+    echo -e $show_message
     exit 1
   fi
 }
 
 check_config() {
-dashes="==========================="
+  show_message=""
   if [ ! -d $PROJECT_DIR/$PROJECT -a ! -d $HOME/.openelec/projects/$PROJECT ]; then
-    check_project="$check_project\n $dashes$dashes$dashes"
-    check_project="$check_project\n ERROR: Project not found, use a valid project or create a new config"
-    check_project="$check_project\n $dashes$dashes$dashes"
-    check_project="$check_project\n\n Valid projects:"
+    show_message "$dashes$dashes$dashes"
+    show_message "ERROR: Project not found, use a valid project or create a new config"
+    show_message "$dashes$dashes$dashes"
+    show_message "\n Valid projects:"
 
     for projects in $PROJECT_DIR/* $HOME/.openelec/projects/*; do
-      check_project="$check_project\n - $(basename $projects)"
+      show_message " - $(basename $projects)"
     done
-    echo -e $check_project
+    echo -e $show_message
     exit 1
   fi
 
+  show_message=""
   if [ ! -f $PROJECT_DIR/$PROJECT/linux/linux.$TARGET_ARCH.conf -a ! -f $HOME/.openelec/projects/$PROJECT/linux/linux.$TARGET_ARCH.conf ]; then
-    check_arch="$check_arch\n $dashes$dashes$dashes"
-    check_arch="$check_arch\n ERROR: Architecture not found, use a valid Architecture"
-    check_arch="$check_arch\n for your project or create a new config"
-    check_arch="$check_arch\n $dashes$dashes$dashes"
-    check_arch="$check_arch\n\n Valid Architectures for your project: $PROJECT"
+    show_message "$dashes$dashes$dashes"
+    show_message "ERROR: Architecture not found, use a valid Architecture"
+    show_message "for your project or create a new config"
+    show_message "$dashes$dashes$dashes"
+    show_message "\n Valid Architectures for your project: $PROJECT"
 
     for arch in $PROJECT_DIR/$PROJECT/linux/*.conf $HOME/.openelec/projects/$PROJECT/linux/*.conf; do
-      check_arch="$check_arch\n - $(basename $arch | cut -f2 -d".")"
+      show_message " - $(basename $arch | cut -f2 -d".")"
     done
-    echo -e $check_arch
+    echo -e $show_message
     exit 1
   fi
 }
 
 show_config() {
+  show_message=""
+
   # load graphic configuration
     get_graphicdrivers
 
-  dashes="==========================="
-  config_message="$config_message\n $dashes$dashes$dashes"
-  config_message="$config_message\n Configuration for $DISTRONAME ($([ "$OFFICIAL" = "yes" ] && echo "official" || echo "community"))"
-  config_message="$config_message\n $dashes$dashes$dashes"
-
-  # Build options
-
-  config_message="$config_message\n\n Buildoptions:"
-  config_message="$config_message\n $dashes$dashes"
-
-  config_message="$config_message\n - CPU (ARCH):\t\t\t\t $TARGET_CPU ($TARGET_ARCH)"
-  config_message="$config_message\n - FLOAT:\t\t\t\t $TARGET_FLOAT"
-  config_message="$config_message\n - FPU:\t\t\t\t\t $TARGET_FPU"
-  config_message="$config_message\n - SIMD support:\t\t\t $SIMD_SUPPORT"
-  config_message="$config_message\n - Optimizations:\t\t\t $OPTIMIZATIONS"
-  config_message="$config_message\n - LTO (Link Time Optimization) support: $LTO_SUPPORT"
-  config_message="$config_message\n - GOLD (Google Linker) Support:\t $GOLD_SUPPORT"
-  config_message="$config_message\n - LLVM support:\t\t\t $LLVM_SUPPORT"
-
-  # config_message="$config_message\n - CFLAGS:\t $TARGET_CFLAGS"
-  # config_message="$config_message\n - LDFLAGS:\t $TARGET_LDFLAGS"
-
-  # Graphic configuration
-
-  config_message="$config_message\n\n Graphic configuration:"
-  config_message="$config_message\n $dashes$dashes"
-
-  if [ "$DISPLAYSERVER" = "x11" ] ; then
-    config_message="$config_message\n - Xorg Graphic Drivers:\t\t $GRAPHIC_DRIVERS"
-    config_message="$config_message\n - XORG Composite support:\t\t $COMPOSITE_SUPPORT"
-    config_message="$config_message\n - WindowManager:\t\t\t $WINDOWMANAGER"
-  fi
-  config_message="$config_message\n - OpenGL (GLX/ES) support (provider):\t $OPENGL"
-  config_message="$config_message\n - uvesafb support:\t\t\t $UVESAFB_SUPPORT"
-
-  # Hardware decoder support
-
-  config_message="$config_message\n\n Hardware decoder configuration:"
-  config_message="$config_message\n $dashes$dashes"
-
-  config_message="$config_message\n - Kodi Player driver:\t\t\t $KODIPLAYER_DRIVER"
-  config_message="$config_message\n - VAAPI Support:\t\t\t $VAAPI_SUPPORT"
-  config_message="$config_message\n - VDPAU Support:\t\t\t $VDPAU_SUPPORT"
-
-  # Input device configuration
-
-  config_message="$config_message\n\n Input device configuration:"
-  config_message="$config_message\n $dashes$dashes"
-
-  config_message="$config_message\n - Remote support:\t\t\t $REMOTE_SUPPORT"
-  config_message="$config_message\n - ATV Remote support:\t\t\t $ATVCLIENT_SUPPORT"
-  config_message="$config_message\n - CEC Adapter support:\t\t\t $CEC_SUPPORT"
-  config_message="$config_message\n - IRTrans support:\t\t\t $IRSERVER_SUPPORT"
-
-  # Misc. hardware configuration
-
-  config_message="$config_message\n\n Misc. hardware configuration:"
-  config_message="$config_message\n $dashes$dashes"
-
-  config_message="$config_message\n - ALSA support:\t\t\t $ALSA_SUPPORT"
-  config_message="$config_message\n - Pulseaudio support:\t\t\t $PULSEAUDIO_SUPPORT"
-  config_message="$config_message\n - Bluetooth support:\t\t\t $BLUETOOTH_SUPPORT"
-  config_message="$config_message\n - LCD drivers:\t\t\t\t $LCD_DRIVER"
-
-  for config_driver in $ADDITIONAL_DRIVERS; do
-    config_message="$config_message\n - Include driver:\t\t\t $config_driver"
-  done
-
-  for config_firmware in $FIRMWARE; do
-    config_message="$config_message\n - Include firmware:\t\t\t $config_firmware"
-  done
-
-  for config_modules in $INITRAMFS_MODULES; do
-    config_message="$config_message\n - Initramfs modules:\t\t\t $config_modules"
-  done
-
-  # Network service configuration
-
-  config_message="$config_message\n\n Network service configuration:"
-  config_message="$config_message\n $dashes$dashes"
-
-  config_message="$config_message\n - Avahi (Zeroconf) support:\t\t $AVAHI_DAEMON"
-  config_message="$config_message\n - NFS mounting support:\t\t $NFS_SUPPORT"
-  config_message="$config_message\n - SAMBA mounting support:\t\t $SAMBA_SUPPORT"
-  config_message="$config_message\n - SAMBA server support:\t\t $SAMBA_SERVER"
-  config_message="$config_message\n - SFTP server support:\t\t\t $SFTP_SERVER"
-  config_message="$config_message\n - PPTP support:\t\t\t $PPTP_SUPPORT"
-  config_message="$config_message\n - OpenVPN support:\t\t\t $OPENVPN_SUPPORT"
-
-  # OS configuration
-
-  config_message="$config_message\n\n OS configuration:"
-  config_message="$config_message\n $dashes$dashes"
-
-  config_message="$config_message\n - OEM Support:\t\t\t\t $OEM_SUPPORT"
-  config_message="$config_message\n - Default ROOT Password:\t\t $ROOT_PASSWORD"
-  config_message="$config_message\n - Bootloader:\t\t\t\t $BOOTLOADER"
-  if [ "$BOOTLOADER" = "u-boot" ]; then
-    config_message="$config_message\n   - U-Boot configuration:\t\t $UBOOT_CONFIG"
-    config_message="$config_message\n   - U-Boot config file:\t\t $UBOOT_CONFIGFILE"
-  fi
-  config_message="$config_message\n - UDevil support:\t\t\t $UDEVIL"
-  config_message="$config_message\n - Installer support:\t\t\t $INSTALLER_SUPPORT"
-
-  # Misc. Filesystems
-
-  config_message="$config_message\n\n Misc. Filesystems:"
-  config_message="$config_message\n $dashes$dashes"
-
-  config_message="$config_message\n - Swap Support:\t\t\t $SWAP_SUPPORT"
-  if [ "$SWAP_SUPPORT" = "yes" ]; then
-    config_message="$config_message\n   - Swapfile default size:\t\t $SWAPFILESIZE"
-  fi
-  config_message="$config_message\n - exFAT Support (via Fuse):\t\t $EXFAT"
-  config_message="$config_message\n - NTFS Support (via Fuse):\t\t $NTFS3G"
-  config_message="$config_message\n - Install HFS Tools:\t\t\t $HFSTOOLS"
-
-  # Kodi configuration
-
-  config_message="$config_message\n\n Kodi configuration:"
-  config_message="$config_message\n $dashes$dashes"
-
-  config_message="$config_message\n - Kodi version:\t\t\t $MEDIACENTER"
-  config_message="$config_message\n - Kodi include language files:\t\t $KODI_LANGUAGE_ADDONS"
-  config_message="$config_message\n - Kodi nonfree support:\t\t $KODI_NONFREE_SUPPORT"
-  config_message="$config_message\n - Kodi Blu-Ray support:\t\t $KODI_BLURAY_SUPPORT"
-  if [ "$KODI_BLURAY_SUPPORT" = "yes" ] ; then
-    config_message="$config_message\n   - Bluray BD+ support:\t\t $BLURAY_BDPLUS_SUPPORT"
-    config_message="$config_message\n   - Bluray AACS support:\t\t $BLURAY_AACS_SUPPORT"
-  fi
-  config_message="$config_message\n - Kodi DVDCSS support:\t\t\t $KODI_DVDCSS_SUPPORT"
-  config_message="$config_message\n - Kodi Airplay support:\t\t $KODI_AIRPLAY_SUPPORT"
-  config_message="$config_message\n - Kodi Airtunes support:\t\t $KODI_AIRTUNES_SUPPORT"
-  config_message="$config_message\n - Kodi NFS support:\t\t\t $KODI_NFS_SUPPORT"
-  config_message="$config_message\n - Kodi MySQL support:\t\t\t $KODI_MYSQL_SUPPORT"
-  config_message="$config_message\n - Kodi Optical Drive support:\t\t $KODI_OPTICAL_SUPPORT"
-  config_message="$config_message\n - Kodi SAMBA client support:\t\t $KODI_SAMBA_SUPPORT"
-  config_message="$config_message\n - Kodi SSH client support:\t\t $KODI_SSHLIB_SUPPORT"
-  config_message="$config_message\n - Kodi UPNP support:\t\t\t $KODI_UPNP_SUPPORT"
-  config_message="$config_message\n - Kodi Webserver support:\t\t $KODI_WEBSERVER_SUPPORT"
-
-  for config_skin in $SKINS; do
-    config_message="$config_message\n - Include Skin:\t\t\t $config_skin"
-  done
-
-  config_message="$config_message\n - Default Skin:\t\t\t $SKIN_DEFAULT"
-  config_message="$config_message\n - Remove shipped skins:\t\t $SKIN_REMOVE_SHIPPED"
-  config_message="$config_message\n - Include extra fonts:\t\t\t $KODI_EXTRA_FONTS"
-
-  config_message="$config_message\n"
-  config_message="$config_message\n $dashes$dashes$dashes"
-  config_message="$config_message\n End Configuration for $DISTRONAME"
-  config_message="$config_message\n $dashes$dashes$dashes"
-  config_message="$config_message\n\n\n"
-
-  echo -e "$config_message"
+  . $ROOT/$CONFIG/show_config
+  
+  echo -e "$show_message"
 }
