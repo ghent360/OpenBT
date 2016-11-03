@@ -186,7 +186,7 @@ diff -Nrau linux-4.8.4/arch/mips/boot/dts/ralink/mt7628an.dtsi linux-4.8.4-ralin
 +/ {
 +	#address-cells = <1>;
 +	#size-cells = <1>;
-+	compatible = "ralink,mtk7628an-soc";
++	compatible = "ralink,mt7628an-soc";
 +
 +	cpus {
 +		cpu@0 {
