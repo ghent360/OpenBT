@@ -49,6 +49,7 @@
     UBOOT_CONFIG="$UBOOT_CONFIG Sinovoip_BPI_M2_plus_defconfig"
     UBOOT_CONFIG="$UBOOT_CONFIG orangepi_plus2e_defconfig"
     UBOOT_CONFIG="$UBOOT_CONFIG orangepi_pc_plus_defconfig"
+    UBOOT_CONFIG="$UBOOT_CONFIG beelink_x2_defconfig"
 
   # Target Configfile for u-boot
     UBOOT_CONFIGFILE="boot.scr"
@@ -141,4 +142,4 @@
     INSTALLER_SUPPORT="no"
 
   # additional drivers
-  #  ADDITIONAL_DRIVERS+=" mt7601u rtk8188eu media_build RTL8189ES RTL8189FS"
+  # ADDITIONAL_DRIVERS+=" mt7601u RTL8188EU"

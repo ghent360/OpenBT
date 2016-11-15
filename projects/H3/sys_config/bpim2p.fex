@@ -93,7 +93,7 @@ pll_de           = 864
 ;dram_para2 = 0x00001100  ;on behalf of a single channel is enabled dram
 ;*****************************************************************************
 [dram_para]
-dram_clk        = 672
+dram_clk        = 624
 dram_type       = 3
 dram_zq         = 0x3b3bfb
 dram_odt_en     = 0x1
@@ -472,10 +472,8 @@ gmac_phy_power_en   = port:PD06<1><default><default><0>
 ;axp22_eldo2
 ;fill handle string "" when not using any pmu power supply
 ;--------------------------------------------------------------------------------
-
 [csi0]
-
-vip_used                 = 1
+vip_used                 = 0
 vip_mode                 = 0
 vip_dev_qty              = 1
 vip_define_sensor_list   = 0
@@ -751,22 +749,12 @@ serial_unique       = 0
 
 ;--------------------------------------------------------------------------------
 ;wifi/bt/fm/gps/nfc modules configuration
-;module_num:
-;             0- none
-;             1- rtl8188eu(wifi)
-;             2- rtl8723bs(wifi+bt)
-;             3- ap6181(wifi)
-;             4- ap6210(wifi+bt)
-;             5- ap6330(wifi+bt)
-;             6- ap6335(wifi)
-;             7- rtl8189etv(wifi)
 ;module_power0: axp used by module, "axp22_dldo1" - use dldo1, not use keep it empty
 ;module_power0_vol: power0 voltage, mv;
 ;chip_en:       enable chip io
 ;lpo_use_apclk: ""- not use, "losc_out"- a23/33/H3, "ac10032k1"、"ac10032k2"、"ac10032k3"- a80
 ;--------------------------------------------------------------------------------
 [module_para]
-module_num          = 4
 module_power0       = "vcc-wifi-33"
 module_power0_vol   = 0
 module_power1       = 
@@ -791,8 +779,8 @@ lpo_use_apclk       = "losc_out"
 [wifi_para]
 wifi_used             = 1
 wifi_sdc_id           = 1
-wifi_usbc_id          = 1
-wifi_usbc_type        = 1
+wifi_usbc_id          =
+wifi_usbc_type        =
 wl_reg_on             = port:PL07<1><default><default><0>
 wl_host_wake          = port:PG10<0><default><default><0> 
 wl_host_wake_invert   = 0
@@ -894,7 +882,7 @@ i2s_din             = port:PG13<2><1><default><default>
 
 
 [audio0]
-audio_used          	= 1
+audio_used          	= 0
 lineout_vol		= 0x1f
 cap_vol			= 0x5
 audio_hp_ldo       	= "none"
@@ -910,10 +898,10 @@ spdif_used          = 0
 spdif_dout          = port:PA17<2><1><default><default>
 
 [audiohub]
-hub_used = 1
-codec_used 	= 1
+hub_used = 0
+codec_used = 1
 spdif_used = 0
-hdmi_used 	= 1
+hdmi_used = 1
 
 ;----------------------------------------------------------------------------------
 ;ir rx --- infra remote configuration

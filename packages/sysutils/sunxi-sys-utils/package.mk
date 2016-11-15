@@ -23,7 +23,7 @@ PKG_ARCH="arm"
 PKG_LICENSE="GPL"
 PKG_SITE="http://github.com/jernejsk/OpenELEC-OPi2"
 PKG_URL=""
-PKG_DEPENDS_TARGET="toolchain"
+PKG_DEPENDS_TARGET="toolchain sunxi-tools"
 PKG_PRIORITY="optional"
 PKG_SECTION="system"
 PKG_SHORTDESC="Sunxi system utilities"
@@ -46,7 +46,6 @@ makeinstall_target() {
 
 post_install() {
   enable_service sunxi-bt-load.service
-  enable_service sunxi-wifi-load.service
   enable_service sunxi-poweroff.service
   enable_service sunxi-suspend.service
 }

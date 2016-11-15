@@ -32,17 +32,17 @@ PKG_LONGDESC=""
 PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
-if [ -n "$SKINS" ]; then
-  for i in $SKINS; do
-    PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET $MEDIACENTER-theme-$i"
-  done
-fi
-
 if [ -n "$DEBUG" ]; then
   PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET gdb"
 fi
 
 if [ "$MEDIACENTER" = "kodi" ]; then
+  if [ -n "$SKINS" ]; then
+    for i in $SKINS; do
+      PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET $MEDIACENTER-theme-$i"
+    done
+  fi
+
 # some python stuff needed for various addons
   PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET Pillow"
   PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET simplejson"
