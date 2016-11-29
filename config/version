@@ -7,5 +7,5 @@ fi
   OS_VERSION="8.0"
 
 # ADDON_VERSION: Addon version
-  ADDON_VERSION="8.0"
+  ADDON_VERSION="8.1"
 
