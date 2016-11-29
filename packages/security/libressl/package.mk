@@ -17,7 +17,7 @@
 ################################################################################
 
 PKG_NAME="libressl"
-PKG_VERSION="2.4.3"
+PKG_VERSION="2.4.4"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="BSD"
@@ -38,7 +38,4 @@ post_makeinstall_target() {
     ln -sf /etc/ssl/cert.pem $INSTALL/etc/pki/tls/cacert.pem
   mkdir -p $INSTALL/etc/pki/tls/certs
     ln -sf /etc/ssl/cert.pem $INSTALL/etc/pki/tls/certs/ca-bundle.crt
-
-  mkdir -p $SYSROOT_PREFIX/usr/lib/pkgconfig
-    cp $PKG_DIR/config/*.pc $SYSROOT_PREFIX/usr/lib/pkgconfig
 }

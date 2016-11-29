@@ -31,13 +31,13 @@ PKG_LONGDESC="Kodi Media Center (which was formerly named Xbox Media Center or X
 
 case "$KODIPLAYER_DRIVER" in
   bcm2835-firmware)
-    PKG_VERSION="4c67f75"
+    PKG_VERSION="7318e40"
     PKG_GIT_URL="https://github.com/OpenELEC/xbmc.git"
     PKG_GIT_BRANCH="newclock5"
     PKG_KEEP_CHECKOUT="no"
     ;;
   *)
-    PKG_VERSION="e596558"
+    PKG_VERSION="fd7fcfa"
     PKG_GIT_URL="https://github.com/xbmc/xbmc.git"
     PKG_GIT_BRANCH="master"
     PKG_KEEP_CHECKOUT="no"
@@ -302,7 +302,7 @@ post_makeinstall_target() {
     xmlstarlet ed -L -d "/addons/addon[text()='skin.estuary']" $KODI_ADDON_MANIFEST
   else
     # Rebrand
-      sed -e "s,@DISTRONAME@,$DISTRONAME,g" -i $INSTALL/usr/share/kodi/addons/skin.estuary/1080i/Settings.xml
+      sed -e "s,@DISTRONAME@,$DISTRONAME,g" -i $INSTALL/usr/share/kodi/addons/skin.estuary/xml/Settings.xml
 
     rm -rf $INSTALL/usr/share/kodi/addons/skin.estuary/media
     mkdir -p $INSTALL/usr/share/kodi/addons/skin.estuary/media
@@ -355,9 +355,6 @@ post_makeinstall_target() {
 }
 
 post_install() {
-# link default.target to kodi.target
-  ln -sf kodi.target $INSTALL/usr/lib/systemd/system/default.target
-
 # enable default services
   enable_service kodi-autostart.service
   enable_service kodi-cleanlogs.service
