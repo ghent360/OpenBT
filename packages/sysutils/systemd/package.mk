@@ -174,8 +174,8 @@ post_makeinstall_target() {
   rm -rf $INSTALL/usr/bin/systemd-nspawn
   rm -rf $INSTALL/usr/lib/systemd/system/systemd-nspawn@.service
 
-  # remove genetators/catalog
-  rm -rf $INSTALL/usr/lib/systemd/system-generators
+  # remove generators/catalog
+  rm -rf $INSTALL/lib/systemd/system-generators/*
   rm -rf $INSTALL/usr/lib/systemd/catalog
 
   # disable usage of presets, see: https://freedesktop.org/wiki/Software/systemd/Preset/
