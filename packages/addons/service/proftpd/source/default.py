@@ -16,28 +16,20 @@
 #  along with LibreELEC.  If not, see <http://www.gnu.org/licenses/>.
 ################################################################################
 
-PKG_NAME="imagemagick"
-PKG_VERSION="6.9.6-7"
-PKG_REV="1"
-PKG_ARCH="any"
-PKG_LICENSE="http://www.imagemagick.org/script/license.php"
-PKG_SITE="http://www.imagemagick.org/"
-PKG_URL="http://www.imagemagick.org/download/releases/ImageMagick-$PKG_VERSION.tar.xz"
-PKG_SOURCE_DIR="ImageMagick-$PKG_VERSION"
-PKG_DEPENDS_TARGET="toolchain libX11"
-PKG_SECTION="graphics"
-PKG_SHORTDESC="ImageMagick"
-PKG_LONGDESC="Software suite to create, edit, compose, or convert bitmap images"
+import subprocess
+import xbmc
+import xbmcaddon
 
-PKG_IS_ADDON="no"
-PKG_AUTORECONF="no"
 
-PKG_CONFIGURE_OPTS_TARGET="--enable-static \
-                           --enable-shared \
-                           --with-quantum-depth=8 \
-                           --enable-hdri=no \
-                           --disable-openmp"
+class Monitor(xbmc.Monitor):
 
-makeinstall_target() {
-  make install DESTDIR=$INSTALL
-}
+   def __init__(self, *args, **kwargs):
+      xbmc.Monitor.__init__(self)
+      self.id = xbmcaddon.Addon().getAddonInfo('id')
+
+   def onSettingsChanged(self):
+      subprocess.call(['systemctl', 'restart', self.id])
+
+
+if __name__ == "__main__":
+   Monitor().waitForAbort()
