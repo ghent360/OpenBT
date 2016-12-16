@@ -17,7 +17,7 @@
 ################################################################################
 
 PKG_NAME="fdk-aac"
-PKG_VERSION="0.1.4b"
+PKG_VERSION="0.1.5a"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="APACHE-2"
