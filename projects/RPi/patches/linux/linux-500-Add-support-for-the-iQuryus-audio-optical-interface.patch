@@ -39,11 +39,13 @@ diff -Naur a/arch/arm/boot/dts/overlays/iquryus-optical-overlay.dts b/arch/arm/b
 diff -Naur a/arch/arm/boot/dts/overlays/Makefile b/arch/arm/boot/dts/overlays/Makefile
 --- a/arch/arm/boot/dts/overlays/Makefile	2016-08-15 07:30:16.000000000 -0700
 +++ b/arch/arm/boot/dts/overlays/Makefile	2016-08-27 03:13:02.465414935 -0700
-@@ -97,6 +97,7 @@
- dtbo-$(RPI_DT_OVERLAYS) += w1-gpio.dtbo
- dtbo-$(RPI_DT_OVERLAYS) += w1-gpio-pullup.dtbo
- dtbo-$(RPI_DT_OVERLAYS) += wittypi.dtbo
-+dtbo-$(RPI_DT_OVERLAYS) += iquryus-optical.dtbo
+@@ -96,7 +96,8 @@
+ 	vga666.dtbo \
+ 	w1-gpio.dtbo \
+ 	w1-gpio-pullup.dtbo \
+-	wittypi.dtbo
++	wittypi.dtbo \
++	iquryus-optical.dtbo
  
  targets += dtbs dtbs_install
  targets += $(dtbo-y)
