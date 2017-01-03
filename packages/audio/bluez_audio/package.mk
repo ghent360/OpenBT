@@ -17,7 +17,7 @@
 ################################################################################
 
 PKG_NAME="bluez_audio"
-PKG_VERSION="b036e4ef2dda"
+PKG_VERSION="17a635e5e79"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="OTHER"
@@ -34,8 +34,7 @@ PKG_IS_ADDON="no"
 PKG_AUTORECONF="yes"
 
 post_install() {
-  #ln -sf a2dp.target $INSTALL/usr/lib/systemd/system/default.target
-  #enable_service a2dp.service
-  echo done
+  ln -sf a2dp.target $INSTALL/usr/lib/systemd/system/default.target
+  enable_service a2dp.service
 }
 

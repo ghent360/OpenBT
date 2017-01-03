@@ -17,7 +17,7 @@
   GLIBC_LOCALES="no"
 
 # Mediacenter to use (kodi / no)
-  MEDIACENTER="bt-a2dp"
+  MEDIACENTER="bluez_audio"
 
 # build and install PulseAudio support (yes / no)
   PULSEAUDIO_SUPPORT="no"
@@ -33,7 +33,7 @@
 
 # build and install bluetooth support (yes / no)
   BLUETOOTH_SUPPORT="yes"
-  BLUETOOTH_VERSION=4
+  BLUETOOTH_VERSION=5
 
 # build and install Avahi (Zeroconf) daemon (yes / no)
   AVAHI_DAEMON="no"
