@@ -56,3 +56,7 @@ if [ "$MTD_SUPPORT" = "yes" ]; then
   PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET mtd-utils"
 fi
 
+if [ "$TIMELOGGER_SUPPORT" = "yes" ]; then
+  PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET timelogger"
+fi
+

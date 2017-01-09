@@ -41,6 +41,7 @@
     SPLIT_INITRAMFS=yes
     SWCONFIG_SUPPORT=yes
     MTD_SUPPORT=yes
+    TIMELOGGER_SUPPORT=yes
 
 ################################################################################
 # setup build defaults
