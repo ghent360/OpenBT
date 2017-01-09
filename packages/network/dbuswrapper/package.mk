@@ -17,7 +17,7 @@
 ################################################################################
 
 PKG_NAME="dbuswrapper"
-PKG_VERSION="0b3a9996956"
+PKG_VERSION="722452abfbc6"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="OTHER"

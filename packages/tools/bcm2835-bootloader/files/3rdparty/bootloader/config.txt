@@ -72,5 +72,5 @@ hdmi_ignore_cec_init=1
 [all]
 include distroconfig.txt
 
-device_tree_overlay=overlays/rpi-dac-overlay.dtb
+device_tree_overlay=overlays/iquryus-optical.dtbo
 boot_delay=0
