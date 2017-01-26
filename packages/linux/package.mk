@@ -53,7 +53,7 @@ case "$LINUX" in
     PKG_PATCH_DIRS="linux-4.4 imx6-4.4"
     ;;
   rpi)
-    PKG_VERSION="dfb36a1"
+    PKG_VERSION="0595d86"
     PKG_GIT_URL="https://github.com/OpenELEC/linux.git"
     PKG_GIT_BRANCH="raspberry-rpi-4.9.y"
     PKG_PATCH_DIRS="linux-4.9"
@@ -64,8 +64,8 @@ case "$LINUX" in
     PKG_PATCH_DIRS="linux-4.8"
     ;;
   *)
-    PKG_VERSION="4.9-rc8"
-    PKG_URL="http://www.kernel.org/pub/linux/kernel/v4.x/testing/$PKG_NAME-$PKG_VERSION.tar.xz"
+    PKG_VERSION="4.9.4"
+    PKG_URL="http://www.kernel.org/pub/linux/kernel/v4.x/$PKG_NAME-$PKG_VERSION.tar.xz"
     PKG_PATCH_DIRS="linux-4.9"
     ;;
 esac

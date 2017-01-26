@@ -1,7 +1,6 @@
 ################################################################################
 #      This file is part of OpenELEC - http://www.openelec.tv
 #      Copyright (C) 2009-2016 Stephan Raue (stephan@openelec.tv)
-#      Copyright (C) 2010-2011 Roman Weber (roman@openelec.tv)
 #
 #  OpenELEC is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -17,26 +16,30 @@
 #  along with OpenELEC.  If not, see <http://www.gnu.org/licenses/>.
 ################################################################################
 
-PKG_NAME="json-c"
-PKG_VERSION="ea1499a"
+PKG_NAME="glfw"
+PKG_VERSION="2.7.9"
 PKG_REV="1"
-PKG_ARCH="any"
-PKG_LICENSE="GPL"
-PKG_SITE="https://github.com/json-c/json-c/wiki"
-PKG_GIT_URL="https://github.com/json-c/json-c.git"
-PKG_GIT_BRANCH="master"
-PKG_DEPENDS_TARGET="toolchain"
+PKG_ARCH="x86_64"
+PKG_LICENSE="BSD"
+PKG_SITE="http://glfw.org"
+PKG_URL="$SOURCEFORGE_SRC/glfw/$PKG_NAME-$PKG_VERSION.tar.gz"
+PKG_DEPENDS_TARGET="toolchain mesa glu"
 PKG_PRIORITY="optional"
-PKG_SECTION="accessibility"
-PKG_SHORTDESC="json-c"
-PKG_LONGDESC="JSON-C implements a reference counting object model that allows you to easily construct JSON objects in C, output them as JSON formatted strings and parse JSON formatted strings back into the C representation of JSON objects"
+PKG_SECTION="graphics"
+PKG_SHORTDESC="glfw:"
+PKG_LONGDESC="glfw:"
 
 PKG_IS_ADDON="no"
-PKG_USE_CMAKE="no"
-PKG_AUTORECONF="yes"
+PKG_AUTORECONF="no"
 
-PKG_CONFIGURE_OPTS_TARGET="--enable-static --disable-shared"
-
-if [ $TARGET_ARCH = "x86_64" ]; then
-  PKG_CONFIGURE_OPTS_TARGET+=" --enable-rdrand"
+if [ ! "$OPENGL" = "mesa" ] ; then
+  exit 0
 fi
+
+make_target() {
+  make x11 PREFIX=$SYSROOT_PREFIX/usr
+}
+
+makeinstall_target() {
+  make x11-install PREFIX=$SYSROOT_PREFIX/usr
+}

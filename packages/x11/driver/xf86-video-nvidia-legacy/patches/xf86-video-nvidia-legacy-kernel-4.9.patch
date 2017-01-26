@@ -1,26 +1,15 @@
-diff -Npur NVIDIA-Linux-x86_64-340.98-no-compat32.orig/kernel/nv-linux.h NVIDIA-Linux-x86_64-340.98-no-compat32/kernel/nv-linux.h
---- NVIDIA-Linux-x86_64-340.98-no-compat32.orig/kernel/nv-linux.h	2016-09-20 02:01:21.000000000 +0200
-+++ NVIDIA-Linux-x86_64-340.98-no-compat32/kernel/nv-linux.h	2016-10-23 12:38:16.005635002 +0200
-@@ -2065,8 +2065,8 @@ static inline NvU64 nv_node_end_pfn(int
-     #define NV_GET_USER_PAGES           get_user_pages
-     #define NV_GET_USER_PAGES_REMOTE    get_user_pages_remote
- #else
--    #define NV_GET_USER_PAGES(start, nr_pages, write, force, pages, vmas) \
--        get_user_pages(current, current->mm, start, nr_pages, write, force, pages, vmas)
-+    #define NV_GET_USER_PAGES(start, nr_pages, gup_flags, pages, vmas) \
-+        get_user_pages(current, current->mm, start, nr_pages, gup_flags, pages, vmas)
+diff -Naur a/kernel/nv-drm.c b/kernel/nv-drm.c
+--- a/kernel/nv-drm.c	2016-12-15 12:41:26.000000000 +0100
++++ b/kernel/nv-drm.c	2016-12-15 12:58:48.000000000 +0100
+@@ -115,7 +115,11 @@
+ };
  
-     #define NV_GET_USER_PAGES_REMOTE    get_user_pages
- #endif
-diff -Npur NVIDIA-Linux-x86_64-340.98-no-compat32.orig/kernel/os-mlock.c NVIDIA-Linux-x86_64-340.98-no-compat32/kernel/os-mlock.c
---- NVIDIA-Linux-x86_64-340.98-no-compat32.orig/kernel/os-mlock.c	2016-09-20 02:01:20.000000000 +0200
-+++ NVIDIA-Linux-x86_64-340.98-no-compat32/kernel/os-mlock.c	2016-10-23 12:39:15.688797536 +0200
-@@ -46,7 +46,7 @@ RM_STATUS NV_API_CALL os_lock_user_pages
- 
-     down_read(&mm->mmap_sem);
-     ret = NV_GET_USER_PAGES((unsigned long)address,
--                            page_count, write, force, user_pages, NULL);
-+                            page_count, write ? FOLL_WRITE : 0, user_pages, NULL);
-     up_read(&mm->mmap_sem);
-     pinned = ret;
- 
+ static struct drm_driver nv_drm_driver = {
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 9, 0)
++    .driver_features = DRIVER_GEM | DRIVER_PRIME | DRIVER_LEGACY,
++#else
+     .driver_features = DRIVER_GEM | DRIVER_PRIME,
++#endif
+     .load = nv_drm_load,
+     .unload = nv_drm_unload,
+     .fops = &nv_drm_fops,

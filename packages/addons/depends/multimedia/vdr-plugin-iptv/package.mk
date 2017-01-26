@@ -16,24 +16,43 @@
 #  along with OpenELEC.  If not, see <http://www.gnu.org/licenses/>.
 ################################################################################
 
-PKG_NAME="libzip"
-PKG_VERSION="0.11.2"
+PKG_NAME="vdr-plugin-iptv"
+PKG_VERSION="2226be2"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
-PKG_SITE="http://www.nih.at/libzip/"
-PKG_URL="http://www.nih.at/libzip/${PKG_NAME}-${PKG_VERSION}.tar.xz"
-PKG_DEPENDS_TARGET="toolchain"
+PKG_SITE="http://www.saunalahti.fi/~rahrenbe/vdr/iptv/"
+PKG_GIT_URL="https://github.com/rofafor/vdr-plugin-iptv.git"
+PKG_GIT_BRANCH="vdr-2.2.x"
+PKG_DEPENDS_TARGET="toolchain vdr curl"
 PKG_PRIORITY="optional"
-PKG_SHORTDESC="libzip"
-PKG_LONGDESC="libzip"
+PKG_SECTION="multimedia"
+PKG_SHORTDESC="vdr-iptv: an IPTV plugin for the Video Disk Recorder (VDR)"
+PKG_LONGDESC="vdr-iptv is an IPTV plugin for the Video Disk Recorder (VDR)"
 
 PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
-PKG_CONFIGURE_OPTS_TARGET="--disable-shared --enable-static"
+make_target() {
+  VDR_DIR=$(get_pkg_build vdr)
+  export PKG_CONFIG_PATH=$VDR_DIR:$PKG_CONFIG_PATH
+  export CPLUS_INCLUDE_PATH=$VDR_DIR/include
 
-post_makeinstall_target() {
-  rm -rf $INSTALL/usr/bin
-  rm -rf $INSTALL/usr/lib
+  make \
+    LIBDIR="." \
+    LOCDIR="./locale" \
+    all install-i18n
+}
+
+post_make_target() {
+  VDR_DIR=$(get_pkg_build vdr)
+  VDR_APIVERSION=`sed -ne '/define APIVERSION/s/^.*"\(.*\)".*$/\1/p' $VDR_DIR/config.h`
+  LIB_NAME=lib${PKG_NAME/-plugin/}
+
+  cp --remove-destination $ROOT/$PKG_BUILD/${LIB_NAME}.so $ROOT/$PKG_BUILD/${LIB_NAME}.so.${VDR_APIVERSION}
+  $STRIP libvdr-*.so*
+}
+
+makeinstall_target() {
+  : # installation not needed, done by create-addon script
 }
