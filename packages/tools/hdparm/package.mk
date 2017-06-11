@@ -17,7 +17,7 @@
 ################################################################################
 
 PKG_NAME="hdparm"
-PKG_VERSION="9.49"
+PKG_VERSION="9.52"
 PKG_ARCH="any"
 PKG_LICENSE="BSD"
 PKG_SITE="http://sourceforge.net/projects/hdparm/"
@@ -32,5 +32,5 @@ PKG_AUTORECONF="no"
 
 makeinstall_target() {
   mkdir -p $INSTALL/usr/sbin
-    cp -a $ROOT/$PKG_BUILD/hdparm $INSTALL/usr/sbin
+    cp -a $PKG_BUILD/hdparm $INSTALL/usr/sbin
 }

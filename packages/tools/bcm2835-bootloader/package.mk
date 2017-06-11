@@ -17,7 +17,7 @@
 ################################################################################
 
 PKG_NAME="bcm2835-bootloader"
-PKG_VERSION="1af015c"
+PKG_VERSION="0f315f8"
 PKG_ARCH="arm"
 PKG_LICENSE="nonfree"
 PKG_SITE="http://www.broadcom.com"
@@ -31,29 +31,37 @@ PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
 make_target() {
-  if [ -f $DISTRO_DIR/$DISTRO/config/dt-blob.dts ]; then
-    echo Compiling device tree blob
-    $(kernel_path)/scripts/dtc/dtc -O dtb -o dt-blob.bin $DISTRO_DIR/$DISTRO/config/dt-blob.dts
-  fi
+  :
 }
 
 makeinstall_target() {
   mkdir -p $INSTALL/usr/share/bootloader
     cp -PRv LICENCE* $INSTALL/usr/share/bootloader
     cp -PRv bootcode.bin $INSTALL/usr/share/bootloader
+
     cp -PRv fixup*.dat $INSTALL/usr/share/bootloader/
     cp -PRv start*.elf $INSTALL/usr/share/bootloader/
-    [ -f dt-blob.bin ] && cp -PRv dt-blob.bin $INSTALL/usr/share/bootloader/dt-blob.bin
+    if [ -f $PROJECT_DIR/$PROJECT/devices/$DEVICE/config/dt-blob.bin ]; then
+      cp -PRv $PROJECT_DIR/$PROJECT/devices/$DEVICE/config/dt-blob.bin $INSTALL/usr/share/bootloader
+    fi
 
     cp -PRv $PKG_DIR/scripts/update.sh $INSTALL/usr/share/bootloader
 
-    if [ -f $DISTRO_DIR/$DISTRO/config/distroconfig.txt ]; then
+    if [ -f $PROJECT_DIR/$PROJECT/devices/$DEVICE/config/distroconfig.txt ]; then
+      cp -PRv $PROJECT_DIR/$PROJECT/devices/$DEVICE/config/distroconfig.txt $INSTALL/usr/share/bootloader
+    elif [ -f $PROJECT_DIR/$PROJECT/config/distroconfig.txt ]; then
+      cp -PRv $PROJECT_DIR/$PROJECT/config/distroconfig.txt $INSTALL/usr/share/bootloader
+    elif [ -f $DISTRO_DIR/$DISTRO/config/distroconfig.txt ]; then
       cp -PRv $DISTRO_DIR/$DISTRO/config/distroconfig.txt $INSTALL/usr/share/bootloader
     else
       cp -PRv $PKG_DIR/files/3rdparty/bootloader/distroconfig.txt $INSTALL/usr/share/bootloader
     fi
 
-    if [ -f $DISTRO_DIR/$DISTRO/config/config.txt ]; then
+    if [ -f $PROJECT_DIR/$PROJECT/devices/$DEVICE/config/config.txt ]; then
+      cp -PRv $PROJECT_DIR/$PROJECT/devices/$DEVICE/config/config.txt $INSTALL/usr/share/bootloader
+    elif [ -f $PROJECT_DIR/$PROJECT/config/config.txt ]; then
+      cp -PRv $PROJECT_DIR/$PROJECT/config/config.txt $INSTALL/usr/share/bootloader
+    elif [ -f $DISTRO_DIR/$DISTRO/config/config.txt ]; then
       cp -PRv $DISTRO_DIR/$DISTRO/config/config.txt $INSTALL/usr/share/bootloader
     else
       cp -PRv $PKG_DIR/files/3rdparty/bootloader/config.txt $INSTALL/usr/share/bootloader

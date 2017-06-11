@@ -1,24 +1,33 @@
 #!/bin/bash
 
 ################################################################################
-#      This file is part of OpenELEC - http://www.openelec.tv
-#      Copyright (C) 2009-2016 Stephan Raue (stephan@openelec.tv)
+#      This file is part of LibreELEC - https://libreelec.tv
+#      Copyright (C) 2017-present Team LibreELEC
 #
-#  OpenELEC is free software: you can redistribute it and/or modify
+#  LibreELEC is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation, either version 2 of the License, or
 #  (at your option) any later version.
 #
-#  OpenELEC is distributed in the hope that it will be useful,
+#  LibreELEC is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
 #  You should have received a copy of the GNU General Public License
-#  along with OpenELEC.  If not, see <http://www.gnu.org/licenses/>.
+#  along with LibreELEC.  If not, see <http://www.gnu.org/licenses/>.
 ################################################################################
 
 . config/options $1
+
+_get_file_already_downloaded() {
+  if [ -f $PACKAGE ]; then
+    if [ "$(cat $STAMP_URL 2>/dev/null)" == "${PKG_URL}" ]; then
+      [ -z "${PKG_SHA256}" -o "$(cat $STAMP_SHA 2>/dev/null)" == "${PKG_SHA256}" ] && return 0
+    fi
+  fi
+  return 1
+}
 
 if [ -z "$1" ]; then
   for i in `find packages/ -type f -name package.mk`; do
@@ -27,16 +36,8 @@ if [ -z "$1" ]; then
   done
 fi
 
-if [ -n "$PKG_URL" -o -n "$PKG_GIT_URL" ]; then
-  mkdir -p $SOURCES/$1
-
-  # Avoid concurrent downloads of the same package
-  _isblocked=N
-  exec 99<$SOURCES/$1
-  while ! flock --nonblock --exclusive 99; do
-    [ ${_isblocked} == N ] && { echo "Project ${PROJECT} waiting to avoid concurrent download of ${1}..."; _isblocked=Y; }
-    sleep 1
-  done
+[ -z "$PKG_URL" -o -z "$PKG_SOURCE_NAME" ] && exit 0
+mkdir -p $SOURCES/$1
 
   if [ -n "$PKG_URL" ]; then
     for i in $PKG_URL; do
@@ -91,8 +92,8 @@ if [ -n "$PKG_URL" -o -n "$PKG_GIT_URL" ]; then
 
     NBGIT="1"
 
-  STAMP="$PACKAGE.url"
-  MD5SUM="$PACKAGE.md5"
+# Latest file already present, exit now...
+_get_file_already_downloaded $1 && exit 0
 
     if [ -f "$STAMP" ]; then
       [ "`cat $STAMP`" = "$PKG_GIT_URL $PKG_GIT_BRANCH $PKG_VERSION" ] && exit 0
@@ -138,6 +139,16 @@ if [ -n "$PKG_URL" -o -n "$PKG_GIT_URL" ]; then
     rm -f $BUILD_BASE*/$STAMPS_NOARCH/$1/build
 
   fi
+  NBWGET=$((NBWGET - 1))
+done
+
+if [ $NBWGET -eq 0 ]; then
+  echo -e "\nCant't get $1 sources : $PKG_URL\n Try later !!"
+  exit 1
+else
+  printf "${boldgreen}INFO${endcolor} Calculated checksum is: ${CALC_SHA256}\n\n"
+  echo "${PKG_URL}" > $STAMP_URL
+  echo "${CALC_SHA256}" > $STAMP_SHA
 fi
 
 exit 0

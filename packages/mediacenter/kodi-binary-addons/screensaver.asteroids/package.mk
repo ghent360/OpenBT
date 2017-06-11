@@ -17,8 +17,8 @@
 ################################################################################
 
 PKG_NAME="screensaver.asteroids"
-PKG_VERSION="8c2e182"
-PKG_REV="1"
+PKG_VERSION="d30d588"
+PKG_REV="2"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="https://github.com/notspiff/screensaver.asteroids"
